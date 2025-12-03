@@ -1,0 +1,150 @@
+// Copyright (c) 2025 kk
+//
+// This software is released under the MIT License.
+// https://opensource.org/licenses/MIT
+
+package alert
+
+import (
+	"fmt"
+	"time"
+
+	"github.com/kk/elk-helper/backend/internal/models"
+	"github.com/kk/elk-helper/backend/internal/repository/database"
+)
+
+// Service provides alert management operations
+type Service struct{}
+
+// NewService creates a new alert service
+func NewService() *Service {
+	return &Service{}
+}
+
+// Create creates a new alert record
+func (s *Service) Create(alert *models.Alert) error {
+	if err := database.DB.Create(alert).Error; err != nil {
+		return fmt.Errorf("failed to create alert: %w", err)
+	}
+	return nil
+}
+
+// GetAll returns all alerts with pagination (without logs for performance)
+func (s *Service) GetAll(page, pageSize int) ([]models.Alert, int64, error) {
+	var alerts []models.Alert
+	var total int64
+
+	offset := (page - 1) * pageSize
+
+	if err := database.DB.Model(&models.Alert{}).Count(&total).Error; err != nil {
+		return nil, 0, fmt.Errorf("failed to count alerts: %w", err)
+	}
+
+	// Optimize: Don't load logs field in list view for performance
+	// Logs can be hundreds of KB or even MBs, causing slow page loads
+	// Only load logs when viewing individual alert details
+	if err := database.DB.Preload("Rule").
+		Select("id", "created_at", "rule_id", "index_name", "log_count", "time_range", "status", "error_msg").
+		Order("created_at DESC").
+		Offset(offset).
+		Limit(pageSize).
+		Find(&alerts).Error; err != nil {
+		return nil, 0, fmt.Errorf("failed to get alerts: %w", err)
+	}
+
+	return alerts, total, nil
+}
+
+// GetByID returns an alert by ID with limited logs (max 10 for performance)
+func (s *Service) GetByID(id uint) (*models.Alert, error) {
+	var alert models.Alert
+	if err := database.DB.Preload("Rule").First(&alert, id).Error; err != nil {
+		return nil, fmt.Errorf("alert not found: %w", err)
+	}
+
+	// Limit logs to first 10 entries for performance
+	// This prevents loading huge JSON blobs that can be hundreds of KB or even MBs
+	if alert.Logs != nil && len(alert.Logs) > 10 {
+		alert.Logs = alert.Logs[:10]
+	}
+
+	return &alert, nil
+}
+
+// GetByRuleID returns alerts for a specific rule
+func (s *Service) GetByRuleID(ruleID uint, limit int) ([]models.Alert, error) {
+	var alerts []models.Alert
+	query := database.DB.Where("rule_id = ?", ruleID).Order("created_at DESC")
+	if limit > 0 {
+		query = query.Limit(limit)
+	}
+
+	if err := query.Find(&alerts).Error; err != nil {
+		return nil, fmt.Errorf("failed to get alerts: %w", err)
+	}
+	return alerts, nil
+}
+
+// Delete deletes an alert
+func (s *Service) Delete(id uint) error {
+	if err := database.DB.Delete(&models.Alert{}, id).Error; err != nil {
+		return fmt.Errorf("failed to delete alert: %w", err)
+	}
+	return nil
+}
+
+// GetStats returns alert statistics
+func (s *Service) GetStats(duration time.Duration) (map[string]interface{}, error) {
+	var totalCount int64
+	var sentCount int64
+	var failedCount int64
+
+	since := time.Now().Add(-duration)
+
+	if err := database.DB.Model(&models.Alert{}).
+		Where("created_at >= ?", since).
+		Count(&totalCount).Error; err != nil {
+		return nil, err
+	}
+
+	if err := database.DB.Model(&models.Alert{}).
+		Where("created_at >= ? AND status = ?", since, models.AlertStatusSent).
+		Count(&sentCount).Error; err != nil {
+		return nil, err
+	}
+
+	if err := database.DB.Model(&models.Alert{}).
+		Where("created_at >= ? AND status = ?", since, models.AlertStatusFailed).
+		Count(&failedCount).Error; err != nil {
+		return nil, err
+	}
+
+	return map[string]interface{}{
+		"total":  totalCount,
+		"sent":   sentCount,
+		"failed": failedCount,
+	}, nil
+}
+
+// BatchDelete deletes multiple alerts
+func (s *Service) BatchDelete(ids []uint) error {
+	if len(ids) == 0 {
+		return nil
+	}
+	if err := database.DB.Where("id IN ?", ids).Delete(&models.Alert{}).Error; err != nil {
+		return fmt.Errorf("failed to batch delete alerts: %w", err)
+	}
+	return nil
+}
+
+// CleanupOldData deletes alerts older than the specified duration
+func (s *Service) CleanupOldData(olderThan time.Duration) (int64, error) {
+	cutoffTime := time.Now().Add(-olderThan)
+
+	result := database.DB.Where("created_at < ?", cutoffTime).Delete(&models.Alert{})
+	if result.Error != nil {
+		return 0, fmt.Errorf("failed to cleanup old alerts: %w", result.Error)
+	}
+
+	return result.RowsAffected, nil
+}

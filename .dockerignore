@@ -1,0 +1,57 @@
+# Copyright (c) 2025 kk
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+backend/elk-helper
+backend/*.exe
+frontend/dist
+frontend/node_modules
+frontend/.vite
+frontend/build
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+logs/
+
+# Database
+*.db
+*.db-shm
+*.db-wal
+data/
+
+# Documentation
+*.md
+!README.md
+docs/
+
+# Test
+**/*_test.go
+coverage.out
+
+# Misc
+Rakefile
+push.rb
+
