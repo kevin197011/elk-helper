@@ -57,18 +57,20 @@ export default function RuleEditPage() {
     enabled: isEdit,
   });
 
-  const { data: larkConfigs } = useQuery({
+  const { data: larkConfigs, isLoading: larkConfigsLoading } = useQuery({
     queryKey: ['lark-configs'],
     queryFn: () => larkConfigApi.getAll().then(res => res.data.data),
     retry: 1,
     refetchOnWindowFocus: false,
+    staleTime: 60000, // Cache for 1 minute
   });
 
-  const { data: esConfigs } = useQuery({
+  const { data: esConfigs, isLoading: esConfigsLoading } = useQuery({
     queryKey: ['es-configs'],
     queryFn: () => esConfigApi.getAll().then(res => res.data.data),
     retry: 1,
     refetchOnWindowFocus: false,
+    staleTime: 60000, // Cache for 1 minute
   });
 
   const form = useForm<Partial<Rule>>({
@@ -237,7 +239,8 @@ export default function RuleEditPage() {
     }
   };
 
-  if (isEdit && isLoading) {
+  // Show loading skeleton while loading rule data or configs
+  if (isEdit && (isLoading || esConfigsLoading || larkConfigsLoading)) {
     return (
       <div className="space-y-4">
         <Skeleton className="h-10 w-64" />
@@ -384,10 +387,7 @@ export default function RuleEditPage() {
                 name="es_config_id"
                 render={({ field }) => {
                   // 获取当前选中的配置名称
-                  const selectedConfig = esConfigs?.find((c) => c.id === field.value);
-                  const displayText = selectedConfig
-                    ? `${selectedConfig.name}${selectedConfig.is_default ? ' (默认)' : ''}`
-                    : '使用默认数据源';
+                  const selectedConfig = esConfigs?.find((c) => c?.id === field.value);
 
                   return (
                     <FormItem>
@@ -401,8 +401,13 @@ export default function RuleEditPage() {
                       >
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue>
-                              {displayText}
+                            <SelectValue placeholder="使用默认数据源">
+                              {selectedConfig
+                                ? `${selectedConfig.name}${selectedConfig.is_default ? ' (默认)' : ''}`
+                                : field.value
+                                  ? `配置 ID: ${field.value}`
+                                  : '使用默认数据源'
+                              }
                             </SelectValue>
                           </SelectTrigger>
                         </FormControl>
@@ -431,10 +436,7 @@ export default function RuleEditPage() {
                 name="lark_config_id"
                 render={({ field }) => {
                   // 获取当前选中的配置名称
-                  const selectedConfig = larkConfigs?.find((c) => c.id === field.value);
-                  const displayText = selectedConfig
-                    ? `${selectedConfig.name}${selectedConfig.is_default ? ' (默认)' : ''}`
-                    : '不使用配置（直接输入 URL）';
+                  const selectedConfig = larkConfigs?.find((c) => c?.id === field.value);
 
                   return (
                     <FormItem>
@@ -452,8 +454,13 @@ export default function RuleEditPage() {
                       >
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue>
-                              {displayText}
+                            <SelectValue placeholder="不使用配置（直接输入 URL）">
+                              {selectedConfig
+                                ? `${selectedConfig.name}${selectedConfig.is_default ? ' (默认)' : ''}`
+                                : field.value
+                                  ? `配置 ID: ${field.value}`
+                                  : '不使用配置（直接输入 URL）'
+                              }
                             </SelectValue>
                           </SelectTrigger>
                         </FormControl>
