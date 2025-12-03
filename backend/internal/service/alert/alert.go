@@ -85,9 +85,9 @@ func (s *Service) GetByRuleID(ruleID uint, limit int) ([]models.Alert, error) {
 	return alerts, nil
 }
 
-// Delete deletes an alert
+// Delete deletes an alert (hard delete - permanently removes from database)
 func (s *Service) Delete(id uint) error {
-	if err := database.DB.Delete(&models.Alert{}, id).Error; err != nil {
+	if err := database.DB.Unscoped().Delete(&models.Alert{}, id).Error; err != nil {
 		return fmt.Errorf("failed to delete alert: %w", err)
 	}
 	return nil
@@ -126,22 +126,22 @@ func (s *Service) GetStats(duration time.Duration) (map[string]interface{}, erro
 	}, nil
 }
 
-// BatchDelete deletes multiple alerts
+// BatchDelete deletes multiple alerts (hard delete - permanently removes from database)
 func (s *Service) BatchDelete(ids []uint) error {
 	if len(ids) == 0 {
 		return nil
 	}
-	if err := database.DB.Where("id IN ?", ids).Delete(&models.Alert{}).Error; err != nil {
+	if err := database.DB.Unscoped().Where("id IN ?", ids).Delete(&models.Alert{}).Error; err != nil {
 		return fmt.Errorf("failed to batch delete alerts: %w", err)
 	}
 	return nil
 }
 
-// CleanupOldData deletes alerts older than the specified duration
+// CleanupOldData deletes alerts older than the specified duration (hard delete - permanently removes from database)
 func (s *Service) CleanupOldData(olderThan time.Duration) (int64, error) {
 	cutoffTime := time.Now().Add(-olderThan)
 
-	result := database.DB.Where("created_at < ?", cutoffTime).Delete(&models.Alert{})
+	result := database.DB.Unscoped().Where("created_at < ?", cutoffTime).Delete(&models.Alert{})
 	if result.Error != nil {
 		return 0, fmt.Errorf("failed to cleanup old alerts: %w", result.Error)
 	}

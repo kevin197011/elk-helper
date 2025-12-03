@@ -284,6 +284,7 @@ export default function RulesPage() {
                 <TableHead>查询间隔</TableHead>
                 <TableHead>执行次数</TableHead>
                 <TableHead>告警次数</TableHead>
+                <TableHead>上次执行</TableHead>
                 <TableHead>状态</TableHead>
                 <TableHead className="text-right">操作</TableHead>
               </TableRow>
@@ -291,7 +292,7 @@ export default function RulesPage() {
             <TableBody>
               {filteredRules.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={10} className="text-center py-8 text-muted-foreground">
+                  <TableCell colSpan={11} className="text-center py-8 text-muted-foreground">
                     {searchQuery || statusFilter !== 'all'
                       ? '没有找到匹配的规则'
                       : '暂无规则，点击"新建规则"创建第一个规则'}
@@ -338,6 +339,18 @@ export default function RulesPage() {
                     <TableCell>{rule.interval}秒</TableCell>
                     <TableCell>{rule.run_count}</TableCell>
                     <TableCell>{rule.alert_count}</TableCell>
+                    <TableCell className="text-sm">
+                      {rule.last_run_time ? (
+                        <div className="flex flex-col">
+                          <span>{new Date(rule.last_run_time).toLocaleDateString()}</span>
+                          <span className="text-xs text-muted-foreground">
+                            {new Date(rule.last_run_time).toLocaleTimeString()}
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="text-muted-foreground">未执行</span>
+                      )}
+                    </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
                         <Switch
@@ -383,7 +396,11 @@ export default function RulesPage() {
           <DialogHeader>
             <DialogTitle>确认删除</DialogTitle>
             <DialogDescription>
-              确定要删除规则 "{ruleToDelete?.name}" 吗？此操作不可恢复。
+              <div className="space-y-2">
+                <p>确定要删除规则 <strong>"{ruleToDelete?.name}"</strong> 吗？</p>
+                <p className="text-destructive font-medium">⚠️ 此操作为物理删除，数据将永久移除且无法恢复！</p>
+                <p className="text-sm text-muted-foreground">建议：如果只是暂时不需要，可以选择"禁用"而非删除。</p>
+              </div>
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>

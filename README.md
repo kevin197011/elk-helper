@@ -497,6 +497,12 @@ Webhook URL: https://open.feishu.cn/open-apis/bot/v2/hook/...
 - 查看告警详情（前 10 条日志）
 - 复制 JSON 到剪贴板
 
+**⚠️ 删除说明**：
+- 所有删除操作均为**物理删除**（立即从数据库移除）
+- 删除后**无法恢复**，请谨慎操作
+- 建议配置自动清理任务管理历史数据
+- **强烈建议定期备份数据库**
+
 ## ⚡ 性能优化
 
 ### 数据库索引优化
@@ -593,15 +599,25 @@ docker compose -f docker-compose-prod.yml up -d
 docker image prune -f
 ```
 
-### 备份数据
+### 备份数据（重要！）
+
+⚠️ **由于使用物理删除，强烈建议定期备份数据**
 
 ```bash
-# 备份 PostgreSQL 数据
-docker exec elk-helper-postgres pg_dump -U postgres elk_helper > backup.sql
+# 手动备份
+docker exec elk-helper-postgres pg_dump -U postgres elk_helper | gzip > elk_helper_$(date +%Y%m%d).sql.gz
 
 # 恢复数据
-docker exec -i elk-helper-postgres psql -U postgres -d elk_helper < backup.sql
+gunzip < elk_helper_20251203.sql.gz | docker exec -i elk-helper-postgres psql -U postgres -d elk_helper
+
+# 配置自动备份（添加到 crontab）
+echo "0 2 * * * docker exec elk-helper-postgres pg_dump -U postgres elk_helper | gzip > /backup/elk_helper_\$(date +\%Y\%m\%d).sql.gz" | crontab -
 ```
+
+**备份建议**：
+- 每日自动备份
+- 保留最近 30 天备份
+- 重要操作前手动备份
 
 ### 手动创建用户
 

@@ -62,16 +62,12 @@ func (s *Service) GetByName(name string) (*models.ESConfig, error) {
 
 // Create creates a new ES configuration
 func (s *Service) Create(config *models.ESConfig) error {
-	// Check if a soft-deleted config with the same name exists
+	// Check if a config with the same name exists (now we use hard delete, so only check active configs)
 	var existingConfig models.ESConfig
-	err := database.DB.Unscoped().Where("name = ?", config.Name).First(&existingConfig).Error
+	err := database.DB.Where("name = ?", config.Name).First(&existingConfig).Error
 	if err == nil {
-		// Soft-deleted config exists, permanently delete it first
-		if existingConfig.DeletedAt.Valid {
-			if err := database.DB.Unscoped().Delete(&existingConfig).Error; err != nil {
-				return fmt.Errorf("failed to delete existing soft-deleted config: %w", err)
-			}
-		}
+		// Config with same name already exists
+		return fmt.Errorf("configuration name already exists")
 	}
 
 	// If this is set as default, unset other defaults
@@ -124,9 +120,9 @@ func (s *Service) Update(id uint, config *models.ESConfig) error {
 	return nil
 }
 
-// Delete deletes an ES configuration
+// Delete deletes an ES configuration (hard delete - permanently removes from database)
 func (s *Service) Delete(id uint) error {
-	if err := database.DB.Delete(&models.ESConfig{}, id).Error; err != nil {
+	if err := database.DB.Unscoped().Delete(&models.ESConfig{}, id).Error; err != nil {
 		return fmt.Errorf("failed to delete ES config: %w", err)
 	}
 	return nil

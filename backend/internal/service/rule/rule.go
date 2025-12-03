@@ -56,9 +56,9 @@ func (s *Service) Update(id uint, rule *models.Rule) error {
 	return nil
 }
 
-// Delete deletes a rule
+// Delete deletes a rule (hard delete - permanently removes from database)
 func (s *Service) Delete(id uint) error {
-	if err := database.DB.Delete(&models.Rule{}, id).Error; err != nil {
+	if err := database.DB.Unscoped().Delete(&models.Rule{}, id).Error; err != nil {
 		return fmt.Errorf("failed to delete rule: %w", err)
 	}
 	return nil

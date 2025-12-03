@@ -101,7 +101,8 @@ func (s *Service) Delete(id uint) error {
 		return fmt.Errorf("cannot delete: %d rules are using this config", count)
 	}
 
-	if err := database.DB.Delete(&models.LarkConfig{}, id).Error; err != nil {
+	// Hard delete - permanently removes from database to free disk space
+	if err := database.DB.Unscoped().Delete(&models.LarkConfig{}, id).Error; err != nil {
 		return fmt.Errorf("failed to delete Lark config: %w", err)
 	}
 	return nil
