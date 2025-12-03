@@ -89,10 +89,6 @@ export default function RuleEditPage() {
       // Parse queries field - handle different formats
       let queries: any[] = [];
 
-      // Debug: log the received data
-      console.log('Rule data received:', ruleData);
-      console.log('Queries field:', ruleData.queries, typeof ruleData.queries);
-
       if (ruleData.queries !== null && ruleData.queries !== undefined) {
         if (typeof ruleData.queries === 'string') {
           try {
@@ -101,15 +97,13 @@ export default function RuleEditPage() {
               queries = parsed;
             }
           } catch (e) {
-            console.error('Failed to parse queries as JSON string:', e);
+            // Failed to parse queries, use empty array
             queries = [];
           }
         } else if (Array.isArray(ruleData.queries)) {
           queries = ruleData.queries;
         }
       }
-
-      console.log('Parsed queries:', queries);
 
       form.reset({
         ...ruleData,

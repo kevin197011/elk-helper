@@ -141,10 +141,7 @@ export default function RulesPage() {
       if (error_count === 0) {
         toast.success(`成功导入 ${success_count} 条规则`);
       } else {
-        toast.error(`导入完成：成功 ${success_count} 条，失败 ${error_count} 条`);
-        if (errors.length > 0) {
-          console.error('Import errors:', errors);
-        }
+        toast.error(`导入完成：成功 ${success_count} 条，失败 ${error_count} 条。${errors.length > 0 ? '详细错误请查看后端日志。' : ''}`);
       }
       setImportDialogOpen(false);
       setImportFile(null);
