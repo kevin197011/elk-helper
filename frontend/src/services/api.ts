@@ -99,6 +99,7 @@ export const rulesApi = {
   update: (id: number, rule: Partial<Rule>) => api.put<{ data: Rule }>(`/rules/${id}`, rule),
   delete: (id: number) => api.delete(`/rules/${id}`),
   toggleEnabled: (id: number) => api.post<{ data: Rule }>(`/rules/${id}/toggle`),
+  clone: (id: number, name: string) => api.post<{ data: Rule }>(`/rules/${id}/clone`, { name }),
   test: (rule: Partial<Rule>) => api.post<{ success: boolean; data: { count: number; logs: any[]; time_range: { from: string; to: string } }; error?: string }>('/rules/test', rule),
   batchDelete: (ids: number[]) => api.post<{ success_count: number; error_count: number; errors: string[] }>('/rules/batch-delete', { ids }),
   export: () => api.get<{ version: string; exported_at: string; rules: Rule[] }>('/rules/export'),

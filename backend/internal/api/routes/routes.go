@@ -74,6 +74,7 @@ func SetupRoutes(r *gin.Engine) {
 				rules.PUT("/:id", ruleHandler.UpdateRule)
 				rules.DELETE("/:id", ruleHandler.DeleteRule)
 				rules.POST("/:id/toggle", ruleHandler.ToggleRuleEnabled)
+				rules.POST("/:id/clone", ruleHandler.CloneRule)
 				rules.POST("/test", ruleHandler.TestRule)
 				rules.POST("/batch-delete", ruleHandler.BatchDeleteRules)
 				rules.GET("/export", ruleHandler.ExportRules)

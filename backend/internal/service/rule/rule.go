@@ -126,3 +126,37 @@ func (s *Service) IncrementAlertCount(id uint, count int64) error {
 	return nil
 }
 
+// Clone clones an existing rule with a new name
+func (s *Service) Clone(id uint, newName string) (*models.Rule, error) {
+	// Get the original rule
+	original, err := s.GetByID(id)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get original rule: %w", err)
+	}
+
+	// Create a new rule with copied data
+	clonedRule := models.Rule{
+		Name:         newName,
+		IndexPattern: original.IndexPattern,
+		Queries:      original.Queries,
+		Enabled:      false, // Start with disabled status for safety
+		Interval:     original.Interval,
+		ESConfigID:   original.ESConfigID,
+		LarkWebhook:  original.LarkWebhook,
+		LarkConfigID: original.LarkConfigID,
+		Description:  original.Description,
+		// Statistics fields are not copied - they start fresh
+		LastRunTime: nil,
+		RunCount:    0,
+		AlertCount:  0,
+	}
+
+	// Create the cloned rule
+	if err := database.DB.Create(&clonedRule).Error; err != nil {
+		return nil, fmt.Errorf("failed to create cloned rule: %w", err)
+	}
+
+	// Reload with associations
+	return s.GetByID(clonedRule.ID)
+}
+

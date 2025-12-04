@@ -428,6 +428,45 @@ type ImportRulesResponse struct {
 	Errors       []string `json:"errors"`
 }
 
+// CloneRule clones an existing rule with a new name
+// @Summary Clone a rule
+// @Tags rules
+// @Accept json
+// @Produce json
+// @Param id path int true "Rule ID to clone"
+// @Param data body map[string]string true "New rule name"
+// @Success 201 {object} models.Rule
+// @Router /api/v1/rules/{id}/clone [post]
+func (h *RuleHandler) CloneRule(c *gin.Context) {
+	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid rule ID"})
+		return
+	}
+
+	var req struct {
+		Name string `json:"name" binding:"required"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "name is required"})
+		return
+	}
+
+	// Clone the rule
+	clonedRule, err := h.service.Clone(uint(id), req.Name)
+	if err != nil {
+		// Check if it's a duplicate name error
+		if strings.Contains(err.Error(), "UNIQUE constraint failed") || strings.Contains(err.Error(), "Duplicate entry") {
+			c.JSON(http.StatusConflict, gin.H{"error": "规则名称已存在，请使用其他名称"})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{"data": clonedRule})
+}
+
 // ImportRules imports rules from JSON
 // @Summary Import rules from JSON
 // @Tags rules

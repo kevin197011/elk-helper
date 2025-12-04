@@ -34,7 +34,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Edit, Trash2, Search, X, Download, Upload } from 'lucide-react';
+import { Plus, Edit, Trash2, Search, X, Download, Upload, Copy } from 'lucide-react';
 import { rulesApi } from '../services/api';
 import { useToast } from '@/contexts/ToastContext';
 
@@ -48,6 +48,9 @@ export default function RulesPage() {
   const [statusFilter, setStatusFilter] = useState<'all' | 'enabled' | 'disabled'>('all');
   const [importDialogOpen, setImportDialogOpen] = useState(false);
   const [importFile, setImportFile] = useState<File | null>(null);
+  const [cloneDialogOpen, setCloneDialogOpen] = useState(false);
+  const [ruleToClone, setRuleToClone] = useState<{ id: number; name: string } | null>(null);
+  const [clonedRuleName, setClonedRuleName] = useState('');
 
   const { data, isLoading } = useQuery({
     queryKey: ['rules'],
@@ -151,6 +154,21 @@ export default function RulesPage() {
     },
   });
 
+  const cloneMutation = useMutation({
+    mutationFn: ({ id, name }: { id: number; name: string }) => rulesApi.clone(id, name),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['rules'] });
+      toast.success('规则克隆成功');
+      setCloneDialogOpen(false);
+      setRuleToClone(null);
+      setClonedRuleName('');
+    },
+    onError: (error: any) => {
+      const errorMsg = error?.response?.data?.error || '克隆失败';
+      toast.error(errorMsg);
+    },
+  });
+
   const handleDelete = (id: number, name: string) => {
     setRuleToDelete({ id, name });
     setDeleteDialogOpen(true);
@@ -207,6 +225,23 @@ export default function RulesPage() {
       }
     };
     reader.readAsText(importFile);
+  };
+
+  const handleClone = (id: number, name: string) => {
+    setRuleToClone({ id, name });
+    setClonedRuleName(`${name} - 副本`);
+    setCloneDialogOpen(true);
+  };
+
+  const confirmClone = () => {
+    if (!ruleToClone) return;
+
+    if (!clonedRuleName.trim()) {
+      toast.error('请输入新规则名称');
+      return;
+    }
+
+    cloneMutation.mutate({ id: ruleToClone.id, name: clonedRuleName.trim() });
   };
 
   return (
@@ -373,6 +408,14 @@ export default function RulesPage() {
                         <Button
                           variant="ghost"
                           size="sm"
+                          onClick={() => handleClone(rule.id, rule.name)}
+                          title="克隆"
+                        >
+                          <Copy className="h-4 w-4 text-blue-600" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
                           onClick={() => handleDelete(rule.id, rule.name)}
                           title="删除"
                         >
@@ -451,6 +494,52 @@ export default function RulesPage() {
             </Button>
             <Button onClick={handleImport} disabled={importMutation.isPending || !importFile}>
               {importMutation.isPending ? '导入中...' : '确认导入'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={cloneDialogOpen} onOpenChange={setCloneDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>克隆规则</DialogTitle>
+            <DialogDescription>
+              克隆规则 <strong>"{ruleToClone?.name}"</strong> 并创建一个新规则。新规则将默认为禁用状态，您可以在创建后进行修改和启用。
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div>
+              <label className="block text-sm font-medium mb-2">新规则名称</label>
+              <Input
+                value={clonedRuleName}
+                onChange={(e) => setClonedRuleName(e.target.value)}
+                placeholder="请输入新规则名称"
+                disabled={cloneMutation.isPending}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !cloneMutation.isPending) {
+                    confirmClone();
+                  }
+                }}
+              />
+              <p className="mt-2 text-xs text-muted-foreground">
+                提示：新规则将复制原规则的所有配置，但统计数据（执行次数、告警次数等）会重置。
+              </p>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setCloneDialogOpen(false);
+                setRuleToClone(null);
+                setClonedRuleName('');
+              }}
+              disabled={cloneMutation.isPending}
+            >
+              取消
+            </Button>
+            <Button onClick={confirmClone} disabled={cloneMutation.isPending || !clonedRuleName.trim()}>
+              {cloneMutation.isPending ? '克隆中...' : '确认克隆'}
             </Button>
           </DialogFooter>
         </DialogContent>
