@@ -283,11 +283,10 @@ func (s *Service) GetRuleTimeSeriesStats(duration time.Duration, intervalMinutes
 
 		var bucketResults []BucketResult
 
-		// Use database-specific time bucketing
-		// SQLite: strftime, PostgreSQL: date_trunc, MySQL: DATE_FORMAT
+		// PostgreSQL time bucketing using EXTRACT(EPOCH FROM timestamp)
 		err := database.DB.Model(&models.Alert{}).
 			Select(fmt.Sprintf(`
-				CAST((strftime('%%s', created_at) - %d) / %d AS INTEGER) as bucket_index,
+				CAST((EXTRACT(EPOCH FROM created_at)::bigint - %d) / %d AS INTEGER) as bucket_index,
 				COUNT(*) as count
 			`, since.Unix(), intervalMinutes*60)).
 			Where("rule_id = ? AND created_at >= ? AND created_at <= ?", rule.RuleID, since, now).
