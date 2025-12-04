@@ -64,7 +64,7 @@ func (s *Service) GetByID(id uint) (*models.Alert, error) {
 
 	// Limit logs to first 10 entries for performance
 	// This prevents loading huge JSON blobs that can be hundreds of KB or even MBs
-	if alert.Logs != nil && len(alert.Logs) > 10 {
+	if len(alert.Logs) > 10 {
 		alert.Logs = alert.Logs[:10]
 	}
 
@@ -151,12 +151,26 @@ func (s *Service) CleanupOldData(olderThan time.Duration) (int64, error) {
 
 // RuleAlertStats represents alert statistics for a single rule
 type RuleAlertStats struct {
-	RuleID    uint   `json:"rule_id"`
-	RuleName  string `json:"rule_name"`
-	Total     int64  `json:"total"`
-	Sent      int64  `json:"sent"`
-	Failed    int64  `json:"failed"`
+	RuleID    uint       `json:"rule_id"`
+	RuleName  string     `json:"rule_name"`
+	Total     int64      `json:"total"`
+	Sent      int64      `json:"sent"`
+	Failed    int64      `json:"failed"`
 	LastAlert *time.Time `json:"last_alert"`
+}
+
+// TimeSeriesDataPoint represents a single data point in time series
+type TimeSeriesDataPoint struct {
+	Time  string `json:"time"`
+	Value int64  `json:"value"`
+}
+
+// RuleTimeSeriesStats represents time series statistics for a single rule
+type RuleTimeSeriesStats struct {
+	RuleID     uint                  `json:"rule_id"`
+	RuleName   string                `json:"rule_name"`
+	Total      int64                 `json:"total"`
+	DataPoints []TimeSeriesDataPoint `json:"data_points"`
 }
 
 // GetRuleAlertStats returns alert statistics grouped by rule
@@ -207,4 +221,97 @@ func (s *Service) GetRuleAlertStats(duration time.Duration) ([]RuleAlertStats, e
 	}
 
 	return stats, nil
+}
+
+// GetRuleTimeSeriesStats returns time series alert statistics for top rules
+func (s *Service) GetRuleTimeSeriesStats(duration time.Duration, intervalMinutes int) ([]RuleTimeSeriesStats, error) {
+	since := time.Now().Add(-duration)
+	now := time.Now()
+
+	// Get top 5 rules by alert count
+	var topRules []struct {
+		RuleID   uint
+		RuleName string
+		Total    int64
+	}
+
+	err := database.DB.Model(&models.Alert{}).
+		Select("alerts.rule_id, rules.name as rule_name, COUNT(*) as total").
+		Joins("LEFT JOIN rules ON rules.id = alerts.rule_id").
+		Where("alerts.created_at >= ?", since).
+		Group("alerts.rule_id, rules.name").
+		Order("total DESC").
+		Limit(5).
+		Scan(&topRules).Error
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to get top rules: %w", err)
+	}
+
+	if len(topRules) == 0 {
+		return []RuleTimeSeriesStats{}, nil
+	}
+
+	// Generate time buckets
+	numBuckets := int(duration.Minutes()) / intervalMinutes
+	if numBuckets > 24 {
+		numBuckets = 24 // Max 24 points for readability
+	}
+	if numBuckets < 6 {
+		numBuckets = 6 // Min 6 points
+	}
+
+	result := make([]RuleTimeSeriesStats, len(topRules))
+
+	for i, rule := range topRules {
+		dataPoints := make([]TimeSeriesDataPoint, numBuckets)
+
+		// Initialize all buckets
+		for j := 0; j < numBuckets; j++ {
+			bucketTime := since.Add(time.Duration(j) * time.Duration(intervalMinutes) * time.Minute)
+			dataPoints[j] = TimeSeriesDataPoint{
+				Time:  bucketTime.Format("15:04"),
+				Value: 0,
+			}
+		}
+
+		// Query alerts for this rule grouped by time bucket
+		type BucketResult struct {
+			BucketIndex int
+			Count       int64
+		}
+
+		var bucketResults []BucketResult
+
+		// Use database-specific time bucketing
+		// SQLite: strftime, PostgreSQL: date_trunc, MySQL: DATE_FORMAT
+		err := database.DB.Model(&models.Alert{}).
+			Select(fmt.Sprintf(`
+				CAST((strftime('%%s', created_at) - %d) / %d AS INTEGER) as bucket_index,
+				COUNT(*) as count
+			`, since.Unix(), intervalMinutes*60)).
+			Where("rule_id = ? AND created_at >= ? AND created_at <= ?", rule.RuleID, since, now).
+			Group("bucket_index").
+			Scan(&bucketResults).Error
+
+		if err != nil {
+			return nil, fmt.Errorf("failed to get time series data: %w", err)
+		}
+
+		// Fill in actual counts
+		for _, br := range bucketResults {
+			if br.BucketIndex >= 0 && br.BucketIndex < numBuckets {
+				dataPoints[br.BucketIndex].Value = br.Count
+			}
+		}
+
+		result[i] = RuleTimeSeriesStats{
+			RuleID:     rule.RuleID,
+			RuleName:   rule.RuleName,
+			Total:      rule.Total,
+			DataPoints: dataPoints,
+		}
+	}
+
+	return result, nil
 }

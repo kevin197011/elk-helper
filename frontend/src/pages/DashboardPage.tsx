@@ -15,9 +15,9 @@ export default function DashboardPage() {
     refetchInterval: 30000,
   });
 
-  const { data: ruleStatsData, isLoading: ruleStatsLoading } = useQuery({
-    queryKey: ['rule-alert-stats'],
-    queryFn: () => alertsApi.getRuleStats('24h').then(res => res.data.data),
+  const { data: ruleTimeSeriesData, isLoading: ruleTimeSeriesLoading } = useQuery({
+    queryKey: ['rule-timeseries-stats'],
+    queryFn: () => alertsApi.getRuleTimeSeries('24h', 60).then(res => res.data.data),
     refetchInterval: 30000,
   });
 
@@ -126,94 +126,87 @@ export default function DashboardPage() {
         })}
       </div>
 
-      {/* Rule Alert Statistics */}
+      {/* Rule Alert Time Series */}
       <div className="mt-6">
         <Card className="border-border/50 shadow-md bg-card/80 backdrop-blur-sm">
           <CardHeader>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <TrendingUp className="h-5 w-5 text-muted-foreground" />
-                <CardTitle>规则告警统计 (24小时)</CardTitle>
+                <CardTitle>规则告警趋势 (24小时)</CardTitle>
               </div>
               <div className="text-sm text-muted-foreground">
-                {ruleStatsData && ruleStatsData.length > 0 && (
-                  <span>共 {ruleStatsData.length} 条规则产生告警</span>
+                {ruleTimeSeriesData && ruleTimeSeriesData.length > 0 && (
+                  <span>TOP {ruleTimeSeriesData.length} 规则</span>
                 )}
               </div>
             </div>
           </CardHeader>
           <CardContent>
-            {ruleStatsLoading ? (
+            {ruleTimeSeriesLoading ? (
               <div className="text-center py-8 text-muted-foreground">加载中...</div>
-            ) : !ruleStatsData || ruleStatsData.length === 0 ? (
+            ) : !ruleTimeSeriesData || ruleTimeSeriesData.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">
                 最近24小时暂无告警记录
               </div>
             ) : (
-              <div className="space-y-3">
-                {ruleStatsData.slice(0, 10).map((stat, index) => {
-                  const successRate = stat.total > 0 ? (stat.sent / stat.total * 100).toFixed(1) : '0';
-                  const maxTotal = Math.max(...ruleStatsData.map(s => s.total));
-                  const barWidth = stat.total > 0 ? (stat.total / maxTotal * 100) : 0;
+              <div className="space-y-6">
+                {ruleTimeSeriesData.map((ruleStat, ruleIndex) => {
+                  const maxValue = Math.max(...ruleStat.data_points.map(p => p.value), 1);
+                  const colors = [
+                    'from-blue-500 to-blue-600',
+                    'from-purple-500 to-purple-600',
+                    'from-green-500 to-green-600',
+                    'from-orange-500 to-orange-600',
+                    'from-pink-500 to-pink-600',
+                  ];
+                  const colorClass = colors[ruleIndex % colors.length];
 
                   return (
-                    <div key={stat.rule_id} className="group hover:bg-muted/50 p-3 rounded-lg transition-colors">
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-3 flex-1">
-                          <span className="text-xs font-mono text-muted-foreground w-6">#{index + 1}</span>
-                          <span className="font-medium truncate max-w-xs">{stat.rule_name}</span>
+                    <div key={ruleStat.rule_id} className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className={`w-3 h-3 rounded-full bg-gradient-to-r ${colorClass}`} />
+                          <span className="font-medium">{ruleStat.rule_name}</span>
                         </div>
-                        <div className="flex items-center gap-4 text-sm">
-                          <div className="flex items-center gap-1">
-                            <AlertCircle className="h-3.5 w-3.5 text-orange-500" />
-                            <span className="font-semibold">{stat.total}</span>
-                            <span className="text-muted-foreground">次</span>
-                          </div>
-                          {stat.last_alert && (
-                            <div className="flex items-center gap-1 text-muted-foreground">
-                              <Clock className="h-3.5 w-3.5" />
-                              <span className="text-xs">
-                                {new Date(stat.last_alert).toLocaleString('zh-CN', {
-                                  month: '2-digit',
-                                  day: '2-digit',
-                                  hour: '2-digit',
-                                  minute: '2-digit'
-                                })}
-                              </span>
-                            </div>
-                          )}
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <AlertCircle className="h-3.5 w-3.5" />
+                          <span>共 {ruleStat.total} 次告警</span>
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-3">
-                        <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
-                          <div
-                            className="h-full bg-gradient-to-r from-orange-500 to-red-500 transition-all duration-500"
-                            style={{ width: `${barWidth}%` }}
-                          />
-                        </div>
-                        <div className="flex gap-4 text-xs">
-                          <span className="text-green-600">
-                            ✓ {stat.sent}
-                          </span>
-                          {stat.failed > 0 && (
-                            <span className="text-red-600">
-                              ✗ {stat.failed}
-                            </span>
-                          )}
-                          <span className="text-muted-foreground">
-                            成功率 {successRate}%
-                          </span>
-                        </div>
+                      {/* Time series chart */}
+                      <div className="relative h-24 flex items-end gap-1 bg-muted/30 rounded-lg p-2">
+                        {ruleStat.data_points.map((point, index) => {
+                          const height = point.value > 0 ? (point.value / maxValue * 100) : 0;
+                          const isLast = index === ruleStat.data_points.length - 1;
+                          const showLabel = index % Math.ceil(ruleStat.data_points.length / 6) === 0 || isLast;
+
+                          return (
+                            <div key={index} className="flex-1 flex flex-col items-center justify-end group relative">
+                              <div
+                                className={`w-full bg-gradient-to-t ${colorClass} rounded-t transition-all duration-300 hover:opacity-80`}
+                                style={{ height: `${height}%`, minHeight: point.value > 0 ? '4px' : '0' }}
+                                title={`${point.time}: ${point.value} 次告警`}
+                              />
+                              {point.value > 0 && (
+                                <div className="absolute -top-5 opacity-0 group-hover:opacity-100 transition-opacity bg-popover text-popover-foreground text-xs px-1.5 py-0.5 rounded shadow-md whitespace-nowrap z-10">
+                                  {point.value}
+                                </div>
+                              )}
+                              {showLabel && (
+                                <div className="absolute -bottom-5 text-[10px] text-muted-foreground">
+                                  {point.time}
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
                       </div>
+                      <div className="h-4" /> {/* Spacer for time labels */}
                     </div>
                   );
                 })}
-                {ruleStatsData.length > 10 && (
-                  <div className="text-center py-2 text-sm text-muted-foreground">
-                    还有 {ruleStatsData.length - 10} 条规则未显示
-                  </div>
-                )}
               </div>
             )}
           </CardContent>

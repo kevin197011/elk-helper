@@ -88,6 +88,7 @@ func SetupRoutes(r *gin.Engine) {
 				alerts.GET("", alertHandler.GetAlerts)
 				alerts.GET("/stats", alertHandler.GetStats)
 				alerts.GET("/rule-stats", alertHandler.GetRuleAlertStats)
+				alerts.GET("/rule-timeseries", alertHandler.GetRuleTimeSeriesStats)
 				alerts.GET("/:id", alertHandler.GetAlert)
 				alerts.DELETE("/:id", alertHandler.DeleteAlert)
 				alerts.POST("/batch-delete", alertHandler.BatchDeleteAlerts)

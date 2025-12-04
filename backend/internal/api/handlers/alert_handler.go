@@ -175,3 +175,35 @@ func (h *AlertHandler) GetRuleAlertStats(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"data": stats})
 }
+
+// GetRuleTimeSeriesStats returns time series alert statistics for top rules
+// @Summary Get time series alert statistics by rule
+// @Tags alerts
+// @Param duration query string false "Duration (e.g., 1h, 24h, 7d)" default(24h)
+// @Param interval query int false "Interval in minutes" default(60)
+// @Produce json
+// @Success 200 {object} map[string]interface{}
+// @Router /api/v1/alerts/rule-timeseries [get]
+func (h *AlertHandler) GetRuleTimeSeriesStats(c *gin.Context) {
+	durationStr := c.DefaultQuery("duration", "24h")
+	duration, err := time.ParseDuration(durationStr)
+	if err != nil {
+		duration = 24 * time.Hour
+	}
+
+	intervalMinutes, _ := strconv.Atoi(c.DefaultQuery("interval", "60"))
+	if intervalMinutes < 10 {
+		intervalMinutes = 10
+	}
+	if intervalMinutes > 360 {
+		intervalMinutes = 360
+	}
+
+	stats, err := h.service.GetRuleTimeSeriesStats(duration, intervalMinutes)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": stats})
+}

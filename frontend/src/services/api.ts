@@ -115,6 +115,18 @@ export interface RuleAlertStats {
   last_alert?: string;
 }
 
+export interface TimeSeriesDataPoint {
+  time: string;
+  value: number;
+}
+
+export interface RuleTimeSeriesStats {
+  rule_id: number;
+  rule_name: string;
+  total: number;
+  data_points: TimeSeriesDataPoint[];
+}
+
 // Alerts API
 export const alertsApi = {
   getAll: (page = 1, pageSize = 20) =>
@@ -129,6 +141,10 @@ export const alertsApi = {
   getRuleStats: (duration = '24h') =>
     api.get<{ data: RuleAlertStats[] }>('/alerts/rule-stats', {
       params: { duration },
+    }),
+  getRuleTimeSeries: (duration = '24h', interval = 60) =>
+    api.get<{ data: RuleTimeSeriesStats[] }>('/alerts/rule-timeseries', {
+      params: { duration, interval },
     }),
   delete: (id: number) => api.delete(`/alerts/${id}`),
   batchDelete: (ids: number[]) => api.post<{ success: boolean; deleted_count: number }>('/alerts/batch-delete', { ids }),
