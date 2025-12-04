@@ -743,36 +743,40 @@ export default function RuleEditPage() {
                           "格式化"美化代码
                         </p>
 
-                        <div className="border rounded-lg p-3 bg-muted/50 space-y-2">
-                          <p className="font-semibold text-foreground">📚 支持的操作符 (operator)：</p>
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
-                            <div>
-                              <span className="font-medium">比较操作符：</span>
-                              <ul className="ml-4 mt-1 space-y-0.5">
-                                <li><code className="bg-background px-1 rounded">=</code> / <code className="bg-background px-1 rounded">==</code> / <code className="bg-background px-1 rounded">equals</code> - 等于</li>
-                                <li><code className="bg-background px-1 rounded">!=</code> / <code className="bg-background px-1 rounded">not_equals</code> - 不等于</li>
-                                <li><code className="bg-background px-1 rounded">&gt;</code> / <code className="bg-background px-1 rounded">gt</code> - 大于</li>
-                                <li><code className="bg-background px-1 rounded">&gt;=</code> / <code className="bg-background px-1 rounded">gte</code> - 大于等于</li>
-                                <li><code className="bg-background px-1 rounded">&lt;</code> / <code className="bg-background px-1 rounded">lt</code> - 小于</li>
-                                <li><code className="bg-background px-1 rounded">&lt;=</code> / <code className="bg-background px-1 rounded">lte</code> - 小于等于</li>
-                              </ul>
+                        <details className="border rounded-lg bg-muted/50">
+                          <summary className="p-3 cursor-pointer font-semibold text-foreground hover:bg-muted/70 rounded-lg">
+                            📚 支持的操作符 (operator) - 点击展开查看
+                          </summary>
+                          <div className="p-3 pt-0 space-y-2">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+                              <div>
+                                <span className="font-medium">比较操作符：</span>
+                                <ul className="ml-4 mt-1 space-y-0.5">
+                                  <li><code className="bg-background px-1 rounded">=</code> / <code className="bg-background px-1 rounded">==</code> / <code className="bg-background px-1 rounded">equals</code> - 等于</li>
+                                  <li><code className="bg-background px-1 rounded">!=</code> / <code className="bg-background px-1 rounded">not_equals</code> - 不等于</li>
+                                  <li><code className="bg-background px-1 rounded">&gt;</code> / <code className="bg-background px-1 rounded">gt</code> - 大于</li>
+                                  <li><code className="bg-background px-1 rounded">&gt;=</code> / <code className="bg-background px-1 rounded">gte</code> - 大于等于</li>
+                                  <li><code className="bg-background px-1 rounded">&lt;</code> / <code className="bg-background px-1 rounded">lt</code> - 小于</li>
+                                  <li><code className="bg-background px-1 rounded">&lt;=</code> / <code className="bg-background px-1 rounded">lte</code> - 小于等于</li>
+                                </ul>
+                              </div>
+                              <div>
+                                <span className="font-medium">文本/存在性：</span>
+                                <ul className="ml-4 mt-1 space-y-0.5">
+                                  <li><code className="bg-background px-1 rounded">contains</code> - 包含（文本匹配）</li>
+                                  <li><code className="bg-background px-1 rounded">not_contains</code> - 不包含</li>
+                                  <li><code className="bg-background px-1 rounded">exists</code> - 字段存在</li>
+                                </ul>
+                              </div>
                             </div>
-                            <div>
-                              <span className="font-medium">文本/存在性：</span>
-                              <ul className="ml-4 mt-1 space-y-0.5">
-                                <li><code className="bg-background px-1 rounded">contains</code> - 包含（文本匹配）</li>
-                                <li><code className="bg-background px-1 rounded">not_contains</code> - 不包含</li>
-                                <li><code className="bg-background px-1 rounded">exists</code> - 字段存在</li>
-                              </ul>
+                            <div className="pt-2 border-t text-xs">
+                              <span className="font-medium">示例：</span>
+                              <code className="block bg-background p-2 rounded mt-1 overflow-x-auto">
+                                {`{"field": "response_code", "operator": "=", "value": 499}`}
+                              </code>
                             </div>
                           </div>
-                          <div className="pt-2 border-t text-xs">
-                            <span className="font-medium">示例：</span>
-                            <code className="block bg-background p-2 rounded mt-1 overflow-x-auto">
-                              {`{"field": "response_code", "operator": "=", "value": 499}`}
-                            </code>
-                          </div>
-                        </div>
+                        </details>
                       </div>
                     </FormDescription>
                     <FormMessage />
@@ -780,16 +784,22 @@ export default function RuleEditPage() {
                 )}
               />
 
-              <div className="flex gap-4">
+              <div className="flex gap-4 pt-6 mt-6 border-t">
                 <Button
                   type="submit"
                   disabled={createMutation.isPending || updateMutation.isPending}
+                  className="min-w-24"
                 >
                   {createMutation.isPending || updateMutation.isPending
                     ? '保存中...'
                     : '保存'}
                 </Button>
-                <Button type="button" variant="outline" onClick={() => navigate('/rules')}>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => navigate('/rules')}
+                  className="min-w-24"
+                >
                   取消
                 </Button>
               </div>
