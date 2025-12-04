@@ -400,7 +400,7 @@ func (s *Service) buildSingleQuery(q models.QueryCondition) map[string]interface
 
 func (s *Service) buildOperatorQuery(q models.QueryCondition) map[string]interface{} {
 	switch q.Operator {
-	case "==", "equals":
+	case "=", "==", "equals":
 		return map[string]interface{}{
 			"term": map[string]interface{}{
 				q.Field: q.Value,

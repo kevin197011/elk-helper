@@ -217,7 +217,7 @@ export default function RuleEditPage() {
         return;
       }
       if (!q.operator && !q.op) {
-        toast.error(`查询条件第 ${i + 1} 项缺少操作符 "operator" 字段。支持的操作符：==, !=, >, >=, <, <=, contains, not_contains`);
+        toast.error(`查询条件第 ${i + 1} 项缺少操作符 "operator" 字段。支持的操作符：=, ==, !=, >, >=, <, <=, contains, not_contains, exists`);
         return;
       }
       if (q.value === undefined || q.value === null) {
@@ -662,19 +662,19 @@ export default function RuleEditPage() {
                           const template = `[
   {
     "field": "response_code",
-    "operator": "==",
+    "operator": "=",
     "value": 500,
     "logic": "or"
   },
   {
     "field": "response_code",
-    "operator": "==",
+    "operator": "=",
     "value": 502,
     "logic": "or"
   },
   {
     "field": "response_code",
-    "operator": "==",
+    "operator": "=",
     "value": 503,
     "logic": "or"
   }
@@ -698,7 +698,7 @@ export default function RuleEditPage() {
   },
   {
     "field": "response_code",
-    "operator": "==",
+    "operator": "=",
     "value": 200,
     "logic": "and"
   }
@@ -708,9 +708,26 @@ export default function RuleEditPage() {
                       >
                         🐌 慢查询
                       </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          const template = `[
+  {
+    "field": "response_code",
+    "operator": "=",
+    "value": 499
+  }
+]`;
+                          form.setValue('queries', template as any);
+                        }}
+                      >
+                        🔌 499错误
+                      </Button>
                     </div>
                     <FormDescription>
-                      <div className="space-y-2 text-sm">
+                      <div className="space-y-3 text-sm">
                         <p>
                           <strong>必填字段</strong>:
                           <code className="bg-muted px-1 rounded mx-1">field</code>
@@ -722,10 +739,40 @@ export default function RuleEditPage() {
                         </p>
                         <p className="text-xs text-muted-foreground">
                           💡 支持 <kbd className="px-1 py-0.5 text-xs border rounded">Tab</kbd> 键缩进 |
-                          点击"加载示例"快速开始 |
-                          "格式化 JSON"美化代码 |
-                          支持 <code className="bg-muted px-1 rounded">==</code>, <code className="bg-muted px-1 rounded">!=</code>, <code className="bg-muted px-1 rounded">&gt;</code>, <code className="bg-muted px-1 rounded">&gt;=</code>, <code className="bg-muted px-1 rounded">&lt;</code>, <code className="bg-muted px-1 rounded">&lt;=</code>, <code className="bg-muted px-1 rounded">contains</code>, <code className="bg-muted px-1 rounded">not_contains</code>
+                          点击上方模板快速开始 |
+                          "格式化"美化代码
                         </p>
+
+                        <div className="border rounded-lg p-3 bg-muted/50 space-y-2">
+                          <p className="font-semibold text-foreground">📚 支持的操作符 (operator)：</p>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+                            <div>
+                              <span className="font-medium">比较操作符：</span>
+                              <ul className="ml-4 mt-1 space-y-0.5">
+                                <li><code className="bg-background px-1 rounded">=</code> / <code className="bg-background px-1 rounded">==</code> / <code className="bg-background px-1 rounded">equals</code> - 等于</li>
+                                <li><code className="bg-background px-1 rounded">!=</code> / <code className="bg-background px-1 rounded">not_equals</code> - 不等于</li>
+                                <li><code className="bg-background px-1 rounded">&gt;</code> / <code className="bg-background px-1 rounded">gt</code> - 大于</li>
+                                <li><code className="bg-background px-1 rounded">&gt;=</code> / <code className="bg-background px-1 rounded">gte</code> - 大于等于</li>
+                                <li><code className="bg-background px-1 rounded">&lt;</code> / <code className="bg-background px-1 rounded">lt</code> - 小于</li>
+                                <li><code className="bg-background px-1 rounded">&lt;=</code> / <code className="bg-background px-1 rounded">lte</code> - 小于等于</li>
+                              </ul>
+                            </div>
+                            <div>
+                              <span className="font-medium">文本/存在性：</span>
+                              <ul className="ml-4 mt-1 space-y-0.5">
+                                <li><code className="bg-background px-1 rounded">contains</code> - 包含（文本匹配）</li>
+                                <li><code className="bg-background px-1 rounded">not_contains</code> - 不包含</li>
+                                <li><code className="bg-background px-1 rounded">exists</code> - 字段存在</li>
+                              </ul>
+                            </div>
+                          </div>
+                          <div className="pt-2 border-t text-xs">
+                            <span className="font-medium">示例：</span>
+                            <code className="block bg-background p-2 rounded mt-1 overflow-x-auto">
+                              {`{"field": "response_code", "operator": "=", "value": 499}`}
+                            </code>
+                          </div>
+                        </div>
                       </div>
                     </FormDescription>
                     <FormMessage />
