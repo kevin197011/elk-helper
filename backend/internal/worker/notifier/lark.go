@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -84,7 +85,7 @@ func (lc *LarkClient) SendAlert(ruleName, indexName string, logs []map[string]in
 			waitTime := time.Duration(1<<uint(attempt)) * time.Second
 			time.Sleep(waitTime)
 		} else {
-			return fmt.Errorf("Lark API error: %v", result)
+			return fmt.Errorf("lark API error: %v", result)
 		}
 	}
 
@@ -131,34 +132,49 @@ func (lc *LarkClient) buildMessage(ruleName, indexName string, logs []map[string
 		},
 	}
 
-	// Show summary of logs (only key fields, max 5 samples)
+	// Show summary of logs in table format (max 3 samples)
 	if len(logs) > 0 {
-		summaryContent := "**📝 日志摘要**\n"
+		elements = append(elements, map[string]interface{}{
+			"tag": "div",
+			"text": map[string]interface{}{
+				"tag":     "lark_md",
+				"content": "**📝 日志摘要**",
+			},
+		})
 
-		// Show up to 5 log samples with key fields only
+		// Show up to 3 log samples with key fields only
 		displayCount := len(logs)
-		if displayCount > 5 {
-			displayCount = 5
+		if displayCount > 3 {
+			displayCount = 3
 		}
+
+		// Build table content
+		tableContent := "| # | 状态码 | 时间 | URL | CF Ray |\n| --- | --- | --- | --- | --- |"
 
 		for i := 0; i < displayCount; i++ {
 			log := logs[i]
-			summary := lc.extractKeyFields(log)
-			summaryContent += fmt.Sprintf("\n**#%d** %s", i+1, summary)
-		}
-
-		// If there are more logs, show count
-		if len(logs) > 5 {
-			summaryContent += fmt.Sprintf("\n\n**... 还有 %d 条日志 ...**", len(logs)-5)
+			row := lc.extractTableRow(i+1, log)
+			tableContent += "\n" + row
 		}
 
 		elements = append(elements, map[string]interface{}{
 			"tag": "div",
 			"text": map[string]interface{}{
 				"tag":     "lark_md",
-				"content": summaryContent,
+				"content": tableContent,
 			},
 		})
+
+		// If there are more logs, show count
+		if len(logs) > 3 {
+			elements = append(elements, map[string]interface{}{
+				"tag": "div",
+				"text": map[string]interface{}{
+					"tag":     "lark_md",
+					"content": fmt.Sprintf("**... 还有 %d 条日志 ...**", len(logs)-3),
+				},
+			})
+		}
 	}
 
 	// Add note and @all
@@ -200,94 +216,67 @@ func (lc *LarkClient) buildMessage(ruleName, indexName string, logs []map[string
 	}
 }
 
-// extractKeyFields extracts key fields from a log entry for summary display
-// Intelligently adapts to different log types (nginx, java, go, application logs, etc.)
-func (lc *LarkClient) extractKeyFields(log map[string]interface{}) string {
-	var parts []string
-
-	// Detect log type
-	logType, _ := log["log_type"].(string)
-
-	// Define key fields based on log type
-	var keyFields []string
-
-	switch logType {
-	case "nginx", "nginx-access":
-		// Nginx access logs: focus on HTTP fields
-		keyFields = []string{
-			"response_code", "status_code", "status",
-			"ip", "client_ip", "remote_addr",
-			"request", "path", "url",
-			"request_method", "method",
-			"upstreamaddr", "upstream",
-		}
-	case "java", "go", "golang", "cpp", "c++", "python", "nodejs", "application":
-		// Application logs: focus on message, level, module
-		keyFields = []string{
-			"level", "severity", "log_level",
-			"module", "service", "app",
-			"hostname", "host", "node_ip",
-			"message", "msg",
-		}
-	default:
-		// Generic logs: try common fields
-		keyFields = []string{
-			"level", "severity",
-			"status", "status_code", "response_code",
-			"message", "msg", "error", "error_message",
-			"module", "service",
-			"ip", "client_ip", "hostname", "host",
-			"request", "path",
-			"method", "request_method",
-		}
+// extractTableRow extracts key fields from a log entry and formats as table row
+// Shows: response_code, @timestamp, request URL (without params), cf_ray
+func (lc *LarkClient) extractTableRow(rowNum int, log map[string]interface{}) string {
+	// 1. Response Code (匹配字段的错误码)
+	responseCode := "-"
+	if val, ok := log["response_code"]; ok && val != nil {
+		responseCode = fmt.Sprintf("**%v**", val)
+	} else if val, ok := log["status_code"]; ok && val != nil {
+		responseCode = fmt.Sprintf("**%v**", val)
+	} else if val, ok := log["status"]; ok && val != nil {
+		responseCode = fmt.Sprintf("**%v**", val)
 	}
 
-	// Extract fields with priority
-	fieldCount := 0
-	maxFields := 4
-
-	for _, key := range keyFields {
-		if fieldCount >= maxFields {
-			break
-		}
-		if val, ok := log[key]; ok && val != nil && val != "" {
-			// Special handling for message field (truncate if too long)
-			if key == "message" || key == "msg" {
-				valStr := fmt.Sprintf("%v", val)
-				if len(valStr) > 100 {
-					valStr = valStr[:100] + "..."
-				}
-				parts = append(parts, fmt.Sprintf("`%s`: %s", key, valStr))
-			} else {
-				parts = append(parts, fmt.Sprintf("`%s`: %v", key, val))
+	// 2. Timestamp
+	timestamp := "-"
+	if val, ok := log["@timestamp"]; ok && val != nil {
+		timestampStr := fmt.Sprintf("%v", val)
+		// If it's ISO format, try to format it nicely
+		if strings.Contains(timestampStr, "T") {
+			timestampStr = strings.Replace(timestampStr, "T", " ", 1)
+			timestampStr = strings.Replace(timestampStr, "Z", "", 1)
+			// Truncate milliseconds if present
+			if idx := strings.Index(timestampStr, "."); idx > 0 {
+				timestampStr = timestampStr[:idx]
 			}
-			fieldCount++
 		}
+		timestamp = timestampStr
 	}
 
-	// If no key fields found, show timestamp and log_type
-	if len(parts) == 0 {
-		if lt, ok := log["log_type"]; ok {
-			parts = append(parts, fmt.Sprintf("`log_type`: %v", lt))
+	// 3. Request URL (without query parameters)
+	requestURL := "-"
+	if val, ok := log["request"]; ok && val != nil && val != "" {
+		requestStr := fmt.Sprintf("%v", val)
+		// Remove query parameters (everything after ?)
+		if idx := strings.Index(requestStr, "?"); idx > 0 {
+			requestStr = requestStr[:idx]
 		}
-		if ts, ok := log["@timestamp"]; ok {
-			parts = append(parts, fmt.Sprintf("`@timestamp`: %v", ts))
+		// Truncate if still too long
+		if len(requestStr) > 60 {
+			requestStr = requestStr[:60] + "..."
 		}
-		if len(parts) == 0 {
-			parts = append(parts, "无关键字段")
+		requestURL = requestStr
+	} else if val, ok := log["path"]; ok && val != nil && val != "" {
+		pathStr := fmt.Sprintf("%v", val)
+		if idx := strings.Index(pathStr, "?"); idx > 0 {
+			pathStr = pathStr[:idx]
 		}
+		if len(pathStr) > 60 {
+			pathStr = pathStr[:60] + "..."
+		}
+		requestURL = pathStr
 	}
 
-	// Join with " | "
-	summary := ""
-	for i, part := range parts {
-		if i > 0 {
-			summary += " | "
-		}
-		summary += part
+	// 4. CF Ray ID
+	cfRay := "-"
+	if val, ok := log["cf_ray"]; ok && val != nil && val != "" {
+		cfRay = fmt.Sprintf("%v", val)
 	}
 
-	return summary
+	// Build table row: | # | 状态码 | 时间 | URL | CF Ray |
+	return fmt.Sprintf("| %d | %s | %s | %s | %s |", rowNum, responseCode, timestamp, requestURL, cfRay)
 }
 
 func formatTime(t time.Time) string {
