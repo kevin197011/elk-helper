@@ -160,7 +160,7 @@ func (s *Service) Clone(id uint, newName string) (*models.Rule, error) {
 		Name:         newName,
 		IndexPattern: original.IndexPattern,
 		Queries:      original.Queries,
-		Enabled:      false, // Start with disabled status for safety
+		Enabled:      original.Enabled, // Inherit enabled status from original rule
 		Interval:     original.Interval,
 		ESConfigID:   original.ESConfigID,
 		LarkWebhook:  original.LarkWebhook,

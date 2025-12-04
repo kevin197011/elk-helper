@@ -507,7 +507,7 @@ export default function RulesPage() {
           <DialogHeader>
             <DialogTitle>克隆规则</DialogTitle>
             <DialogDescription>
-              克隆规则 <strong>"{ruleToClone?.name}"</strong> 并创建一个新规则。新规则将默认为禁用状态，您可以在创建后进行修改和启用。
+              克隆规则 <strong>"{ruleToClone?.name}"</strong> 并创建一个新规则。新规则将继承原规则的所有配置（包括启用/禁用状态），您可以在创建后进行修改。
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
@@ -525,7 +525,7 @@ export default function RulesPage() {
                 }}
               />
               <p className="mt-2 text-xs text-muted-foreground">
-                提示：新规则将复制原规则的所有配置，但统计数据（执行次数、告警次数等）会重置。
+                💡 提示：新规则将复制原规则的所有配置（包括启用状态），但统计数据（执行次数、告警次数等）会重置。如果原规则是启用的，克隆后的规则也会立即开始执行。
               </p>
             </div>
           </div>
