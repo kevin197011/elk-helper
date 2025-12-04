@@ -94,9 +94,12 @@ export default function RulesPage() {
       queryClient.invalidateQueries({ queryKey: ['rules'] });
       toast.success('删除成功');
       setDeleteDialogOpen(false);
+      setRuleToDelete(null);
     },
-    onError: () => {
-      toast.error('删除失败');
+    onError: (error: any) => {
+      const errorMsg = error?.response?.data?.error || '删除失败，请稍后重试';
+      toast.error(errorMsg);
+      console.error('Delete rule error:', error);
     },
   });
 

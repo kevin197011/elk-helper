@@ -57,10 +57,31 @@ func (s *Service) Update(id uint, rule *models.Rule) error {
 }
 
 // Delete deletes a rule (hard delete - permanently removes from database)
+// Also deletes all associated alerts
 func (s *Service) Delete(id uint) error {
-	if err := database.DB.Unscoped().Delete(&models.Rule{}, id).Error; err != nil {
+	// Start a transaction to ensure atomicity
+	tx := database.DB.Begin()
+	if tx.Error != nil {
+		return fmt.Errorf("failed to start transaction: %w", tx.Error)
+	}
+
+	// Delete all associated alerts first (hard delete)
+	if err := tx.Unscoped().Where("rule_id = ?", id).Delete(&models.Alert{}).Error; err != nil {
+		tx.Rollback()
+		return fmt.Errorf("failed to delete associated alerts: %w", err)
+	}
+
+	// Then delete the rule (hard delete)
+	if err := tx.Unscoped().Delete(&models.Rule{}, id).Error; err != nil {
+		tx.Rollback()
 		return fmt.Errorf("failed to delete rule: %w", err)
 	}
+
+	// Commit transaction
+	if err := tx.Commit().Error; err != nil {
+		return fmt.Errorf("failed to commit transaction: %w", err)
+	}
+
 	return nil
 }
 

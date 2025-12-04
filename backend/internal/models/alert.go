@@ -62,7 +62,7 @@ type Alert struct {
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
 
 	RuleID    uint        `gorm:"not null;index" json:"rule_id"`
-	Rule      Rule        `gorm:"foreignKey:RuleID" json:"rule,omitempty"`
+	Rule      Rule        `gorm:"foreignKey:RuleID;constraint:OnDelete:CASCADE" json:"rule,omitempty"`
 	IndexName string      `gorm:"not null" json:"index_name"`
 	LogCount  int         `json:"log_count"`
 	Logs      LogData     `gorm:"type:text" json:"logs"`
