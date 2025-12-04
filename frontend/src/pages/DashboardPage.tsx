@@ -7,8 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useQuery } from '@tanstack/react-query';
 import { statusApi, alertsApi } from '../services/api';
 import { Activity, CheckCircle, AlertCircle, Database, TrendingUp } from 'lucide-react';
-import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from '@/components/ui/chart';
-import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts';
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useMemo } from 'react';
 
 // InteractiveAreaChart component
@@ -36,97 +35,112 @@ function InteractiveAreaChart({ data }: { data: any[] }) {
     });
   }, [data]);
 
-  // Generate chart config dynamically
-  const chartConfig = useMemo(() => {
-    if (!data || data.length === 0) return {};
-
-    const colors = [
-      'hsl(221, 83%, 53%)',  // Blue
-      'hsl(262, 83%, 58%)',  // Purple
-      'hsl(142, 71%, 45%)',  // Green
-      'hsl(25, 95%, 53%)',   // Orange
-      'hsl(330, 81%, 60%)',  // Pink
-      'hsl(199, 89%, 48%)',  // Cyan
-      'hsl(48, 96%, 53%)',   // Yellow
-      'hsl(348, 83%, 47%)',  // Red
-    ];
-
-    const config: any = {};
-    data.forEach((rule: any, index: number) => {
-      config[rule.rule_name] = {
-        label: rule.rule_name,
-        color: colors[index % colors.length],
-      };
-    });
-
-    return config;
-  }, [data]);
+  // Colors for different rules
+  const colors = [
+    '#3b82f6',  // Blue
+    '#a855f7',  // Purple
+    '#10b981',  // Green
+    '#f97316',  // Orange
+    '#ec4899',  // Pink
+    '#06b6d4',  // Cyan
+    '#eab308',  // Yellow
+    '#ef4444',  // Red
+  ];
 
   return (
-    <ChartContainer config={chartConfig} className="h-[400px] w-full">
+    <ResponsiveContainer width="100%" height={400}>
       <AreaChart
         data={chartData}
-        margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+        margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
       >
         <defs>
           {data.map((rule: any, index: number) => {
-            const colors = [
-              ['#3b82f6', '#1d4ed8'],  // Blue
-              ['#a855f7', '#7e22ce'],  // Purple
-              ['#10b981', '#059669'],  // Green
-              ['#f97316', '#ea580c'],  // Orange
-              ['#ec4899', '#db2777'],  // Pink
-              ['#06b6d4', '#0891b2'],  // Cyan
-              ['#eab308', '#ca8a04'],  // Yellow
-              ['#ef4444', '#dc2626'],  // Red
-            ];
-            const [startColor, endColor] = colors[index % colors.length];
-
+            const color = colors[index % colors.length];
             return (
-              <linearGradient key={rule.rule_id} id={`fill-${rule.rule_id}`} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor={startColor} stopOpacity={0.8} />
-                <stop offset="100%" stopColor={endColor} stopOpacity={0.1} />
+              <linearGradient key={rule.rule_id} id={`gradient-${rule.rule_id}`} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor={color} stopOpacity={0.8} />
+                <stop offset="100%" stopColor={color} stopOpacity={0.1} />
               </linearGradient>
             );
           })}
         </defs>
-        <CartesianGrid strokeDasharray="3 3" vertical={false} />
+        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
         <XAxis
           dataKey="time"
           tickLine={false}
           axisLine={false}
           tickMargin={8}
-          tickFormatter={(value) => value}
+          tick={{ fill: 'hsl(var(--muted-foreground))' }}
         />
         <YAxis
           tickLine={false}
           axisLine={false}
           tickMargin={8}
-          tickFormatter={(value) => `${value}`}
+          tick={{ fill: 'hsl(var(--muted-foreground))' }}
+          allowDecimals={false}
         />
-        <ChartTooltip
-          content={
-            <ChartTooltipContent
-              labelFormatter={(value) => `时间: ${value}`}
-              indicator="line"
-            />
-          }
+        <Tooltip
+          content={({ active, payload, label }) => {
+            if (!active || !payload) return null;
+
+            return (
+              <div className="rounded-lg border bg-background p-2 shadow-md">
+                <div className="text-sm font-medium mb-2">时间: {label}</div>
+                <div className="space-y-1">
+                  {payload.map((entry: any, index: number) => (
+                    <div key={index} className="flex items-center gap-2 text-xs">
+                      <div
+                        className="w-3 h-3 rounded-sm"
+                        style={{ backgroundColor: entry.color }}
+                      />
+                      <span className="flex-1">{entry.name}:</span>
+                      <span className="font-mono font-semibold">{entry.value}</span>
+                    </div>
+                  ))}
+                  <div className="border-t pt-1 mt-1 flex justify-between text-xs font-semibold">
+                    <span>总计:</span>
+                    <span className="font-mono">
+                      {payload.reduce((sum: number, entry: any) => sum + (entry.value || 0), 0)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            );
+          }}
         />
-        <ChartLegend content={<ChartLegendContent />} />
-        {data.map((rule: any) => (
+        <Legend
+          verticalAlign="top"
+          height={36}
+          content={({ payload }) => {
+            if (!payload) return null;
+            return (
+              <div className="flex flex-wrap justify-center gap-4 pb-4">
+                {payload.map((entry: any, index: number) => (
+                  <div key={index} className="flex items-center gap-2 text-sm">
+                    <div
+                      className="w-3 h-3 rounded-sm"
+                      style={{ backgroundColor: entry.color }}
+                    />
+                    <span>{entry.value}</span>
+                  </div>
+                ))}
+              </div>
+            );
+          }}
+        />
+        {data.map((rule: any, index: number) => (
           <Area
             key={rule.rule_id}
             dataKey={rule.rule_name}
             type="monotone"
-            fill={`url(#fill-${rule.rule_id})`}
-            fillOpacity={0.4}
-            stroke={`var(--color-${rule.rule_name})`}
+            fill={`url(#gradient-${rule.rule_id})`}
+            stroke={colors[index % colors.length]}
             strokeWidth={2}
             stackId="1"
           />
         ))}
       </AreaChart>
-    </ChartContainer>
+    </ResponsiveContainer>
   );
 }
 
