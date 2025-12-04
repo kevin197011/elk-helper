@@ -7,6 +7,128 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useQuery } from '@tanstack/react-query';
 import { statusApi, alertsApi } from '../services/api';
 import { Activity, CheckCircle, AlertCircle, Database, TrendingUp } from 'lucide-react';
+import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from '@/components/ui/chart';
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts';
+import { useMemo } from 'react';
+
+// InteractiveAreaChart component
+function InteractiveAreaChart({ data }: { data: any[] }) {
+  // Transform data for recharts
+  const chartData = useMemo(() => {
+    if (!data || data.length === 0) return [];
+
+    // Get all time points from first rule
+    const timePoints = data[0]?.data_points || [];
+
+    // Transform to recharts format
+    return timePoints.map((point: any, index: number) => {
+      const dataPoint: any = {
+        time: point.time,
+      };
+
+      // Add each rule's value at this time point
+      data.forEach((rule: any) => {
+        const value = rule.data_points[index]?.value || 0;
+        dataPoint[rule.rule_name] = value;
+      });
+
+      return dataPoint;
+    });
+  }, [data]);
+
+  // Generate chart config dynamically
+  const chartConfig = useMemo(() => {
+    if (!data || data.length === 0) return {};
+
+    const colors = [
+      'hsl(221, 83%, 53%)',  // Blue
+      'hsl(262, 83%, 58%)',  // Purple
+      'hsl(142, 71%, 45%)',  // Green
+      'hsl(25, 95%, 53%)',   // Orange
+      'hsl(330, 81%, 60%)',  // Pink
+      'hsl(199, 89%, 48%)',  // Cyan
+      'hsl(48, 96%, 53%)',   // Yellow
+      'hsl(348, 83%, 47%)',  // Red
+    ];
+
+    const config: any = {};
+    data.forEach((rule: any, index: number) => {
+      config[rule.rule_name] = {
+        label: rule.rule_name,
+        color: colors[index % colors.length],
+      };
+    });
+
+    return config;
+  }, [data]);
+
+  return (
+    <ChartContainer config={chartConfig} className="h-[400px] w-full">
+      <AreaChart
+        data={chartData}
+        margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+      >
+        <defs>
+          {data.map((rule: any, index: number) => {
+            const colors = [
+              ['#3b82f6', '#1d4ed8'],  // Blue
+              ['#a855f7', '#7e22ce'],  // Purple
+              ['#10b981', '#059669'],  // Green
+              ['#f97316', '#ea580c'],  // Orange
+              ['#ec4899', '#db2777'],  // Pink
+              ['#06b6d4', '#0891b2'],  // Cyan
+              ['#eab308', '#ca8a04'],  // Yellow
+              ['#ef4444', '#dc2626'],  // Red
+            ];
+            const [startColor, endColor] = colors[index % colors.length];
+
+            return (
+              <linearGradient key={rule.rule_id} id={`fill-${rule.rule_id}`} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor={startColor} stopOpacity={0.8} />
+                <stop offset="100%" stopColor={endColor} stopOpacity={0.1} />
+              </linearGradient>
+            );
+          })}
+        </defs>
+        <CartesianGrid strokeDasharray="3 3" vertical={false} />
+        <XAxis
+          dataKey="time"
+          tickLine={false}
+          axisLine={false}
+          tickMargin={8}
+          tickFormatter={(value) => value}
+        />
+        <YAxis
+          tickLine={false}
+          axisLine={false}
+          tickMargin={8}
+          tickFormatter={(value) => `${value}`}
+        />
+        <ChartTooltip
+          content={
+            <ChartTooltipContent
+              labelFormatter={(value) => `时间: ${value}`}
+              indicator="line"
+            />
+          }
+        />
+        <ChartLegend content={<ChartLegendContent />} />
+        {data.map((rule: any) => (
+          <Area
+            key={rule.rule_id}
+            dataKey={rule.rule_name}
+            type="monotone"
+            fill={`url(#fill-${rule.rule_id})`}
+            fillOpacity={0.4}
+            stroke={`var(--color-${rule.rule_name})`}
+            strokeWidth={2}
+            stackId="1"
+          />
+        ))}
+      </AreaChart>
+    </ChartContainer>
+  );
+}
 
 export default function DashboardPage() {
   const { data: statusData, isLoading } = useQuery({
@@ -137,7 +259,7 @@ export default function DashboardPage() {
               </div>
               <div className="text-sm text-muted-foreground">
                 {ruleTimeSeriesData && ruleTimeSeriesData.length > 0 && (
-                  <span>TOP {ruleTimeSeriesData.length} 规则</span>
+                  <span>{ruleTimeSeriesData.length} 条规则</span>
                 )}
               </div>
             </div>
@@ -147,66 +269,11 @@ export default function DashboardPage() {
               <div className="text-center py-8 text-muted-foreground">加载中...</div>
             ) : !ruleTimeSeriesData || ruleTimeSeriesData.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">
-                最近24小时暂无告警记录
+                暂无启用的规则
               </div>
             ) : (
-              <div className="space-y-6">
-                {ruleTimeSeriesData.map((ruleStat, ruleIndex) => {
-                  const maxValue = Math.max(...ruleStat.data_points.map(p => p.value), 1);
-                  const colors = [
-                    'from-blue-500 to-blue-600',
-                    'from-purple-500 to-purple-600',
-                    'from-green-500 to-green-600',
-                    'from-orange-500 to-orange-600',
-                    'from-pink-500 to-pink-600',
-                  ];
-                  const colorClass = colors[ruleIndex % colors.length];
-
-                  return (
-                    <div key={ruleStat.rule_id} className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className={`w-3 h-3 rounded-full bg-gradient-to-r ${colorClass}`} />
-                          <span className="font-medium">{ruleStat.rule_name}</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <AlertCircle className="h-3.5 w-3.5" />
-                          <span>共 {ruleStat.total} 次告警</span>
-                        </div>
-                      </div>
-
-                      {/* Time series chart */}
-                      <div className="relative h-24 flex items-end gap-1 bg-muted/30 rounded-lg p-2">
-                        {ruleStat.data_points.map((point, index) => {
-                          const height = point.value > 0 ? (point.value / maxValue * 100) : 0;
-                          const isLast = index === ruleStat.data_points.length - 1;
-                          const showLabel = index % Math.ceil(ruleStat.data_points.length / 6) === 0 || isLast;
-
-                          return (
-                            <div key={index} className="flex-1 flex flex-col items-center justify-end group relative">
-                              <div
-                                className={`w-full bg-gradient-to-t ${colorClass} rounded-t transition-all duration-300 hover:opacity-80`}
-                                style={{ height: `${height}%`, minHeight: point.value > 0 ? '4px' : '0' }}
-                                title={`${point.time}: ${point.value} 次告警`}
-                              />
-                              {point.value > 0 && (
-                                <div className="absolute -top-5 opacity-0 group-hover:opacity-100 transition-opacity bg-popover text-popover-foreground text-xs px-1.5 py-0.5 rounded shadow-md whitespace-nowrap z-10">
-                                  {point.value}
-                                </div>
-                              )}
-                              {showLabel && (
-                                <div className="absolute -bottom-5 text-[10px] text-muted-foreground">
-                                  {point.time}
-                                </div>
-                              )}
-                            </div>
-                          );
-                        })}
-                      </div>
-                      <div className="h-4" /> {/* Spacer for time labels */}
-                    </div>
-                  );
-                })}
+              <div className="space-y-4">
+                <InteractiveAreaChart data={ruleTimeSeriesData} />
               </div>
             )}
           </CardContent>

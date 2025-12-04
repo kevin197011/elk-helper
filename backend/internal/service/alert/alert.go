@@ -223,33 +223,59 @@ func (s *Service) GetRuleAlertStats(duration time.Duration) ([]RuleAlertStats, e
 	return stats, nil
 }
 
-// GetRuleTimeSeriesStats returns time series alert statistics for top rules
+// GetRuleTimeSeriesStats returns time series alert statistics for all enabled rules
 func (s *Service) GetRuleTimeSeriesStats(duration time.Duration, intervalMinutes int) ([]RuleTimeSeriesStats, error) {
 	since := time.Now().Add(-duration)
 	now := time.Now()
 
-	// Get top 5 rules by alert count
-	var topRules []struct {
+	// Get all enabled rules
+	var allRules []models.Rule
+	err := database.DB.Where("enabled = ?", true).Find(&allRules).Error
+	if err != nil {
+		return nil, fmt.Errorf("failed to get rules: %w", err)
+	}
+
+	if len(allRules) == 0 {
+		return []RuleTimeSeriesStats{}, nil
+	}
+
+	// Get alert counts for each rule in the time period
+	type RuleAlertCount struct {
+		RuleID uint
+		Total  int64
+	}
+
+	var alertCounts []RuleAlertCount
+	err = database.DB.Model(&models.Alert{}).
+		Select("rule_id, COUNT(*) as total").
+		Where("created_at >= ?", since).
+		Group("rule_id").
+		Scan(&alertCounts).Error
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to get alert counts: %w", err)
+	}
+
+	// Create map for quick lookup
+	alertCountMap := make(map[uint]int64)
+	for _, ac := range alertCounts {
+		alertCountMap[ac.RuleID] = ac.Total
+	}
+
+	// Build rules with their counts (including 0 for rules with no alerts)
+	type RuleWithCount struct {
 		RuleID   uint
 		RuleName string
 		Total    int64
 	}
 
-	err := database.DB.Model(&models.Alert{}).
-		Select("alerts.rule_id, rules.name as rule_name, COUNT(*) as total").
-		Joins("LEFT JOIN rules ON rules.id = alerts.rule_id").
-		Where("alerts.created_at >= ?", since).
-		Group("alerts.rule_id, rules.name").
-		Order("total DESC").
-		Limit(5).
-		Scan(&topRules).Error
-
-	if err != nil {
-		return nil, fmt.Errorf("failed to get top rules: %w", err)
-	}
-
-	if len(topRules) == 0 {
-		return []RuleTimeSeriesStats{}, nil
+	var rulesWithCounts []RuleWithCount
+	for _, rule := range allRules {
+		rulesWithCounts = append(rulesWithCounts, RuleWithCount{
+			RuleID:   rule.ID,
+			RuleName: rule.Name,
+			Total:    alertCountMap[rule.ID], // Will be 0 if not in map
+		})
 	}
 
 	// Generate time buckets
@@ -261,9 +287,9 @@ func (s *Service) GetRuleTimeSeriesStats(duration time.Duration, intervalMinutes
 		numBuckets = 6 // Min 6 points
 	}
 
-	result := make([]RuleTimeSeriesStats, len(topRules))
+	result := make([]RuleTimeSeriesStats, len(rulesWithCounts))
 
-	for i, rule := range topRules {
+	for i, rule := range rulesWithCounts {
 		dataPoints := make([]TimeSeriesDataPoint, numBuckets)
 
 		// Initialize all buckets
