@@ -148,3 +148,63 @@ func (s *Service) CleanupOldData(olderThan time.Duration) (int64, error) {
 
 	return result.RowsAffected, nil
 }
+
+// RuleAlertStats represents alert statistics for a single rule
+type RuleAlertStats struct {
+	RuleID    uint   `json:"rule_id"`
+	RuleName  string `json:"rule_name"`
+	Total     int64  `json:"total"`
+	Sent      int64  `json:"sent"`
+	Failed    int64  `json:"failed"`
+	LastAlert *time.Time `json:"last_alert"`
+}
+
+// GetRuleAlertStats returns alert statistics grouped by rule
+func (s *Service) GetRuleAlertStats(duration time.Duration) ([]RuleAlertStats, error) {
+	since := time.Now().Add(-duration)
+
+	type QueryResult struct {
+		RuleID    uint
+		RuleName  string
+		Total     int64
+		Sent      int64
+		Failed    int64
+		LastAlert *time.Time
+	}
+
+	var results []QueryResult
+
+	// Query to get stats per rule
+	err := database.DB.Model(&models.Alert{}).
+		Select(`
+			alerts.rule_id,
+			rules.name as rule_name,
+			COUNT(*) as total,
+			SUM(CASE WHEN alerts.status = 'sent' THEN 1 ELSE 0 END) as sent,
+			SUM(CASE WHEN alerts.status = 'failed' THEN 1 ELSE 0 END) as failed,
+			MAX(alerts.created_at) as last_alert
+		`).
+		Joins("LEFT JOIN rules ON rules.id = alerts.rule_id").
+		Where("alerts.created_at >= ?", since).
+		Group("alerts.rule_id, rules.name").
+		Order("total DESC").
+		Scan(&results).Error
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to get rule alert stats: %w", err)
+	}
+
+	stats := make([]RuleAlertStats, len(results))
+	for i, r := range results {
+		stats[i] = RuleAlertStats{
+			RuleID:    r.RuleID,
+			RuleName:  r.RuleName,
+			Total:     r.Total,
+			Sent:      r.Sent,
+			Failed:    r.Failed,
+			LastAlert: r.LastAlert,
+		}
+	}
+
+	return stats, nil
+}

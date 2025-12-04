@@ -106,6 +106,15 @@ export const rulesApi = {
   import: (rules: Rule[]) => api.post<{ success_count: number; error_count: number; errors: string[] }>('/rules/import', { rules }),
 };
 
+export interface RuleAlertStats {
+  rule_id: number;
+  rule_name: string;
+  total: number;
+  sent: number;
+  failed: number;
+  last_alert?: string;
+}
+
 // Alerts API
 export const alertsApi = {
   getAll: (page = 1, pageSize = 20) =>
@@ -115,6 +124,10 @@ export const alertsApi = {
   getById: (id: number) => api.get<{ data: Alert }>(`/alerts/${id}`),
   getStats: (duration = '24h') =>
     api.get<{ data: { total: number; sent: number; failed: number } }>('/alerts/stats', {
+      params: { duration },
+    }),
+  getRuleStats: (duration = '24h') =>
+    api.get<{ data: RuleAlertStats[] }>('/alerts/rule-stats', {
       params: { duration },
     }),
   delete: (id: number) => api.delete(`/alerts/${id}`),

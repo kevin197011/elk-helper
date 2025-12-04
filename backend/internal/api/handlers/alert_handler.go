@@ -152,3 +152,26 @@ func (h *AlertHandler) BatchDeleteAlerts(c *gin.Context) {
 		"deleted_count": len(ids.IDs),
 	})
 }
+
+// GetRuleAlertStats returns alert statistics grouped by rule
+// @Summary Get alert statistics by rule
+// @Tags alerts
+// @Param duration query string false "Duration (e.g., 1h, 24h, 7d)" default(24h)
+// @Produce json
+// @Success 200 {object} map[string]interface{}
+// @Router /api/v1/alerts/rule-stats [get]
+func (h *AlertHandler) GetRuleAlertStats(c *gin.Context) {
+	durationStr := c.DefaultQuery("duration", "24h")
+	duration, err := time.ParseDuration(durationStr)
+	if err != nil {
+		duration = 24 * time.Hour
+	}
+
+	stats, err := h.service.GetRuleAlertStats(duration)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": stats})
+}

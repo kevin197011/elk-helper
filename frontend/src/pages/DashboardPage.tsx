@@ -5,13 +5,19 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useQuery } from '@tanstack/react-query';
-import { statusApi } from '../services/api';
-import { Activity, CheckCircle, AlertCircle, Database } from 'lucide-react';
+import { statusApi, alertsApi } from '../services/api';
+import { Activity, CheckCircle, AlertCircle, Database, TrendingUp, Clock } from 'lucide-react';
 
 export default function DashboardPage() {
   const { data: statusData, isLoading } = useQuery({
     queryKey: ['status'],
     queryFn: () => statusApi.getStatus().then(res => res.data.data),
+    refetchInterval: 30000,
+  });
+
+  const { data: ruleStatsData, isLoading: ruleStatsLoading } = useQuery({
+    queryKey: ['rule-alert-stats'],
+    queryFn: () => alertsApi.getRuleStats('24h').then(res => res.data.data),
     refetchInterval: 30000,
   });
 
@@ -118,6 +124,100 @@ export default function DashboardPage() {
             </Card>
           );
         })}
+      </div>
+
+      {/* Rule Alert Statistics */}
+      <div className="mt-6">
+        <Card className="border-border/50 shadow-md bg-card/80 backdrop-blur-sm">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <TrendingUp className="h-5 w-5 text-muted-foreground" />
+                <CardTitle>规则告警统计 (24小时)</CardTitle>
+              </div>
+              <div className="text-sm text-muted-foreground">
+                {ruleStatsData && ruleStatsData.length > 0 && (
+                  <span>共 {ruleStatsData.length} 条规则产生告警</span>
+                )}
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            {ruleStatsLoading ? (
+              <div className="text-center py-8 text-muted-foreground">加载中...</div>
+            ) : !ruleStatsData || ruleStatsData.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                最近24小时暂无告警记录
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {ruleStatsData.slice(0, 10).map((stat, index) => {
+                  const successRate = stat.total > 0 ? (stat.sent / stat.total * 100).toFixed(1) : '0';
+                  const maxTotal = Math.max(...ruleStatsData.map(s => s.total));
+                  const barWidth = stat.total > 0 ? (stat.total / maxTotal * 100) : 0;
+
+                  return (
+                    <div key={stat.rule_id} className="group hover:bg-muted/50 p-3 rounded-lg transition-colors">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-3 flex-1">
+                          <span className="text-xs font-mono text-muted-foreground w-6">#{index + 1}</span>
+                          <span className="font-medium truncate max-w-xs">{stat.rule_name}</span>
+                        </div>
+                        <div className="flex items-center gap-4 text-sm">
+                          <div className="flex items-center gap-1">
+                            <AlertCircle className="h-3.5 w-3.5 text-orange-500" />
+                            <span className="font-semibold">{stat.total}</span>
+                            <span className="text-muted-foreground">次</span>
+                          </div>
+                          {stat.last_alert && (
+                            <div className="flex items-center gap-1 text-muted-foreground">
+                              <Clock className="h-3.5 w-3.5" />
+                              <span className="text-xs">
+                                {new Date(stat.last_alert).toLocaleString('zh-CN', {
+                                  month: '2-digit',
+                                  day: '2-digit',
+                                  hour: '2-digit',
+                                  minute: '2-digit'
+                                })}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-3">
+                        <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-gradient-to-r from-orange-500 to-red-500 transition-all duration-500"
+                            style={{ width: `${barWidth}%` }}
+                          />
+                        </div>
+                        <div className="flex gap-4 text-xs">
+                          <span className="text-green-600">
+                            ✓ {stat.sent}
+                          </span>
+                          {stat.failed > 0 && (
+                            <span className="text-red-600">
+                              ✗ {stat.failed}
+                            </span>
+                          )}
+                          <span className="text-muted-foreground">
+                            成功率 {successRate}%
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+                {ruleStatsData.length > 10 && (
+                  <div className="text-center py-2 text-sm text-muted-foreground">
+                    还有 {ruleStatsData.length - 10} 条规则未显示
+                  </div>
+                )}
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
