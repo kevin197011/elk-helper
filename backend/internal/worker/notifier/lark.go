@@ -132,13 +132,13 @@ func (lc *LarkClient) buildMessage(ruleName, indexName string, logs []map[string
 		},
 	}
 
-	// Show summary of logs in table format (max 3 samples)
+	// Show summary of logs in card format (max 3 samples)
 	if len(logs) > 0 {
 		elements = append(elements, map[string]interface{}{
 			"tag": "div",
 			"text": map[string]interface{}{
 				"tag":     "lark_md",
-				"content": "**📝 日志摘要**",
+				"content": "**📝 日志摘要**（共 " + fmt.Sprintf("%d", len(logs)) + " 条，展示前 3 条）",
 			},
 		})
 
@@ -148,30 +148,35 @@ func (lc *LarkClient) buildMessage(ruleName, indexName string, logs []map[string
 			displayCount = 3
 		}
 
-		// Build table content
-		tableContent := "| # | 状态码 | 时间 | URL | CF Ray |\n| --- | --- | --- | --- | --- |"
-
+		// Build each log entry as a separate card section
 		for i := 0; i < displayCount; i++ {
 			log := logs[i]
-			row := lc.extractTableRow(i+1, log)
-			tableContent += "\n" + row
-		}
+			logFields := lc.extractLogFields(i+1, log)
 
-		elements = append(elements, map[string]interface{}{
-			"tag": "div",
-			"text": map[string]interface{}{
-				"tag":     "lark_md",
-				"content": tableContent,
-			},
-		})
+			// Add a separator before each log entry (except the first one)
+			if i > 0 {
+				elements = append(elements, map[string]interface{}{
+					"tag": "hr",
+				})
+			}
+
+			// Add log entry with fields layout
+			elements = append(elements, map[string]interface{}{
+				"tag":    "div",
+				"fields": logFields,
+			})
+		}
 
 		// If there are more logs, show count
 		if len(logs) > 3 {
 			elements = append(elements, map[string]interface{}{
+				"tag": "hr",
+			})
+			elements = append(elements, map[string]interface{}{
 				"tag": "div",
 				"text": map[string]interface{}{
 					"tag":     "lark_md",
-					"content": fmt.Sprintf("**... 还有 %d 条日志 ...**", len(logs)-3),
+					"content": fmt.Sprintf("**➕ 还有 %d 条日志未显示**\n💡 查看完整日志请登录系统", len(logs)-3),
 				},
 			})
 		}
@@ -216,17 +221,19 @@ func (lc *LarkClient) buildMessage(ruleName, indexName string, logs []map[string
 	}
 }
 
-// extractTableRow extracts key fields from a log entry and formats as table row
-// Shows: response_code, @timestamp, request URL (without params), cf_ray
-func (lc *LarkClient) extractTableRow(rowNum int, log map[string]interface{}) string {
-	// 1. Response Code (匹配字段的错误码)
+// extractLogFields extracts key fields from a log entry and formats as card fields
+// Shows: response_code, @timestamp, request URL (without params), cf_ray - all in one row
+func (lc *LarkClient) extractLogFields(rowNum int, log map[string]interface{}) []map[string]interface{} {
+	fields := []map[string]interface{}{}
+
+	// 1. Response Code (匹配字段的错误码) - highlighted
 	responseCode := "-"
 	if val, ok := log["response_code"]; ok && val != nil {
-		responseCode = fmt.Sprintf("**%v**", val)
+		responseCode = fmt.Sprintf("%v", val)
 	} else if val, ok := log["status_code"]; ok && val != nil {
-		responseCode = fmt.Sprintf("**%v**", val)
+		responseCode = fmt.Sprintf("%v", val)
 	} else if val, ok := log["status"]; ok && val != nil {
-		responseCode = fmt.Sprintf("**%v**", val)
+		responseCode = fmt.Sprintf("%v", val)
 	}
 
 	// 2. Timestamp
@@ -254,8 +261,8 @@ func (lc *LarkClient) extractTableRow(rowNum int, log map[string]interface{}) st
 			requestStr = requestStr[:idx]
 		}
 		// Truncate if still too long
-		if len(requestStr) > 60 {
-			requestStr = requestStr[:60] + "..."
+		if len(requestStr) > 50 {
+			requestStr = requestStr[:50] + "..."
 		}
 		requestURL = requestStr
 	} else if val, ok := log["path"]; ok && val != nil && val != "" {
@@ -263,8 +270,8 @@ func (lc *LarkClient) extractTableRow(rowNum int, log map[string]interface{}) st
 		if idx := strings.Index(pathStr, "?"); idx > 0 {
 			pathStr = pathStr[:idx]
 		}
-		if len(pathStr) > 60 {
-			pathStr = pathStr[:60] + "..."
+		if len(pathStr) > 50 {
+			pathStr = pathStr[:50] + "..."
 		}
 		requestURL = pathStr
 	}
@@ -275,8 +282,40 @@ func (lc *LarkClient) extractTableRow(rowNum int, log map[string]interface{}) st
 		cfRay = fmt.Sprintf("%v", val)
 	}
 
-	// Build table row: | # | 状态码 | 时间 | URL | CF Ray |
-	return fmt.Sprintf("| %d | %s | %s | %s | %s |", rowNum, responseCode, timestamp, requestURL, cfRay)
+	// All fields in one row - using is_short: true for horizontal layout
+	fields = append(fields, map[string]interface{}{
+		"is_short": true,
+		"text": map[string]interface{}{
+			"tag":     "lark_md",
+			"content": fmt.Sprintf("**#%d | 状态码:** <font color='red'>%s</font>", rowNum, responseCode),
+		},
+	})
+
+	fields = append(fields, map[string]interface{}{
+		"is_short": true,
+		"text": map[string]interface{}{
+			"tag":     "lark_md",
+			"content": fmt.Sprintf("**⏰ 时间:** %s", timestamp),
+		},
+	})
+
+	fields = append(fields, map[string]interface{}{
+		"is_short": true,
+		"text": map[string]interface{}{
+			"tag":     "lark_md",
+			"content": fmt.Sprintf("**🔗 URL:** `%s`", requestURL),
+		},
+	})
+
+	fields = append(fields, map[string]interface{}{
+		"is_short": true,
+		"text": map[string]interface{}{
+			"tag":     "lark_md",
+			"content": fmt.Sprintf("**☁️ CF Ray:** `%s`", cfRay),
+		},
+	})
+
+	return fields
 }
 
 func formatTime(t time.Time) string {
