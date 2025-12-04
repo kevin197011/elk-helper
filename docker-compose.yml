@@ -82,8 +82,8 @@ services:
       - POSTGRES_PASSWORD=${DB_PASSWORD:-postgres}
       - POSTGRES_DB=elk_helper
       - TZ=Asia/Hong_Kong
-    ports:
-      - "5432:5432"
+    # ports:
+    #   - "5432:5432"  # 注释掉端口映射，避免与其他postgres冲突，容器内部通信不需要暴露
     volumes:
       - postgres-data:/var/lib/postgresql/data
     networks:
