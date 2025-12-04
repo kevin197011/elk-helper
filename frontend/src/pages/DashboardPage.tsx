@@ -6,7 +6,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useQuery } from '@tanstack/react-query';
 import { statusApi, alertsApi } from '../services/api';
-import { Activity, CheckCircle, AlertCircle, Database, TrendingUp, Clock } from 'lucide-react';
+import { Activity, CheckCircle, AlertCircle, Database, TrendingUp } from 'lucide-react';
 
 export default function DashboardPage() {
   const { data: statusData, isLoading } = useQuery({
