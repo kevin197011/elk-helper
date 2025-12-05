@@ -302,6 +302,7 @@ func (s *Service) GetRuleTimeSeriesStats(duration time.Duration, intervalMinutes
 		}
 
 		// Query alerts for this rule grouped by time bucket
+		// Sum log_count instead of COUNT(*) to get total log entries
 		type BucketResult struct {
 			BucketIndex int
 			Count       int64
@@ -310,10 +311,11 @@ func (s *Service) GetRuleTimeSeriesStats(duration time.Duration, intervalMinutes
 		var bucketResults []BucketResult
 
 		// PostgreSQL time bucketing using EXTRACT(EPOCH FROM timestamp)
+		// Use SUM(log_count) to count total logs, not just alert records
 		err := database.DB.Model(&models.Alert{}).
 			Select(fmt.Sprintf(`
 				CAST((EXTRACT(EPOCH FROM created_at)::bigint - %d) / %d AS INTEGER) as bucket_index,
-				COUNT(*) as count
+				SUM(log_count) as count
 			`, since.Unix(), intervalMinutes*60)).
 			Where("rule_id = ? AND created_at >= ? AND created_at <= ?", rule.RuleID, since, now).
 			Group("bucket_index").
