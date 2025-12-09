@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/kk/elk-helper/backend/internal/models"
 	"github.com/kk/elk-helper/backend/internal/repository/database"
@@ -34,10 +35,11 @@ func (s *Service) GetCleanupConfig() (*models.CleanupConfig, error) {
 	// If config not found, return default
 	if config == nil {
 		return &models.CleanupConfig{
-			Enabled:       true,
-			Hour:          3,
-			Minute:        0,
-			RetentionDays: 90,
+			Enabled:             true,
+			Hour:                3,
+			Minute:              0,
+			RetentionDays:       90,
+			LastExecutionStatus: "never",
 		}, nil
 	}
 
@@ -94,6 +96,21 @@ func (s *Service) UpdateCleanupConfig(config *models.CleanupConfig) error {
 	}
 
 	return nil
+}
+
+// UpdateCleanupExecutionStatus updates the cleanup task execution status
+func (s *Service) UpdateCleanupExecutionStatus(status string, result string) error {
+	config, err := s.GetCleanupConfig()
+	if err != nil {
+		return fmt.Errorf("failed to get cleanup config: %w", err)
+	}
+
+	now := time.Now()
+	config.LastExecutionStatus = status
+	config.LastExecutionTime = &now
+	config.LastExecutionResult = result
+
+	return s.UpdateCleanupConfig(config)
 }
 
 // getByKey gets a system config by key

@@ -84,9 +84,18 @@ func (h *SystemConfigHandler) ManualCleanup(c *gin.Context) {
 	retentionDuration := time.Duration(config.RetentionDays) * 24 * time.Hour
 	rowsAffected, err := h.alertService.CleanupOldData(retentionDuration)
 	if err != nil {
+		// Update execution status to failed
+		_ = h.service.UpdateCleanupExecutionStatus("failed", fmt.Sprintf("清理失败: %v", err))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("清理失败: %v", err)})
 		return
 	}
+
+	// Update execution status to success
+	resultMsg := fmt.Sprintf("成功删除 %d 条告警数据", rowsAffected)
+	if rowsAffected == 0 {
+		resultMsg = "没有需要清理的数据"
+	}
+	_ = h.service.UpdateCleanupExecutionStatus("success", resultMsg)
 
 	c.JSON(http.StatusOK, gin.H{
 		"message":        "清理完成",

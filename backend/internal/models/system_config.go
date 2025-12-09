@@ -30,9 +30,12 @@ func (SystemConfig) TableName() string {
 
 // CleanupConfig represents cleanup task configuration
 type CleanupConfig struct {
-	Enabled      bool `json:"enabled"`       // 是否启用清理任务
-	Hour         int  `json:"hour"`          // 执行时间：小时 (0-23)
-	Minute       int  `json:"minute"`        // 执行时间：分钟 (0-59)
-	RetentionDays int `json:"retention_days"` // 保留天数
+	Enabled      bool   `json:"enabled"`       // 是否启用清理任务
+	Hour         int    `json:"hour"`          // 执行时间：小时 (0-23)
+	Minute       int    `json:"minute"`        // 执行时间：分钟 (0-59)
+	RetentionDays int   `json:"retention_days"` // 保留天数
+	LastExecutionStatus string `json:"last_execution_status,omitempty"` // 上次执行状态: "success", "failed", "never"
+	LastExecutionTime   *time.Time `json:"last_execution_time,omitempty"` // 上次执行时间
+	LastExecutionResult string `json:"last_execution_result,omitempty"` // 上次执行结果描述（如删除数量或错误信息）
 }
 

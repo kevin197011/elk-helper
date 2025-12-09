@@ -274,8 +274,22 @@ func (s *Scheduler) startCleanupTask() {
 				rowsAffected, err := s.alertService.CleanupOldData(retentionDuration)
 				if err != nil {
 					fmt.Printf("[ERROR] Failed to cleanup old alerts: %v\n", err)
+					// Update execution status to failed
+					statusErr := s.systemConfigService.UpdateCleanupExecutionStatus("failed", fmt.Sprintf("清理失败: %v", err))
+					if statusErr != nil {
+						fmt.Printf("[ERROR] Failed to update cleanup execution status: %v\n", statusErr)
+					}
 				} else {
 					fmt.Printf("[INFO] Cleanup task completed: deleted %d alerts older than %d days\n", rowsAffected, retentionDays)
+					// Update execution status to success
+					resultMsg := fmt.Sprintf("成功删除 %d 条告警数据", rowsAffected)
+					if rowsAffected == 0 {
+						resultMsg = "没有需要清理的数据"
+					}
+					statusErr := s.systemConfigService.UpdateCleanupExecutionStatus("success", resultMsg)
+					if statusErr != nil {
+						fmt.Printf("[ERROR] Failed to update cleanup execution status: %v\n", statusErr)
+					}
 				}
 
 				// Schedule next run

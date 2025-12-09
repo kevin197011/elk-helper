@@ -263,6 +263,9 @@ export interface CleanupConfig {
   hour: number;
   minute: number;
   retention_days: number;
+  last_execution_status?: 'success' | 'failed' | 'never';
+  last_execution_time?: string;
+  last_execution_result?: string;
 }
 
 // System Config API

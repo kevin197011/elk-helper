@@ -13,7 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Loader2, Save, Trash2 } from 'lucide-react';
+import { Loader2, Save, Trash2, CheckCircle2, XCircle, Clock } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import {
   AlertDialog,
@@ -87,6 +87,7 @@ export default function CleanupConfigPage() {
     mutationFn: () => systemConfigApi.manualCleanup(),
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ['alerts'] });
+      queryClient.invalidateQueries({ queryKey: ['cleanup-config'] });
       toast({
         title: '清理完成',
         description: `已删除 ${response.data.deleted_count} 条超过 ${response.data.retention_days} 天的历史告警数据`,
@@ -270,6 +271,55 @@ export default function CleanupConfigPage() {
                 系统将在每天 <strong>{String(form.watch('hour')).padStart(2, '0')}:{String(form.watch('minute')).padStart(2, '0')}</strong> 执行清理任务，
                 删除 <strong>{form.watch('retention_days')} 天</strong>前的告警数据
               </p>
+            </div>
+          )}
+
+          {/* Last Execution Status */}
+          {data && (
+            <div className="mt-6 p-4 border rounded-lg">
+              <h4 className="font-medium mb-3 flex items-center gap-2">
+                上次执行状态
+              </h4>
+              {data.last_execution_status === 'never' ? (
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <Clock className="h-4 w-4" />
+                  <span className="text-sm">尚未执行</span>
+                </div>
+              ) : data.last_execution_status === 'success' ? (
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 text-green-600">
+                    <CheckCircle2 className="h-4 w-4" />
+                    <span className="text-sm font-medium">执行成功</span>
+                  </div>
+                  {data.last_execution_time && (
+                    <p className="text-sm text-muted-foreground ml-6">
+                      执行时间: {new Date(data.last_execution_time).toLocaleString('zh-CN')}
+                    </p>
+                  )}
+                  {data.last_execution_result && (
+                    <p className="text-sm text-muted-foreground ml-6">
+                      {data.last_execution_result}
+                    </p>
+                  )}
+                </div>
+              ) : data.last_execution_status === 'failed' ? (
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 text-red-600">
+                    <XCircle className="h-4 w-4" />
+                    <span className="text-sm font-medium">执行失败</span>
+                  </div>
+                  {data.last_execution_time && (
+                    <p className="text-sm text-muted-foreground ml-6">
+                      执行时间: {new Date(data.last_execution_time).toLocaleString('zh-CN')}
+                    </p>
+                  )}
+                  {data.last_execution_result && (
+                    <p className="text-sm text-red-600 ml-6">
+                      {data.last_execution_result}
+                    </p>
+                  )}
+                </div>
+              ) : null}
             </div>
           )}
         </CardContent>
