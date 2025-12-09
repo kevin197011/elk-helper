@@ -1,10 +1,4 @@
-# System Configuration
-
-## Purpose
-
-Manage system-wide configuration settings including cleanup tasks and maintenance operations.
-
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: Cleanup Task Configuration
 
@@ -34,36 +28,7 @@ The system SHALL support the following configuration options:
 - **THEN** new schedule takes effect on next day
 - **AND** previous cleanup tasks are cancelled
 
-### Requirement: Cleanup Task Execution
-
-The system SHALL execute cleanup tasks at configured time.
-
-The system SHALL delete alerts older than retention period.
-
-The system SHALL log cleanup operations (count of deleted records).
-
-The system SHALL handle cleanup failures gracefully without affecting other operations.
-
-The system SHALL track and update execution status after each cleanup execution.
-
-#### Scenario: Execute cleanup
-- **WHEN** cleanup time is reached and cleanup is enabled
-- **THEN** system queries alerts older than retention period
-- **AND** deletes matching records
-- **AND** logs deletion count
-- **AND** updates execution status to "success" with result description
-
-#### Scenario: Cleanup with no records
-- **WHEN** cleanup executes but no records match retention criteria
-- **THEN** no deletion occurs
-- **AND** cleanup completes successfully
-- **AND** execution status is updated with "no data to clean" message
-
-#### Scenario: Cleanup execution failure
-- **WHEN** cleanup task fails due to database error
-- **THEN** execution status is set to "failed"
-- **AND** error message is recorded in execution result
-- **AND** system continues normal operation
+## ADDED Requirements
 
 ### Requirement: Cleanup Task Execution Status Tracking
 
@@ -100,42 +65,4 @@ The system SHALL update execution status immediately after cleanup completion.
 - **WHEN** user triggers manual cleanup
 - **THEN** execution status is updated immediately after completion
 - **AND** UI refreshes to show updated status
-
-### Requirement: System Status Monitoring
-
-The system SHALL provide status endpoint showing system health.
-
-The status endpoint SHALL include:
-- Total rule count
-- Enabled rule count
-- 24-hour alert statistics
-- Elasticsearch data source status (success count, total count)
-
-#### Scenario: Get system status
-- **WHEN** a user requests system status
-- **THEN** system returns comprehensive status information
-- **AND** includes rule statistics and ES connectivity status
-
-#### Scenario: ES connectivity check
-- **WHEN** system status is requested
-- **THEN** system checks connectivity to all configured ES data sources
-- **AND** reports success/failure for each
-
-### Requirement: Configuration Persistence
-
-The system SHALL persist system configuration in database.
-
-The system SHALL allow updating configuration through API.
-
-Configuration changes SHALL take effect immediately.
-
-#### Scenario: Save cleanup config
-- **WHEN** a user updates cleanup configuration
-- **THEN** configuration is saved to database
-- **AND** changes are applied immediately
-
-#### Scenario: Retrieve cleanup config
-- **WHEN** a user requests cleanup configuration
-- **THEN** system returns current configuration values
-- **AND** includes all configured fields
 

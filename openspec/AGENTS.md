@@ -18,7 +18,7 @@ Instructions for AI coding assistants using OpenSpec for spec-driven development
 Create proposal when you need to:
 - Add features or functionality
 - Make breaking changes (API, schema)
-- Change architecture or patterns  
+- Change architecture or patterns
 - Optimize performance (changes behavior)
 - Update security patterns
 
@@ -47,7 +47,17 @@ Skip proposal for:
 4. Run `openspec validate <id> --strict` and resolve any issues before sharing the proposal.
 
 ### Stage 2: Implementing Changes
-Track these steps as TODOs and complete them one by one.
+
+**CRITICAL: Analysis Before Implementation**
+
+Before starting any implementation:
+1. **Analyze the requirement** - Understand what needs to be built and why
+2. **Review existing code** - Check how similar features are implemented
+3. **Identify dependencies** - What other parts of the system are affected?
+4. **Plan the changes** - Break down into logical steps
+5. **Consider edge cases** - What could go wrong? What needs error handling?
+
+Only after analysis, proceed with implementation:
 1. **Read proposal.md** - Understand what's being built
 2. **Read design.md** (if exists) - Review technical decisions
 3. **Read tasks.md** - Get implementation checklist
@@ -65,12 +75,23 @@ After deployment, create separate PR to:
 
 ## Before Any Task
 
+**IMPORTANT: Analysis Before Implementation**
+
+**Always analyze requirements first before starting implementation:**
+1. **Understand the request** - What is the user asking for? What problem are they trying to solve?
+2. **Review existing capabilities** - Check `openspec/specs/` to see if related functionality already exists
+3. **Identify affected areas** - What parts of the system will be impacted?
+4. **Plan the approach** - Consider different implementation options and trade-offs
+5. **Create change proposal** (if needed) - For new features or significant changes, create OpenSpec proposal first
+6. **Only then implement** - Start coding only after analysis is complete
+
 **Context Checklist:**
 - [ ] Read relevant specs in `specs/[capability]/spec.md`
 - [ ] Check pending changes in `changes/` for conflicts
 - [ ] Read `openspec/project.md` for conventions
 - [ ] Run `openspec list` to see active changes
 - [ ] Run `openspec list --specs` to see existing capabilities
+- [ ] Analyze requirements and identify affected components before coding
 
 **Before Creating Specs:**
 - Always check if capability already exists
@@ -147,7 +168,7 @@ openspec/
 ```
 New request?
 ├─ Bug fix restoring spec behavior? → Fix directly
-├─ Typo/format/comment? → Fix directly  
+├─ Typo/format/comment? → Fix directly
 ├─ New feature/capability? → Create proposal
 ├─ Breaking change? → Create proposal
 ├─ Architecture change? → Create proposal

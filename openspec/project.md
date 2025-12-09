@@ -35,6 +35,27 @@ ELK Helper 是一个现代化的、高性能的日志监控告警系统，旨在
 - **Nginx**: 反向代理和静态文件服务
 - **GitHub Actions**: CI/CD 自动化
 
+## Development Workflow
+
+### Analysis First, Implementation Second
+
+**CRITICAL: Always analyze requirements before implementing code.**
+
+When receiving a new feature request or change:
+1. **Understand the requirement** - What exactly is being asked? What problem does it solve?
+2. **Review existing codebase** - How are similar features implemented? What patterns are used?
+3. **Check OpenSpec** - Are there existing specs or change proposals for related features?
+4. **Identify impact** - What files/components will be affected? What are the dependencies?
+5. **Plan approach** - Consider multiple implementation options and their trade-offs
+6. **Create proposal** (if needed) - For new features, create OpenSpec change proposal first
+7. **Then implement** - Start coding only after thorough analysis
+
+This approach prevents:
+- Rework due to misunderstandings
+- Missing edge cases
+- Breaking existing functionality
+- Inconsistent implementation patterns
+
 ## Project Conventions
 
 ### Code Style
