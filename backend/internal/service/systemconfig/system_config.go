@@ -48,6 +48,11 @@ func (s *Service) GetCleanupConfig() (*models.CleanupConfig, error) {
 		return nil, fmt.Errorf("failed to parse cleanup config: %w", err)
 	}
 
+	// Set default execution status if not set (for existing configs without this field)
+	if cleanupConfig.LastExecutionStatus == "" {
+		cleanupConfig.LastExecutionStatus = "never"
+	}
+
 	return &cleanupConfig, nil
 }
 

@@ -280,7 +280,7 @@ export default function CleanupConfigPage() {
               <h4 className="font-medium mb-3 flex items-center gap-2">
                 上次执行状态
               </h4>
-              {data.last_execution_status === 'never' ? (
+              {!data.last_execution_status || data.last_execution_status === 'never' ? (
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Clock className="h-4 w-4" />
                   <span className="text-sm">尚未执行</span>
