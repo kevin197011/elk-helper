@@ -33,6 +33,7 @@ import {
 import {
   Pagination,
   PaginationContent,
+  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -101,6 +102,52 @@ export default function AlertsPage() {
 
   const totalPages = data?.pagination.total_page || 1;
   const displayAlerts = filteredAlerts.length > 0 ? filteredAlerts : (data?.data || []);
+
+  // Generate page numbers to display (max 10 pages)
+  const getPageNumbers = (): (number | 'ellipsis')[] => {
+    if (totalPages <= 10) {
+      // Show all pages if total is 10 or less
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+
+    const maxVisible = 10;
+    const pages: (number | 'ellipsis')[] = [];
+
+    if (page <= 6) {
+      // Show first 10 pages
+      for (let i = 1; i <= maxVisible; i++) {
+        pages.push(i);
+      }
+      if (totalPages > maxVisible) {
+        pages.push('ellipsis');
+        pages.push(totalPages);
+      }
+    } else if (page >= totalPages - 5) {
+      // Show last 10 pages
+      if (totalPages > maxVisible) {
+        pages.push(1);
+        pages.push('ellipsis');
+      }
+      for (let i = totalPages - maxVisible + 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      // Show pages around current page
+      pages.push(1);
+      pages.push('ellipsis');
+      const start = Math.max(2, page - 3);
+      const end = Math.min(totalPages - 1, page + 3);
+      for (let i = start; i <= end; i++) {
+        pages.push(i);
+      }
+      if (end < totalPages - 1) {
+        pages.push('ellipsis');
+      }
+      pages.push(totalPages);
+    }
+
+    return pages;
+  };
 
   return (
     <div>
@@ -223,15 +270,19 @@ export default function AlertsPage() {
                       className={page === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
                     />
                   </PaginationItem>
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                    <PaginationItem key={p}>
-                      <PaginationLink
-                        onClick={() => setPage(p)}
-                        isActive={p === page}
-                        className="cursor-pointer"
-                      >
-                        {p}
-                      </PaginationLink>
+                  {getPageNumbers().map((p, index) => (
+                    <PaginationItem key={p === 'ellipsis' ? `ellipsis-${index}` : p}>
+                      {p === 'ellipsis' ? (
+                        <PaginationEllipsis />
+                      ) : (
+                        <PaginationLink
+                          onClick={() => setPage(p)}
+                          isActive={p === page}
+                          className="cursor-pointer"
+                        >
+                          {p}
+                        </PaginationLink>
+                      )}
                     </PaginationItem>
                   ))}
                   <PaginationItem>

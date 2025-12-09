@@ -172,13 +172,13 @@ func (lc *LarkClient) buildMessage(ruleName, indexName string, logs []map[string
 			elements = append(elements, map[string]interface{}{
 				"tag": "hr",
 			})
-			elements = append(elements, map[string]interface{}{
-				"tag": "div",
-				"text": map[string]interface{}{
-					"tag":     "lark_md",
+		elements = append(elements, map[string]interface{}{
+			"tag": "div",
+			"text": map[string]interface{}{
+				"tag":     "lark_md",
 					"content": fmt.Sprintf("**➕ 还有 %d 条日志未显示**\n💡 查看完整日志请登录系统", len(logs)-3),
-				},
-			})
+			},
+		})
 		}
 	}
 
@@ -272,7 +272,7 @@ func (lc *LarkClient) extractLogFields(rowNum int, log map[string]interface{}) [
 		}
 		if len(pathStr) > 50 {
 			pathStr = pathStr[:50] + "..."
-		}
+				}
 		requestURL = pathStr
 	}
 
