@@ -12,6 +12,7 @@ import (
 	"crypto/x509"
 	"encoding/json"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"strings"
 	"time"
@@ -160,7 +161,7 @@ func (s *Service) QueryLogs(ctx context.Context, rule *models.Rule, fromTime, to
 	query := s.buildQuery(rule.Queries, fromTime, toTime)
 
 	queryJSON, _ := json.MarshalIndent(query, "", "  ")
-	fmt.Printf("[DEBUG] Query: %s\n", string(queryJSON))
+	slog.Debug("Elasticsearch query", "query", string(queryJSON))
 
 	var results []map[string]interface{}
 	scrollID := ""

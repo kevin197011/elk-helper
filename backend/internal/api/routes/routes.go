@@ -6,7 +6,7 @@
 package routes
 
 import (
-	"fmt"
+	"log/slog"
 
 	"github.com/gin-gonic/gin"
 	"github.com/kk/elk-helper/backend/internal/api/handlers"
@@ -38,7 +38,7 @@ func SetupRoutes(r *gin.Engine) {
 	// Initialize default admin user if no users exist
 	if err := authService.InitDefaultAdmin(); err != nil {
 		// Log error but don't fail startup
-		fmt.Printf("[WARN] Failed to initialize default admin: %v\n", err)
+		slog.Warn("Failed to initialize default admin", "error", err)
 	}
 
 	// API routes

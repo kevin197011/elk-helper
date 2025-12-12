@@ -7,7 +7,7 @@ package main
 
 import (
 	"fmt"
-	"log"
+	"log/slog"
 	"os"
 	"os/signal"
 	"syscall"
@@ -17,10 +17,10 @@ import (
 	"github.com/kk/elk-helper/backend/internal/api/routes"
 	"github.com/kk/elk-helper/backend/internal/config"
 	"github.com/kk/elk-helper/backend/internal/service/alert"
-	"github.com/kk/elk-helper/backend/internal/service/esconfig"
+	es_config "github.com/kk/elk-helper/backend/internal/service/esconfig"
 	"github.com/kk/elk-helper/backend/internal/service/query"
 	"github.com/kk/elk-helper/backend/internal/service/rule"
-	"github.com/kk/elk-helper/backend/internal/service/systemconfig"
+	system_config "github.com/kk/elk-helper/backend/internal/service/systemconfig"
 	"github.com/kk/elk-helper/backend/internal/repository/database"
 	"github.com/kk/elk-helper/backend/internal/worker/scheduler"
 )
@@ -28,23 +28,27 @@ import (
 func main() {
 	// Load configuration
 	if err := config.Load(); err != nil {
-		log.Fatalf("Failed to load config: %v", err)
+		slog.Error("Failed to load config", "error", err)
+		os.Exit(1)
 	}
 
 	if err := config.AppConfig.Validate(); err != nil {
-		log.Fatalf("Invalid config: %v", err)
+		slog.Error("Invalid config", "error", err)
+		os.Exit(1)
 	}
 
 	// Initialize database
 	if err := database.Init(config.AppConfig.Database); err != nil {
-		log.Fatalf("Failed to initialize database: %v", err)
+		slog.Error("Failed to initialize database", "error", err)
+		os.Exit(1)
 	}
 	defer database.Close()
 
 	// Initialize services
 	queryService, err := query.NewService()
 	if err != nil {
-		log.Fatalf("Failed to create query service: %v", err)
+		slog.Error("Failed to create query service", "error", err)
+		os.Exit(1)
 	}
 
 	ruleService := rule.NewService()
@@ -55,7 +59,7 @@ func main() {
 	// Start worker scheduler if enabled
 	var sched *scheduler.Scheduler
 	if config.AppConfig.Worker.Enabled {
-		log.Println("Starting worker scheduler...")
+		slog.Info("Starting worker scheduler...")
 		sched = scheduler.NewScheduler(
 			ruleService,
 			queryService,
@@ -68,9 +72,10 @@ func main() {
 		)
 
 		if err := sched.Start(); err != nil {
-			log.Fatalf("Failed to start scheduler: %v", err)
+			slog.Error("Failed to start scheduler", "error", err)
+			os.Exit(1)
 		}
-		log.Printf("Worker scheduler started (check interval: %d seconds)", config.AppConfig.Worker.CheckInterval)
+		slog.Info("Worker scheduler started", "check_interval", config.AppConfig.Worker.CheckInterval)
 	}
 
 	// Set Gin mode
@@ -87,7 +92,7 @@ func main() {
 
 	serverErrChan := make(chan error, 1)
 	go func() {
-		log.Printf("API server starting on %s", addr)
+		slog.Info("API server starting", "address", addr)
 		if err := r.Run(addr); err != nil {
 			serverErrChan <- err
 		}
@@ -99,16 +104,17 @@ func main() {
 
 	select {
 	case sig := <-sigChan:
-		log.Printf("Received signal: %v", sig)
+		slog.Info("Received signal", "signal", sig)
 	case err := <-serverErrChan:
-		log.Fatalf("Server error: %v", err)
+		slog.Error("Server error", "error", err)
+		os.Exit(1)
 	}
 
 	// Shutdown gracefully
-	log.Println("Shutting down...")
+	slog.Info("Shutting down...")
 	if sched != nil {
 		sched.Stop()
-		log.Println("Worker scheduler stopped")
+		slog.Info("Worker scheduler stopped")
 	}
-	log.Println("Shutdown complete")
+	slog.Info("Shutdown complete")
 }

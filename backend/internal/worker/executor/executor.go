@@ -8,11 +8,12 @@ package executor
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"time"
 
 	"github.com/kk/elk-helper/backend/internal/models"
 	"github.com/kk/elk-helper/backend/internal/service/alert"
-	"github.com/kk/elk-helper/backend/internal/service/esconfig"
+	es_config "github.com/kk/elk-helper/backend/internal/service/esconfig"
 	"github.com/kk/elk-helper/backend/internal/service/query"
 	"github.com/kk/elk-helper/backend/internal/service/rule"
 	"github.com/kk/elk-helper/backend/internal/worker/notifier"
@@ -90,14 +91,14 @@ func (e *Executor) ExecuteRule(ctx context.Context, ruleModel *models.Rule) erro
 	// This ensures the next query starts from the correct time
 	now := currentTime
 	if err := e.ruleService.UpdateLastRunTime(ruleModel.ID, &now); err != nil {
-		fmt.Printf("[WARN] Failed to update last run time: %v\n", err)
+		slog.Warn("Failed to update last run time", "rule_id", ruleModel.ID, "error", err)
 		// Continue even if update fails, but log the error
 	}
 
 	// Update run count asynchronously (non-critical)
 	go func() {
 		if err := e.ruleService.IncrementRunCount(ruleModel.ID); err != nil {
-			fmt.Printf("[WARN] Failed to increment run count: %v\n", err)
+			slog.Warn("Failed to increment run count", "rule_id", ruleModel.ID, "error", err)
 		}
 	}()
 
@@ -121,7 +122,7 @@ func (e *Executor) sendAlertAsync(ruleModel *models.Rule, logs []map[string]inte
 		webhookURL = ruleModel.LarkConfig.WebhookURL
 	}
 	if webhookURL == "" {
-		fmt.Printf("[ERROR] No webhook URL configured for rule %d\n", ruleModel.ID)
+		slog.Error("No webhook URL configured for rule", "rule_id", ruleModel.ID)
 		return
 	}
 
@@ -163,14 +164,14 @@ func (e *Executor) sendAlertAsync(ruleModel *models.Rule, logs []map[string]inte
 
 	// Create alert record (async)
 	if err := e.alertService.Create(alertRecord); err != nil {
-		fmt.Printf("[WARN] Failed to create alert record: %v\n", err)
+		slog.Warn("Failed to create alert record", "rule_id", ruleModel.ID, "error", err)
 	}
 
 	// Update alert count if successful (async)
 	if err == nil {
 		go func() {
 			if err := e.ruleService.IncrementAlertCount(ruleModel.ID, int64(len(logs))); err != nil {
-				fmt.Printf("[WARN] Failed to increment alert count: %v\n", err)
+				slog.Warn("Failed to increment alert count", "rule_id", ruleModel.ID, "error", err)
 			}
 		}()
 	}

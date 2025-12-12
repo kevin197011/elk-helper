@@ -8,31 +8,32 @@ package scheduler
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"sync"
 	"time"
 
 	"github.com/kk/elk-helper/backend/internal/models"
 	"github.com/kk/elk-helper/backend/internal/service/alert"
-	"github.com/kk/elk-helper/backend/internal/service/esconfig"
+	es_config "github.com/kk/elk-helper/backend/internal/service/esconfig"
 	"github.com/kk/elk-helper/backend/internal/service/query"
 	"github.com/kk/elk-helper/backend/internal/service/rule"
-	"github.com/kk/elk-helper/backend/internal/service/systemconfig"
+	system_config "github.com/kk/elk-helper/backend/internal/service/systemconfig"
 	"github.com/kk/elk-helper/backend/internal/worker/executor"
 )
 
 // Scheduler manages rule execution schedule
 type Scheduler struct {
-	ruleService       *rule.Service
-	queryService      *query.Service
-	alertService      *alert.Service
+	ruleService         *rule.Service
+	queryService        *query.Service
+	alertService        *alert.Service
 	systemConfigService *system_config.Service
-	executor          *executor.Executor
-	ctx               context.Context
-	cancel            context.CancelFunc
-	wg                sync.WaitGroup
-	mu                sync.RWMutex
-	runningRules      map[uint]context.CancelFunc // Track running rule goroutines
-	checkInterval     time.Duration
+	executor            *executor.Executor
+	ctx                 context.Context
+	cancel              context.CancelFunc
+	wg                  sync.WaitGroup
+	mu                  sync.RWMutex
+	runningRules        map[uint]context.CancelFunc // Track running rule goroutines
+	checkInterval       time.Duration
 }
 
 // NewScheduler creates a new scheduler
@@ -40,21 +41,21 @@ func NewScheduler(ruleService *rule.Service, queryService *query.Service, esConf
 	ctx, cancel := context.WithCancel(context.Background())
 
 	return &Scheduler{
-		ruleService:        ruleService,
-		queryService:       queryService,
-		alertService:       alertService,
+		ruleService:         ruleService,
+		queryService:        queryService,
+		alertService:        alertService,
 		systemConfigService: systemConfigService,
-		executor:           executor.NewExecutor(queryService, esConfigService, ruleService, alertService, retryTimes, batchSize),
-		ctx:                ctx,
-		cancel:             cancel,
-		runningRules:       make(map[uint]context.CancelFunc),
-		checkInterval:      checkInterval,
+		executor:            executor.NewExecutor(queryService, esConfigService, ruleService, alertService, retryTimes, batchSize),
+		ctx:                 ctx,
+		cancel:              cancel,
+		runningRules:        make(map[uint]context.CancelFunc),
+		checkInterval:       checkInterval,
 	}
 }
 
 // Start starts the scheduler
 func (s *Scheduler) Start() error {
-	fmt.Printf("[INFO] Scheduler started, checking for rule changes every %v\n", s.checkInterval)
+	slog.Info("Scheduler started", "check_interval", s.checkInterval)
 
 	// Start rule monitor goroutine
 	s.wg.Add(1)
@@ -74,13 +75,13 @@ func (s *Scheduler) Stop() {
 	// Cancel all running rule goroutines
 	s.mu.Lock()
 	for ruleID, cancel := range s.runningRules {
-		fmt.Printf("[INFO] Stopping rule %d\n", ruleID)
+		slog.Info("Stopping rule", "rule_id", ruleID)
 		cancel()
 	}
 	s.mu.Unlock()
 
 	s.wg.Wait()
-	fmt.Println("[INFO] Scheduler stopped")
+	slog.Info("Scheduler stopped")
 }
 
 // monitorRules periodically checks for rule changes and starts/stops rule goroutines
@@ -107,7 +108,7 @@ func (s *Scheduler) monitorRules() {
 func (s *Scheduler) syncRules() {
 	rules, err := s.ruleService.GetEnabled()
 	if err != nil {
-		fmt.Printf("[ERROR] Failed to get enabled rules: %v\n", err)
+		slog.Error("Failed to get enabled rules", "error", err)
 		return
 	}
 
@@ -123,7 +124,7 @@ func (s *Scheduler) syncRules() {
 	// Stop goroutines for disabled rules
 	for ruleID, cancel := range s.runningRules {
 		if !enabledRuleIDs[ruleID] {
-			fmt.Printf("[INFO] Stopping rule %d (disabled)\n", ruleID)
+			slog.Info("Stopping rule", "rule_id", ruleID, "reason", "disabled")
 			cancel()
 			delete(s.runningRules, ruleID)
 		}
@@ -137,7 +138,7 @@ func (s *Scheduler) syncRules() {
 
 	for _, r := range rules {
 		if !runningRuleIDs[r.ID] {
-			fmt.Printf("[INFO] Starting rule %d (%s)\n", r.ID, r.Name)
+			slog.Info("Starting rule", "rule_id", r.ID, "rule_name", r.Name)
 			ruleCtx, ruleCancel := context.WithCancel(s.ctx)
 			s.runningRules[r.ID] = ruleCancel
 
@@ -170,13 +171,13 @@ func (s *Scheduler) runRule(ctx context.Context, ruleModel models.Rule) {
 	for {
 		select {
 		case <-ctx.Done():
-			fmt.Printf("[INFO] Rule %d (%s) stopped\n", ruleID, ruleName)
+			slog.Info("Rule stopped", "rule_id", ruleID, "rule_name", ruleName)
 			return
 		case <-ticker.C:
 			// Reload rule from database to get latest configuration
 			rule, err := s.ruleService.GetByID(ruleID)
 			if err != nil {
-				fmt.Printf("[ERROR] Failed to reload rule %d: %v\n", ruleID, err)
+				slog.Error("Failed to reload rule", "rule_id", ruleID, "error", err)
 				continue
 			}
 
@@ -188,7 +189,7 @@ func (s *Scheduler) runRule(ctx context.Context, ruleModel models.Rule) {
 			if newInterval != interval {
 				interval = newInterval
 				ticker.Reset(interval)
-				fmt.Printf("[INFO] Rule %d (%s) interval updated to %v\n", ruleID, rule.Name, interval)
+				slog.Info("Rule interval updated", "rule_id", ruleID, "rule_name", rule.Name, "interval", interval)
 			}
 
 			// Execute with latest configuration
@@ -202,7 +203,7 @@ func (s *Scheduler) executeRuleWithReload(ctx context.Context, ruleID uint) {
 	// Reload rule from database to get latest configuration
 	rule, err := s.ruleService.GetByID(ruleID)
 	if err != nil {
-		fmt.Printf("[ERROR] Failed to reload rule %d: %v\n", ruleID, err)
+		slog.Error("Failed to reload rule", "rule_id", ruleID, "error", err)
 		return
 	}
 
@@ -214,7 +215,7 @@ func (s *Scheduler) executeRule(ctx context.Context, ruleModel *models.Rule) {
 	// Execute in a separate goroutine to avoid blocking
 	go func() {
 		if err := s.executor.ExecuteRule(ctx, ruleModel); err != nil {
-			fmt.Printf("[ERROR] Failed to execute rule %d (%s): %v\n", ruleModel.ID, ruleModel.Name, err)
+			slog.Error("Failed to execute rule", "rule_id", ruleModel.ID, "rule_name", ruleModel.Name, "error", err)
 		}
 	}()
 }
@@ -235,10 +236,9 @@ func (s *Scheduler) startCleanupTask() {
 	if err == nil && config != nil && config.Enabled {
 		nextRun = s.nextRunTime(config.Hour, config.Minute)
 		retentionDays = config.RetentionDays
-		fmt.Printf("[INFO] Cleanup task enabled: scheduled for %s (deletes alerts older than %d days)\n",
-			nextRun.Format("2006-01-02 15:04:05"), retentionDays)
+		slog.Info("Cleanup task enabled", "scheduled_time", nextRun.Format("2006-01-02 15:04:05"), "retention_days", retentionDays)
 	} else {
-		fmt.Printf("[INFO] Cleanup task disabled\n")
+		slog.Info("Cleanup task disabled")
 	}
 
 	for {
@@ -249,12 +249,15 @@ func (s *Scheduler) startCleanupTask() {
 			// Reload configuration
 			config, err := s.systemConfigService.GetCleanupConfig()
 			if err != nil {
-				fmt.Printf("[ERROR] Failed to load cleanup config: %v\n", err)
+				slog.Error("Failed to load cleanup config", "error", err)
 				continue
 			}
 
 			if !config.Enabled {
-				nextRun = nil
+				if nextRun != nil {
+					slog.Debug("Cleanup task disabled, clearing next run")
+					nextRun = nil
+				}
 				continue
 			}
 
@@ -263,24 +266,28 @@ func (s *Scheduler) startCleanupTask() {
 			if nextRun == nil || !nextRun.Equal(*newNextRun) || retentionDays != config.RetentionDays {
 				nextRun = newNextRun
 				retentionDays = config.RetentionDays
-				fmt.Printf("[INFO] Cleanup task rescheduled for %s (deletes alerts older than %d days)\n",
-					nextRun.Format("2006-01-02 15:04:05"), retentionDays)
+				slog.Info("Cleanup task rescheduled", "scheduled_time", nextRun.Format("2006-01-02 15:04:05"), "retention_days", retentionDays)
 			}
 
 			// Check if it's time to run
-			if nextRun != nil && time.Now().After(*nextRun) {
+			now := time.Now()
+			if nextRun != nil && (now.After(*nextRun) || now.Truncate(time.Minute).Equal(nextRun.Truncate(time.Minute))) {
+				slog.Info("Cleanup task triggered", "triggered_at", now.Format("2006-01-02 15:04:05"), "scheduled_for", nextRun.Format("2006-01-02 15:04:05"))
+
 				// Execute cleanup
 				retentionDuration := time.Duration(retentionDays) * 24 * time.Hour
 				rowsAffected, err := s.alertService.CleanupOldData(retentionDuration)
 				if err != nil {
-					fmt.Printf("[ERROR] Failed to cleanup old alerts: %v\n", err)
+					slog.Error("Failed to cleanup old alerts", "error", err)
 					// Update execution status to failed
 					statusErr := s.systemConfigService.UpdateCleanupExecutionStatus("failed", fmt.Sprintf("清理失败: %v", err))
 					if statusErr != nil {
-						fmt.Printf("[ERROR] Failed to update cleanup execution status: %v\n", statusErr)
+						slog.Error("Failed to update cleanup execution status", "error", statusErr)
+					} else {
+						slog.Info("Cleanup execution status updated", "status", "failed")
 					}
 				} else {
-					fmt.Printf("[INFO] Cleanup task completed: deleted %d alerts older than %d days\n", rowsAffected, retentionDays)
+					slog.Info("Cleanup task completed", "rows_affected", rowsAffected, "retention_days", retentionDays)
 					// Update execution status to success
 					resultMsg := fmt.Sprintf("成功删除 %d 条告警数据", rowsAffected)
 					if rowsAffected == 0 {
@@ -288,13 +295,15 @@ func (s *Scheduler) startCleanupTask() {
 					}
 					statusErr := s.systemConfigService.UpdateCleanupExecutionStatus("success", resultMsg)
 					if statusErr != nil {
-						fmt.Printf("[ERROR] Failed to update cleanup execution status: %v\n", statusErr)
+						slog.Error("Failed to update cleanup execution status", "error", statusErr)
+					} else {
+						slog.Info("Cleanup execution status updated", "status", "success", "message", resultMsg)
 					}
 				}
 
 				// Schedule next run
 				nextRun = s.nextRunTime(config.Hour, config.Minute)
-				fmt.Printf("[INFO] Next cleanup task scheduled for %s\n", nextRun.Format("2006-01-02 15:04:05"))
+				slog.Info("Next cleanup task scheduled", "scheduled_time", nextRun.Format("2006-01-02 15:04:05"))
 			}
 		}
 	}
