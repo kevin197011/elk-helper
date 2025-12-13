@@ -281,7 +281,7 @@ func (s *Service) GetRuleTimeSeriesStats(duration time.Duration, intervalMinutes
 		})
 	}
 
-	// Generate time buckets
+	// Generate time buckets - calculate from current time backwards
 	numBuckets := int(duration.Minutes()) / intervalMinutes
 	if numBuckets > 24 {
 		numBuckets = 24 // Max 24 points for readability
@@ -299,13 +299,28 @@ func (s *Service) GetRuleTimeSeriesStats(duration time.Duration, intervalMinutes
 		localTZ = time.UTC
 	}
 
+	// Align current time to interval boundaries, then go backwards
+	// This ensures the last bucket is closest to current time
+	intervalSeconds := intervalMinutes * 60
+	utcNowUnix := utcNow.Unix()
+	// Round down current time to the nearest interval boundary
+	alignedNowUnix := (utcNowUnix / int64(intervalSeconds)) * int64(intervalSeconds)
+	alignedNow := time.Unix(alignedNowUnix, 0).UTC()
+
+	// Calculate start time: go backwards from aligned current time
+	alignedSince := alignedNow.Add(-duration)
+
+	// Use aligned times for bucketing to ensure buckets align nicely
+	// But use original 'since' for data queries to include all data
+	actualSince := alignedSince
+
 	for i, rule := range rulesWithCounts {
 		dataPoints := make([]TimeSeriesDataPoint, numBuckets)
 
-		// Initialize all buckets
+		// Initialize all buckets - from oldest to newest (current time)
 		for j := 0; j < numBuckets; j++ {
-			// Calculate bucket time in UTC
-			bucketTimeUTC := since.Add(time.Duration(j) * time.Duration(intervalMinutes) * time.Minute)
+			// Calculate bucket time in UTC, starting from aligned start time
+			bucketTimeUTC := actualSince.Add(time.Duration(j) * time.Duration(intervalMinutes) * time.Minute)
 			// Convert to Hong Kong time for display
 			bucketTimeHK := bucketTimeUTC.In(localTZ)
 			dataPoints[j] = TimeSeriesDataPoint{
@@ -325,11 +340,12 @@ func (s *Service) GetRuleTimeSeriesStats(duration time.Duration, intervalMinutes
 
 		// PostgreSQL time bucketing using EXTRACT(EPOCH FROM timestamp)
 		// Use SUM(log_count) to count total logs, not just alert records
+		// Use aligned since time for consistent bucket indexing
 		err := database.DB.Model(&models.Alert{}).
 			Select(fmt.Sprintf(`
 				CAST((EXTRACT(EPOCH FROM created_at)::bigint - %d) / %d AS INTEGER) as bucket_index,
 				SUM(log_count) as count
-			`, since.Unix(), intervalMinutes*60)).
+			`, actualSince.Unix(), intervalMinutes*60)).
 			Where("rule_id = ? AND created_at >= ? AND created_at <= ?", rule.RuleID, since, utcNow).
 			Group("bucket_index").
 			Scan(&bucketResults).Error
