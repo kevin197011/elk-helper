@@ -6,7 +6,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useQuery } from '@tanstack/react-query';
 import { statusApi, alertsApi } from '../services/api';
-import { Activity, CheckCircle, AlertCircle, Database, TrendingUp } from 'lucide-react';
+import { Activity, CheckCircle, AlertCircle, Database, TrendingUp, RefreshCw } from 'lucide-react';
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useMemo } from 'react';
 
@@ -145,16 +145,19 @@ function InteractiveAreaChart({ data }: { data: any[] }) {
 }
 
 export default function DashboardPage() {
-  const { data: statusData, isLoading } = useQuery({
+  // Refresh every 10 seconds for real-time updates
+  const REFETCH_INTERVAL = 10000;
+
+  const { data: statusData, isLoading, isFetching: isStatusFetching } = useQuery({
     queryKey: ['status'],
     queryFn: () => statusApi.getStatus().then(res => res.data.data),
-    refetchInterval: 30000,
+    refetchInterval: REFETCH_INTERVAL,
   });
 
-  const { data: ruleTimeSeriesData, isLoading: ruleTimeSeriesLoading } = useQuery({
+  const { data: ruleTimeSeriesData, isLoading: ruleTimeSeriesLoading, isFetching: isChartFetching } = useQuery({
     queryKey: ['rule-timeseries-stats'],
     queryFn: () => alertsApi.getRuleTimeSeries('24h', 60).then(res => res.data.data),
-    refetchInterval: 30000,
+    refetchInterval: REFETCH_INTERVAL,
   });
 
   const stats = [
@@ -220,7 +223,12 @@ export default function DashboardPage() {
           <h2 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
             系统概览
           </h2>
-          <p className="text-muted-foreground mt-1">实时监控系统运行状态和关键指标</p>
+          <p className="text-muted-foreground mt-1 flex items-center gap-2">
+            实时监控系统运行状态和关键指标
+            {(isStatusFetching || isChartFetching) && (
+              <RefreshCw className="h-3 w-3 animate-spin text-muted-foreground" />
+            )}
+          </p>
         </div>
       </div>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -270,6 +278,9 @@ export default function DashboardPage() {
               <div className="flex items-center gap-2">
                 <TrendingUp className="h-5 w-5 text-muted-foreground" />
                 <CardTitle>规则告警趋势 (24小时)</CardTitle>
+                {isChartFetching && (
+                  <RefreshCw className="h-4 w-4 animate-spin text-muted-foreground" />
+                )}
               </div>
               <div className="text-sm text-muted-foreground">
                 {ruleTimeSeriesData && ruleTimeSeriesData.length > 0 && (

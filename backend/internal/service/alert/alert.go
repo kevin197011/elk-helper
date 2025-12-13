@@ -225,8 +225,10 @@ func (s *Service) GetRuleAlertStats(duration time.Duration) ([]RuleAlertStats, e
 
 // GetRuleTimeSeriesStats returns time series alert statistics for all enabled rules
 func (s *Service) GetRuleTimeSeriesStats(duration time.Duration, intervalMinutes int) ([]RuleTimeSeriesStats, error) {
-	since := time.Now().Add(-duration)
-	now := time.Now()
+	// Use UTC time for all calculations since database stores UTC
+	utcNow := time.Now().UTC()
+	since := utcNow.Add(-duration)
+	now := utcNow
 
 	// Get all enabled rules
 	var allRules []models.Rule
@@ -293,10 +295,15 @@ func (s *Service) GetRuleTimeSeriesStats(duration time.Duration, intervalMinutes
 		dataPoints := make([]TimeSeriesDataPoint, numBuckets)
 
 		// Initialize all buckets
+		// Get local timezone for display
+		localTZ := time.Now().Location()
 		for j := 0; j < numBuckets; j++ {
-			bucketTime := since.Add(time.Duration(j) * time.Duration(intervalMinutes) * time.Minute)
+			// Calculate bucket time in UTC
+			bucketTimeUTC := since.Add(time.Duration(j) * time.Duration(intervalMinutes) * time.Minute)
+			// Convert to local time for display
+			bucketTimeLocal := bucketTimeUTC.In(localTZ)
 			dataPoints[j] = TimeSeriesDataPoint{
-				Time:  bucketTime.Format("15:04"),
+				Time:  bucketTimeLocal.Format("15:04"),
 				Value: 0,
 			}
 		}

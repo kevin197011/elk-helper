@@ -271,8 +271,17 @@ func (s *Scheduler) startCleanupTask() {
 
 			// Check if it's time to run
 			now := time.Now()
-			if nextRun != nil && (now.After(*nextRun) || now.Truncate(time.Minute).Equal(nextRun.Truncate(time.Minute))) {
-				slog.Info("Cleanup task triggered", "triggered_at", now.Format("2006-01-02 15:04:05"), "scheduled_for", nextRun.Format("2006-01-02 15:04:05"))
+			if nextRun != nil {
+				// Use truncate to minute for comparison to allow execution within the same minute
+				nowTruncated := now.Truncate(time.Minute)
+				nextRunTruncated := nextRun.Truncate(time.Minute)
+
+				if nowTruncated.After(nextRunTruncated) || nowTruncated.Equal(nextRunTruncated) {
+					slog.Info("Cleanup task triggered",
+						"triggered_at", now.Format("2006-01-02 15:04:05"),
+						"scheduled_for", nextRun.Format("2006-01-02 15:04:05"),
+						"now_truncated", nowTruncated.Format("2006-01-02 15:04:05"),
+						"next_run_truncated", nextRunTruncated.Format("2006-01-02 15:04:05"))
 
 				// Execute cleanup
 				retentionDuration := time.Duration(retentionDays) * 24 * time.Hour
@@ -301,9 +310,20 @@ func (s *Scheduler) startCleanupTask() {
 					}
 				}
 
-				// Schedule next run
-				nextRun = s.nextRunTime(config.Hour, config.Minute)
-				slog.Info("Next cleanup task scheduled", "scheduled_time", nextRun.Format("2006-01-02 15:04:05"))
+					// Schedule next run immediately to prevent multiple executions in the same minute
+					nextRun = s.nextRunTime(config.Hour, config.Minute)
+					slog.Info("Next cleanup task scheduled",
+						"scheduled_time", nextRun.Format("2006-01-02 15:04:05"),
+						"current_time", time.Now().Format("2006-01-02 15:04:05"))
+				} else {
+					// Log periodically for debugging (every 10 minutes)
+					if now.Minute()%10 == 0 && now.Second() < 10 {
+						slog.Debug("Cleanup task waiting",
+							"current_time", now.Format("2006-01-02 15:04:05"),
+							"next_run", nextRun.Format("2006-01-02 15:04:05"),
+							"time_until_run", nextRun.Sub(now).String())
+					}
+				}
 			}
 		}
 	}
