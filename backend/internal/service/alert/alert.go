@@ -225,10 +225,11 @@ func (s *Service) GetRuleAlertStats(duration time.Duration) ([]RuleAlertStats, e
 
 // GetRuleTimeSeriesStats returns time series alert statistics for all enabled rules
 func (s *Service) GetRuleTimeSeriesStats(duration time.Duration, intervalMinutes int) ([]RuleTimeSeriesStats, error) {
-	// Use UTC time for all calculations since database stores UTC
-	utcNow := time.Now().UTC()
+	// Explicitly get UTC time to ensure consistency
+	// Note: time.Now() respects TZ env var in Docker, but we explicitly convert to UTC for database queries
+	now := time.Now()
+	utcNow := now.UTC()
 	since := utcNow.Add(-duration)
-	now := utcNow
 
 	// Get all enabled rules
 	var allRules []models.Rule
@@ -291,19 +292,24 @@ func (s *Service) GetRuleTimeSeriesStats(duration time.Duration, intervalMinutes
 
 	result := make([]RuleTimeSeriesStats, len(rulesWithCounts))
 
+	// Load timezone for display (explicitly use Asia/Hong_Kong to match Docker TZ setting)
+	localTZ, err := time.LoadLocation("Asia/Hong_Kong")
+	if err != nil {
+		// Fallback to UTC if timezone loading fails
+		localTZ = time.UTC
+	}
+
 	for i, rule := range rulesWithCounts {
 		dataPoints := make([]TimeSeriesDataPoint, numBuckets)
 
 		// Initialize all buckets
-		// Get local timezone for display
-		localTZ := time.Now().Location()
 		for j := 0; j < numBuckets; j++ {
 			// Calculate bucket time in UTC
 			bucketTimeUTC := since.Add(time.Duration(j) * time.Duration(intervalMinutes) * time.Minute)
-			// Convert to local time for display
-			bucketTimeLocal := bucketTimeUTC.In(localTZ)
+			// Convert to Hong Kong time for display
+			bucketTimeHK := bucketTimeUTC.In(localTZ)
 			dataPoints[j] = TimeSeriesDataPoint{
-				Time:  bucketTimeLocal.Format("15:04"),
+				Time:  bucketTimeHK.Format("15:04"),
 				Value: 0,
 			}
 		}
@@ -324,7 +330,7 @@ func (s *Service) GetRuleTimeSeriesStats(duration time.Duration, intervalMinutes
 				CAST((EXTRACT(EPOCH FROM created_at)::bigint - %d) / %d AS INTEGER) as bucket_index,
 				SUM(log_count) as count
 			`, since.Unix(), intervalMinutes*60)).
-			Where("rule_id = ? AND created_at >= ? AND created_at <= ?", rule.RuleID, since, now).
+			Where("rule_id = ? AND created_at >= ? AND created_at <= ?", rule.RuleID, since, utcNow).
 			Group("bucket_index").
 			Scan(&bucketResults).Error
 
