@@ -1,0 +1,86 @@
+# Environment files
+.env
+.env.local
+.env.*.local
+docker-compose.override.yml
+
+# State files
+last_run.state
+*.state
+data/
+
+# Configuration files with sensitive data
+config.yml
+*.local.yml
+
+# Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+go.work
+go.work.sum
+vendor/
+
+# Build artifacts
+elk-helper
+elk-helper-*
+backend/elk-helper
+backend/elk-helper-*
+
+# Frontend build
+dist/
+node_modules/
+.vite/
+package-lock.json
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+*.sublime-project
+*.sublime-workspace
+.cursor/
+
+# OS
+.DS_Store
+Thumbs.db
+.DS_Store?
+._*
+
+# Logs
+*.log
+logs/
+*.log.*
+
+# Docker
+.docker/
+docker-compose.override.yml
+
+
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
+*.backup
+
+# Coverage reports
+coverage/
+*.cover
+*.coverprofile
+
+# Test files
+test-results/
+t.rb
