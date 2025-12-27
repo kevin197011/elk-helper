@@ -13,7 +13,7 @@ import {
   DatabaseOutlined,
   SyncOutlined,
 } from '@ant-design/icons';
-import { Area, AreaChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { useMemo, useState, useEffect } from 'react';
 
 const { Title, Text } = Typography;
@@ -105,6 +105,7 @@ function InteractiveAreaChart({ data }: { data: any[] }) {
         <Tooltip
           content={({ active, payload, label }) => {
             if (!active || !payload) return null;
+            const total = payload.reduce((sum: number, entry: any) => sum + (entry.value || 0), 0);
             return (
               <div style={{
                 background: '#fff',
@@ -114,36 +115,10 @@ function InteractiveAreaChart({ data }: { data: any[] }) {
                 border: '1px solid #f0f0f0'
               }}>
                 <div style={{ fontWeight: 500, marginBottom: 8 }}>时间: {label}</div>
-                {payload.map((entry: any, index: number) => (
-                  <div key={index} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                    <div style={{ width: 12, height: 12, borderRadius: 2, backgroundColor: entry.color }} />
-                    <span style={{ flex: 1 }}>{entry.name}:</span>
-                    <span style={{ fontWeight: 600, fontFamily: 'monospace' }}>{entry.value}</span>
-                  </div>
-                ))}
-                <div style={{ borderTop: '1px solid #f0f0f0', marginTop: 8, paddingTop: 8, display: 'flex', justifyContent: 'space-between', fontWeight: 600 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontWeight: 600 }}>
                   <span>总计:</span>
-                  <span style={{ fontFamily: 'monospace' }}>
-                    {payload.reduce((sum: number, entry: any) => sum + (entry.value || 0), 0)}
-                  </span>
+                  <span style={{ fontFamily: 'monospace', fontSize: 16 }}>{total}</span>
                 </div>
-              </div>
-            );
-          }}
-        />
-        <Legend
-          verticalAlign="top"
-          height={36}
-          content={({ payload }) => {
-            if (!payload) return null;
-            return (
-              <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 16, paddingBottom: 16 }}>
-                {payload.map((entry: any, index: number) => (
-                  <div key={index} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <div style={{ width: 12, height: 12, borderRadius: 2, backgroundColor: entry.color }} />
-                    <span>{entry.value}</span>
-                  </div>
-                ))}
               </div>
             );
           }}
