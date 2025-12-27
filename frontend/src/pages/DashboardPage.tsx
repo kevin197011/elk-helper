@@ -105,20 +105,78 @@ function InteractiveAreaChart({ data }: { data: any[] }) {
         <Tooltip
           content={({ active, payload, label }) => {
             if (!active || !payload) return null;
+            // 过滤掉值为 0 的规则，只显示有告警的规则
+            const activeRules = payload.filter((entry: any) => entry.value && entry.value > 0);
             const total = payload.reduce((sum: number, entry: any) => sum + (entry.value || 0), 0);
+            
             return (
               <div style={{
                 background: '#fff',
                 padding: '12px 16px',
                 borderRadius: 8,
                 boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-                border: '1px solid #f0f0f0'
+                border: '1px solid #f0f0f0',
+                maxWidth: 300
               }}>
-                <div style={{ fontWeight: 500, marginBottom: 8 }}>时间: {label}</div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontWeight: 600 }}>
-                  <span>总计:</span>
-                  <span style={{ fontFamily: 'monospace', fontSize: 16 }}>{total}</span>
-                </div>
+                <div style={{ fontWeight: 500, marginBottom: 12, color: '#262626' }}>时间: {label}</div>
+                {activeRules.length > 0 ? (
+                  <>
+                    <div style={{ marginBottom: 8, maxHeight: 200, overflowY: 'auto' }}>
+                      {activeRules.map((entry: any, index: number) => (
+                        <div key={index} style={{ 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          justifyContent: 'space-between',
+                          gap: 12,
+                          marginBottom: 6,
+                          padding: '4px 0'
+                        }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 6, flex: 1, minWidth: 0 }}>
+                            <div style={{ 
+                              width: 10, 
+                              height: 10, 
+                              borderRadius: 2, 
+                              backgroundColor: entry.color,
+                              flexShrink: 0
+                            }} />
+                            <span style={{ 
+                              fontSize: 13,
+                              color: '#595959',
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              whiteSpace: 'nowrap'
+                            }}>{entry.name}</span>
+                          </div>
+                          <span style={{ 
+                            fontWeight: 600, 
+                            fontFamily: 'monospace',
+                            fontSize: 13,
+                            color: '#262626',
+                            flexShrink: 0
+                          }}>{entry.value}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div style={{ 
+                      borderTop: '1px solid #f0f0f0', 
+                      marginTop: 8, 
+                      paddingTop: 8, 
+                      display: 'flex', 
+                      justifyContent: 'space-between', 
+                      alignItems: 'center',
+                      fontWeight: 600 
+                    }}>
+                      <span style={{ color: '#262626' }}>总计:</span>
+                      <span style={{ 
+                        fontFamily: 'monospace', 
+                        fontSize: 14,
+                        color: '#1677ff'
+                      }}>{total}</span>
+                    </div>
+                  </>
+                ) : (
+                  <div style={{ color: '#8c8c8c', fontSize: 13 }}>该时间点无告警</div>
+                )}
               </div>
             );
           }}
