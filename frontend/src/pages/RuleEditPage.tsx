@@ -28,6 +28,41 @@ import PageHeader from '../components/PageHeader';
 const { Title, Text, Paragraph } = Typography;
 const { TextArea } = Input;
 
+function escapeRegex(s: string) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function extractHitKeywords(queries: any[]): string[] {
+  const values: string[] = [];
+  for (const q of queries || []) {
+    const op = q?.operator || q?.op;
+    if (op !== 'contains') continue;
+    if (typeof q?.value !== 'string') continue;
+    const v = q.value.trim();
+    if (!v) continue;
+    values.push(v);
+  }
+  return Array.from(new Set(values)).sort((a, b) => b.length - a.length);
+}
+
+function highlightText(text: string, keywords: string[]) {
+  if (!text || !keywords || keywords.length === 0) return text;
+  const pattern = new RegExp(`(${keywords.map(escapeRegex).join('|')})`, 'gi');
+  const parts = text.split(pattern);
+  if (parts.length <= 1) return text;
+  const keywordSet = new Set(keywords.map((k) => k.toLowerCase()));
+  return parts.map((part, idx) => {
+    const isHit = keywordSet.has(part.toLowerCase());
+    return isHit ? (
+      <span key={idx} className="app-highlight-hit">
+        {part}
+      </span>
+    ) : (
+      <span key={idx}>{part}</span>
+    );
+  });
+}
+
 export default function RuleEditPage() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
@@ -38,6 +73,7 @@ export default function RuleEditPage() {
   const [testModalOpen, setTestModalOpen] = useState(false);
   const [testResult, setTestResult] = useState<any>(null);
   const [isTesting, setIsTesting] = useState(false);
+  const [testHitKeywords, setTestHitKeywords] = useState<string[]>([]);
 
   const { data: ruleData, isLoading } = useQuery({
     queryKey: ['rule', id],
@@ -121,6 +157,7 @@ export default function RuleEditPage() {
       setIsTesting(true);
       const response = await rulesApi.test({ ...values, queries });
       setTestResult(response.data);
+      setTestHitKeywords(extractHitKeywords(queries));
       setTestModalOpen(true);
 
       if (response.data.success) {
@@ -455,9 +492,36 @@ export default function RuleEditPage() {
                 {testResult.data.logs?.length > 0 && (
                   <div>
                     <Text type="secondary">日志示例（最多显示 10 条）</Text>
-                    <pre className="app-code-block" style={{ maxHeight: 400 }}>
-                      {JSON.stringify(testResult.data.logs.slice(0, 10), null, 2)}
-                    </pre>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 8 }}>
+                      {testResult.data.logs.slice(0, 10).map((log: any, idx: number) => {
+                        const msg = typeof log?.message === 'string' ? log.message : '';
+                        return (
+                          <div key={idx} className="app-surface-muted" style={{ padding: 12 }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, marginBottom: 6 }}>
+                              <Text type="secondary">#{idx + 1}</Text>
+                              {log?.['@timestamp'] ? <Text type="secondary">{String(log['@timestamp'])}</Text> : null}
+                            </div>
+                            {msg ? (
+                              <>
+                                <div style={{ fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace', fontSize: 12, lineHeight: 1.6 }}>
+                                  {highlightText(msg, testHitKeywords)}
+                                </div>
+                                <details style={{ marginTop: 8 }}>
+                                  <summary style={{ cursor: 'pointer', fontSize: 12 }}>查看原始 JSON</summary>
+                                  <pre className="app-code-block" style={{ marginTop: 8, maxHeight: 260 }}>
+                                    {JSON.stringify(log, null, 2)}
+                                  </pre>
+                                </details>
+                              </>
+                            ) : (
+                              <pre className="app-code-block" style={{ maxHeight: 260 }}>
+                                {JSON.stringify(log, null, 2)}
+                              </pre>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
                 )}
               </>
