@@ -1,0 +1,348 @@
+/* ELK Helper - Minimal & Elegant (ref: kkArtifact/web-ui) */
+:root {
+  /* Modern color palette - minimal and elegant (Light theme) */
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #fafbfc;
+  --color-bg-tertiary: #f5f7fa;
+  --color-border: #e8eaed;
+  --color-border-light: #f0f2f5;
+  --color-text-primary: #1d2129;
+  --color-text-secondary: #86909c;
+  --color-text-tertiary: #c9cdd4;
+  --color-primary: #165dff;
+  --color-primary-hover: #4080ff;
+  --color-primary-light: #e8f3ff;
+  --color-success: #00b42a;
+  --color-warning: #ff7d00;
+  --color-error: #f53f3f;
+
+  /* Spacing system */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+
+  /* Border radius */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+
+  /* Shadows - subtle and minimal */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, 'Noto Sans', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-primary);
+}
+
+/* 页面容器：统一最大宽度与卡片风格 */
+.app-content {
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+}
+
+.app-page-card {
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-md);
+  box-shadow: none;
+}
+
+.app-page-card--padded {
+  padding: 32px;
+}
+
+.app-page-header {
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.app-page-section {
+  margin-top: 16px;
+}
+
+.app-muted {
+  color: var(--color-text-secondary);
+}
+
+.app-surface-muted {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-md);
+}
+
+.app-code-block {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  overflow: auto;
+  font-size: 12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
+    monospace;
+}
+
+.app-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.app-link:hover {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Login grid background (static, no animation) */
+.app-login-bg {
+  background-color: var(--color-bg-tertiary);
+  background-image:
+    linear-gradient(to right, rgba(22, 93, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(22, 93, 255, 0.08) 1px, transparent 1px),
+    radial-gradient(circle at 15% 20%, rgba(22, 93, 255, 0.24) 0 2px, transparent 3px),
+    radial-gradient(circle at 30% 70%, rgba(22, 93, 255, 0.20) 0 2px, transparent 3px),
+    radial-gradient(circle at 70% 35%, rgba(22, 93, 255, 0.20) 0 2px, transparent 3px),
+    radial-gradient(circle at 85% 60%, rgba(22, 93, 255, 0.24) 0 2px, transparent 3px);
+  background-size: 80px 80px, 80px 80px, auto, auto, auto, auto;
+  background-position: center, center, center, center, center, center;
+}
+
+/* Subtle animated background (minimal, low-noise) */
+@keyframes appLoginGridDrift {
+  0% {
+    background-position: 0 0, 0 0, center, center, center, center;
+  }
+  100% {
+    background-position: 80px 80px, 80px 80px, center, center, center, center;
+  }
+}
+
+@keyframes appLoginGlowPulse {
+  0% {
+    opacity: 0.65;
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    opacity: 0.95;
+    transform: translate3d(16px, -12px, 0);
+  }
+  100% {
+    opacity: 0.65;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.app-login-bg {
+  position: relative;
+  overflow: hidden;
+}
+
+.app-login-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(720px 520px at 65% 18%, rgba(22, 93, 255, 0.14) 0%, transparent 62%),
+    radial-gradient(640px 460px at 18% 78%, rgba(22, 93, 255, 0.12) 0%, transparent 62%);
+  opacity: 0.8;
+}
+
+/* Only animate when user allows motion */
+@media (prefers-reduced-motion: no-preference) {
+  .app-login-bg {
+    animation: appLoginGridDrift 12s linear infinite;
+  }
+  .app-login-bg::before {
+    animation: appLoginGlowPulse 7.5s ease-in-out infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-login-bg {
+    animation: none !important;
+  }
+  .app-login-bg::before {
+    animation: none !important;
+  }
+}
+
+/* Global Ant Design overrides - Minimal & Clean Design */
+.ant-card {
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-light);
+  box-shadow: none;
+  background: var(--color-bg-primary);
+}
+
+.ant-card-head {
+  border-bottom: 1px solid var(--color-border-light);
+  padding: var(--spacing-md) var(--spacing-lg);
+  min-height: auto;
+}
+
+.ant-card-head-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  padding: 0;
+}
+
+.ant-card-body {
+  padding: var(--spacing-lg);
+}
+
+.ant-table-thead > tr > th {
+  background: var(--color-bg-secondary);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  border-bottom: 1px solid var(--color-border-light);
+  padding: var(--spacing-md);
+  font-size: 13px;
+}
+
+.ant-table-tbody > tr > td {
+  border-bottom: 1px solid var(--color-border-light);
+  padding: var(--spacing-md);
+  color: var(--color-text-primary);
+  background: var(--color-bg-primary);
+}
+
+.ant-table-tbody > tr:hover > td {
+  background: var(--color-bg-secondary);
+}
+
+.ant-btn {
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  height: 36px;
+  padding: 0 16px;
+  border-color: var(--color-border);
+}
+
+.ant-btn-primary {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  box-shadow: none;
+}
+
+.ant-btn-primary:hover {
+  background: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+  box-shadow: var(--shadow-sm);
+}
+
+.ant-input,
+.ant-input-number,
+.ant-select-selector {
+  border-radius: var(--radius-sm);
+  border-color: var(--color-border);
+}
+
+.ant-input:focus,
+.ant-input-focused,
+.ant-input-number:focus,
+.ant-input-number-focused,
+.ant-select-focused .ant-select-selector {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-primary-light);
+}
+
+.ant-modal-content {
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.ant-modal-header {
+  border-bottom: 1px solid var(--color-border-light);
+  padding: var(--spacing-lg);
+}
+
+.ant-modal-footer {
+  border-top: 1px solid var(--color-border-light);
+  padding: var(--spacing-md) var(--spacing-lg);
+}
+
+.ant-menu-light {
+  background: var(--color-bg-primary);
+}
+
+.ant-menu-light .ant-menu-item {
+  color: var(--color-text-primary);
+  border-radius: var(--radius-sm);
+  margin: 4px 0;
+  height: 40px;
+  line-height: 40px;
+}
+
+.ant-menu-light .ant-menu-item-selected {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
+.ant-menu-light .ant-menu-item-selected::after {
+  display: none;
+}
+
+.ant-menu-light .ant-menu-item:hover {
+  background: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+}
+
+/* 自定义滚动条 */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(148, 163, 184, 0.18);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.35);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.55);
+}
+
+/* 页面过渡动画 */
+.page-transition-enter {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.page-transition-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 200ms, transform 200ms;
+}
+
+.page-transition-exit {
+  opacity: 1;
+}
+
+.page-transition-exit-active {
+  opacity: 0;
+  transition: opacity 200ms;
+}

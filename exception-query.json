@@ -1,0 +1,21 @@
+[
+  {
+    "field": "log_type",
+    "type": "term",
+    "value": "java",
+    "logic": "and"
+  },
+  {
+    "field": "message",
+    "type": "match",
+    "value": "Exception",
+    "logic": "or"
+  },
+  {
+    "field": "message",
+    "type": "match",
+    "value": "SQLException",
+    "logic": "or"
+  }
+]
+

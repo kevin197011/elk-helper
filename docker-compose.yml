@@ -1,0 +1,158 @@
+# Copyright (c) 2025 kk
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: elk-helper-backend
+    restart: unless-stopped
+    ports:
+      - "${BACKEND_PORT:-8080}:${BACKEND_PORT:-8080}"
+    environment:
+      - SERVER_PORT=${BACKEND_PORT:-8080}
+      - SERVER_HOST=0.0.0.0
+      - GIN_MODE=release
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=${DB_PASSWORD:-postgres}
+      - DB_NAME=elk_helper
+      - DB_SSLMODE=disable
+      - ES_URL=${ES_URL:-https://elasticsearch:9200}
+      - ES_USERNAME=${ES_USERNAME:-elastic}
+      - ES_PASSWORD=${ES_PASSWORD:-changeme}
+      - ES_USE_SSL=${ES_USE_SSL:-true}
+      - ES_SKIP_VERIFY=${ES_SKIP_VERIFY:-true}
+      - WORKER_ENABLED=${WORKER_ENABLED:-true}
+      - WORKER_CHECK_INTERVAL=${WORKER_CHECK_INTERVAL:-30}
+      - WORKER_RETRY_TIMES=${WORKER_RETRY_TIMES:-3}
+      - WORKER_BATCH_SIZE=${WORKER_BATCH_SIZE:-200}
+      - WORKER_MAX_CONCURRENCY=${WORKER_MAX_CONCURRENCY:-10}
+      - CORS_ORIGINS=${CORS_ORIGINS:-http://localhost:3000}
+      - TZ=Asia/Hong_Kong
+      # Admin account (optional, defaults: admin/admin123)
+      - ADMIN_USERNAME=${ADMIN_USERNAME:-admin}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin123}
+      - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@devops.io}
+      - JWT_SECRET=${JWT_SECRET:-elk-helper-dev-compose-secret-please-change-32chars}
+    networks:
+      - elk-helper-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    depends_on:
+      postgres:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: elk-helper-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    environment:
+      - VITE_API_BASE_URL=/api
+      - BACKEND_HOST=backend
+      - BACKEND_PORT=${BACKEND_PORT:-8080}
+    networks:
+      - elk-helper-network
+    depends_on:
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "wget --quiet --tries=1 --spider http://localhost:80/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: elk-helper-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-postgres}
+      - POSTGRES_DB=elk_helper
+      - TZ=Asia/Hong_Kong
+    # ports:
+    #   - "5432:5432"  # 注释掉端口映射，避免与其他postgres冲突，容器内部通信不需要暴露
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - elk-helper-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  elasticsearch:
+    image: elasticsearch:8.18.3
+    container_name: elk-helper-elasticsearch
+    restart: unless-stopped
+    environment:
+      - node.name=elasticsearch
+      - cluster.name=elk-helper-cluster
+      - discovery.type=single-node
+      # Security & SSL - Use PEM format certificates
+      - xpack.security.enabled=true
+      - xpack.security.http.ssl.enabled=true
+      - xpack.security.http.ssl.key=certs/elasticsearch/elasticsearch.key
+      - xpack.security.http.ssl.certificate=certs/elasticsearch/elasticsearch.crt
+      - xpack.security.http.ssl.certificate_authorities=certs/ca/ca.crt
+      - xpack.security.http.ssl.verification_mode=certificate
+      - xpack.security.transport.ssl.enabled=true
+      - xpack.security.transport.ssl.key=certs/elasticsearch/elasticsearch.key
+      - xpack.security.transport.ssl.certificate=certs/elasticsearch/elasticsearch.crt
+      - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt
+      - xpack.security.transport.ssl.verification_mode=certificate
+      # Password
+      - ELASTIC_PASSWORD=${ES_PASSWORD:-changeme}
+      # Memory - Development minimal settings
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      # Timezone
+      - TZ=Asia/Hong_Kong
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+      - ./certs:/usr/share/elasticsearch/config/certs
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    cap_add:
+      - IPC_LOCK
+    networks:
+      - elk-helper-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s --cacert config/certs/ca/ca.crt https://localhost:9200 | grep -q 'missing authentication credentials' || curl -s --cacert config/certs/ca/ca.crt -u elastic:${ES_PASSWORD:-changeme} https://localhost:9200/_cluster/health | grep -q '\"status\"'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+
+volumes:
+  postgres-data:
+    driver: local
+  es-data:
+    driver: local
+
+networks:
+  elk-helper-network:
+    driver: bridge
+

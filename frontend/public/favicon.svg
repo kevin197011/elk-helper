@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Solid, high-contrast icon for small sizes -->
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="#165dff" />
+
+  <!-- Bold K mark (legible at 16px) -->
+  <g transform="translate(32, 32)">
+    <path
+      d="M -12 -16 L -12 16 M -12 0 L 10 -16 M -12 0 L 10 16"
+      stroke="#ffffff"
+      stroke-width="6"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </g>
+</svg>
