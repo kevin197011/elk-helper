@@ -43,24 +43,31 @@ function InteractiveAreaChart({ data }: { data: any[] }) {
 
     // Collect all unique time points from all rules
     // Since different rules may have different bucket intervals, we need to merge all time points
+    // Backend returns data_points in chronological order (from 24h ago to now)
+    // We need to preserve this order, especially when time crosses midnight (e.g., 23:58 -> 00:58)
     const timePointSet = new Set<string>();
+    const timePointOrder = new Map<string, number>(); // time -> original order index
+    
+    // Collect time points from all rules, using first rule's order as reference
+    // This preserves the chronological order from backend
     data.forEach((rule: any) => {
-      rule.data_points?.forEach((point: any) => {
+      rule.data_points?.forEach((point: any, index: number) => {
         if (point.time) {
           timePointSet.add(point.time);
+          // Keep the earliest order index for each time point
+          if (!timePointOrder.has(point.time) || (timePointOrder.get(point.time) ?? Infinity) > index) {
+            timePointOrder.set(point.time, index);
+          }
         }
       });
     });
 
-    // Sort time points by actual time (HH:mm format), not by string order
-    // This ensures correct chronological order for rolling 24-hour window
+    // Sort time points by their original order from backend (chronological)
+    // This handles midnight crossing correctly (23:58 comes before 00:58)
     const sortedTimePoints = Array.from(timePointSet).sort((a: string, b: string) => {
-      // Parse HH:mm format to compare as time
-      const parseTime = (timeStr: string): number => {
-        const [hours, minutes] = timeStr.split(':').map(Number);
-        return hours * 60 + (minutes || 0); // Convert to minutes for comparison
-      };
-      return parseTime(a) - parseTime(b);
+      const orderA = timePointOrder.get(a) ?? 10000;
+      const orderB = timePointOrder.get(b) ?? 10000;
+      return orderA - orderB;
     });
 
     // Create a map for each rule: time -> value
