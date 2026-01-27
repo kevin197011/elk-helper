@@ -338,7 +338,6 @@ func (s *Service) GetRuleTimeSeriesStats(duration time.Duration, _ int) ([]RuleT
 		// Time range: [current_time - 24h, current_time]
 		// For bucket generation, align to interval boundaries for clean display
 		intervalSeconds := bucketIntervalMinutes * 60
-		utcNowUnix := utcNow.Unix()
 		sinceUnix := since.Unix()
 
 		// Align start time down to bucket boundary for consistent bucket indexing
