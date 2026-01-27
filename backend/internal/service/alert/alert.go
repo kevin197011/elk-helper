@@ -334,21 +334,23 @@ func (s *Service) GetRuleTimeSeriesStats(duration time.Duration, _ int) ([]RuleT
 
 		dataPoints := make([]TimeSeriesDataPoint, numBuckets)
 
-		// Align current time to bucket interval boundaries
+		// Use actual current time (not aligned) for query boundary to ensure exact 24-hour range
+		// Time range: [current_time - 24h, current_time]
+		// For bucket generation, align to interval boundaries for clean display
 		intervalSeconds := bucketIntervalMinutes * 60
 		utcNowUnix := utcNow.Unix()
-		// Round UP current time to the next interval boundary
-		alignedNowUnix := ((utcNowUnix + int64(intervalSeconds) - 1) / int64(intervalSeconds)) * int64(intervalSeconds)
-		alignedNow := time.Unix(alignedNowUnix, 0).UTC()
+		sinceUnix := since.Unix()
 
-		// Calculate start time: go backwards from aligned current time
-		alignedSince := alignedNow.Add(-duration)
-		actualSince := alignedSince
+		// Align start time down to bucket boundary for consistent bucket indexing
+		// This ensures buckets align nicely while query still uses exact time range
+		alignedSinceUnix := (sinceUnix / int64(intervalSeconds)) * int64(intervalSeconds)
+		alignedSince := time.Unix(alignedSinceUnix, 0).UTC()
 
-		// Initialize all buckets - from oldest to newest (current time)
+		// Initialize all buckets - from oldest to newest
+		// Buckets are generated from aligned start time for display purposes
 		for j := 0; j < numBuckets; j++ {
 			// Calculate bucket time in UTC, starting from aligned start time
-			bucketTimeUTC := actualSince.Add(time.Duration(j) * time.Duration(bucketIntervalMinutes) * time.Minute)
+			bucketTimeUTC := alignedSince.Add(time.Duration(j) * time.Duration(bucketIntervalMinutes) * time.Minute)
 			// Convert to Hong Kong time for display
 			bucketTimeHK := bucketTimeUTC.In(localTZ)
 			dataPoints[j] = TimeSeriesDataPoint{
@@ -368,12 +370,13 @@ func (s *Service) GetRuleTimeSeriesStats(duration time.Duration, _ int) ([]RuleT
 
 		// PostgreSQL time bucketing using EXTRACT(EPOCH FROM timestamp)
 		// Use COUNT(*) to count alert records (execution count)
-		// Use aligned since time for consistent bucket indexing
+		// Query boundary uses actual current time (since, utcNow) for exact 24-hour range
+		// Bucket indexing uses aligned start time for consistent bucket assignment
 		err := database.DB.Model(&models.Alert{}).
 			Select(fmt.Sprintf(`
 				CAST((EXTRACT(EPOCH FROM created_at)::bigint - %d) / %d AS INTEGER) as bucket_index,
 				COUNT(*) as count
-			`, actualSince.Unix(), intervalSeconds)).
+			`, alignedSince.Unix(), intervalSeconds)).
 			Where("rule_id = ? AND created_at >= ? AND created_at <= ?", rule.ID, since, utcNow).
 			Group("bucket_index").
 			Scan(&bucketResults).Error
