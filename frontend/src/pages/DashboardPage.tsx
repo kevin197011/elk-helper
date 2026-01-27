@@ -41,13 +41,38 @@ function InteractiveAreaChart({ data }: { data: any[] }) {
   const chartData = useMemo(() => {
     if (!data || data.length === 0) return [];
 
-    const timePoints = data[0]?.data_points || [];
+    // Collect all unique time points from all rules
+    // Since different rules may have different bucket intervals, we need to merge all time points
+    const timePointSet = new Set<string>();
+    data.forEach((rule: any) => {
+      rule.data_points?.forEach((point: any) => {
+        if (point.time) {
+          timePointSet.add(point.time);
+        }
+      });
+    });
 
-    return timePoints.map((point: any, index: number) => {
-      const dataPoint: any = { time: point.time };
+    // Sort time points
+    const sortedTimePoints = Array.from(timePointSet).sort();
+
+    // Create a map for each rule: time -> value
+    const ruleValueMap = new Map<string, Map<string, number>>();
+    data.forEach((rule: any) => {
+      const valueMap = new Map<string, number>();
+      rule.data_points?.forEach((point: any) => {
+        if (point.time) {
+          valueMap.set(point.time, point.value || 0);
+        }
+      });
+      ruleValueMap.set(rule.rule_name, valueMap);
+    });
+
+    // Build chart data points
+    return sortedTimePoints.map((time: string) => {
+      const dataPoint: any = { time };
       data.forEach((rule: any) => {
-        const value = rule.data_points[index]?.value || 0;
-        dataPoint[rule.rule_name] = value;
+        const valueMap = ruleValueMap.get(rule.rule_name);
+        dataPoint[rule.rule_name] = valueMap?.get(time) || 0;
       });
       return dataPoint;
     });
@@ -92,13 +117,10 @@ function InteractiveAreaChart({ data }: { data: any[] }) {
         <Tooltip
           content={({ active, payload, label }) => {
             if (!active || !payload) return null;
-            // 过滤掉值为 0 的规则，只显示有告警的规则
-            const activeRules = payload.filter((entry: any) => entry.value && entry.value > 0);
+            // 显示所有规则，包括值为0的规则，按值降序排序
+            const allRules = [...payload].sort((a: any, b: any) => (b.value || 0) - (a.value || 0));
             const total = payload.reduce((sum: number, entry: any) => sum + (entry.value || 0), 0);
-            const shownLimit = 8;
-            const sortedRules = [...activeRules].sort((a: any, b: any) => (b.value || 0) - (a.value || 0));
-            const shownRules = sortedRules.slice(0, shownLimit);
-            const hiddenCount = Math.max(0, sortedRules.length - shownRules.length);
+            const activeRulesCount = payload.filter((entry: any) => entry.value && entry.value > 0).length;
             
             return (
               <div style={{
@@ -106,61 +128,60 @@ function InteractiveAreaChart({ data }: { data: any[] }) {
                 padding: '12px 14px',
                 borderRadius: 10,
                 border: `1px solid ${token.colorBorderSecondary}`,
-                maxWidth: 320
+                minWidth: 400,
+                maxWidth: 600,
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
               }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 10 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 12 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     <ClockCircleOutlined style={{ color: token.colorTextSecondary }} />
-                    <span style={{ fontWeight: 600, color: token.colorText, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    <span style={{ fontWeight: 600, color: token.colorText }}>
                       {formatTooltipLabel(label)}
                     </span>
                   </div>
-                  <span style={{ fontWeight: 700, color: token.colorPrimary, fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace' }}>
+                  <span style={{ fontWeight: 700, color: token.colorPrimary, fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace', fontSize: 16 }}>
                     {total}
                   </span>
                 </div>
-                {activeRules.length > 0 ? (
+                {allRules.length > 0 ? (
                   <>
-                    <div style={{ marginBottom: 8, maxHeight: 200, overflowY: 'auto' }}>
-                      {shownRules.map((entry: any, index: number) => (
+                    <div style={{ marginBottom: 8 }}>
+                      {allRules.map((entry: any, index: number) => (
                         <div key={index} style={{ 
                           display: 'flex', 
                           alignItems: 'center', 
                           justifyContent: 'space-between',
                           gap: 12,
-                          marginBottom: 6,
-                          padding: '4px 0'
+                          marginBottom: 8,
+                          padding: '6px 0',
+                          borderBottom: index < allRules.length - 1 ? `1px solid ${token.colorBorderSecondary}` : 'none'
                         }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 6, flex: 1, minWidth: 0 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1, minWidth: 0 }}>
                             <div style={{ 
-                              width: 10, 
-                              height: 10, 
+                              width: 12, 
+                              height: 12, 
                               borderRadius: 2, 
                               backgroundColor: entry.color,
                               flexShrink: 0
                             }} />
                             <span style={{ 
                               fontSize: 13,
-                              color: token.colorTextSecondary,
-                              overflow: 'hidden',
-                              textOverflow: 'ellipsis',
-                              whiteSpace: 'nowrap'
+                              color: entry.value && entry.value > 0 ? token.colorText : token.colorTextTertiary,
+                              whiteSpace: 'normal',
+                              wordBreak: 'break-word'
                             }}>{entry.name}</span>
                           </div>
                           <span style={{ 
                             fontWeight: 600, 
                             fontFamily: 'monospace',
                             fontSize: 13,
-                            color: token.colorText,
-                            flexShrink: 0
-                          }}>{entry.value}</span>
+                            color: entry.value && entry.value > 0 ? token.colorText : token.colorTextTertiary,
+                            flexShrink: 0,
+                            minWidth: 50,
+                            textAlign: 'right'
+                          }}>{entry.value || 0}</span>
                         </div>
                       ))}
-                      {hiddenCount > 0 ? (
-                        <div style={{ color: token.colorTextSecondary, fontSize: 12, marginTop: 6 }}>
-                          还有 {hiddenCount} 条规则未显示
-                        </div>
-                      ) : null}
                     </div>
                     <div style={{ 
                       borderTop: `1px solid ${token.colorBorderSecondary}`, 
@@ -172,10 +193,10 @@ function InteractiveAreaChart({ data }: { data: any[] }) {
                       fontWeight: 600 
                     }}>
                       <span style={{ color: token.colorTextSecondary, fontSize: 12 }}>
-                        有告警规则：{activeRules.length} / {payload.length}
+                        有告警规则：{activeRulesCount} / {payload.length}
                       </span>
                       <span style={{ fontFamily: 'monospace', fontSize: 12, color: token.colorTextSecondary }}>
-                        单位：条（Top {shownLimit}）
+                        单位：次
                       </span>
                     </div>
                   </>

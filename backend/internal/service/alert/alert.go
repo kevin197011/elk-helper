@@ -233,8 +233,43 @@ func (s *Service) GetRuleAlertStats(duration time.Duration) ([]RuleAlertStats, e
 	return stats, nil
 }
 
+// calculateBucketInterval calculates appropriate time bucket interval based on rule execution interval
+// Returns interval in minutes
+func calculateBucketInterval(ruleIntervalSeconds int) int {
+	// Convert rule interval to minutes
+	ruleIntervalMinutes := ruleIntervalSeconds / 60
+	if ruleIntervalMinutes < 1 {
+		ruleIntervalMinutes = 1
+	}
+
+	// Calculate bucket interval: use 5-10x the rule interval, but with reasonable bounds
+	// This ensures we capture multiple executions per bucket while keeping reasonable granularity
+	bucketMinutes := ruleIntervalMinutes * 5
+
+	// Apply bounds for readability and performance
+	if bucketMinutes < 1 {
+		bucketMinutes = 1 // Minimum 1 minute
+	} else if bucketMinutes > 60 {
+		bucketMinutes = 60 // Maximum 60 minutes (1 hour)
+	}
+
+	// Round to common intervals for cleaner display
+	if bucketMinutes <= 5 {
+		bucketMinutes = 5
+	} else if bucketMinutes <= 15 {
+		bucketMinutes = 15
+	} else if bucketMinutes <= 30 {
+		bucketMinutes = 30
+	} else {
+		bucketMinutes = 60
+	}
+
+	return bucketMinutes
+}
+
 // GetRuleTimeSeriesStats returns time series alert statistics for all enabled rules
-func (s *Service) GetRuleTimeSeriesStats(duration time.Duration, intervalMinutes int) ([]RuleTimeSeriesStats, error) {
+// Each rule uses its own execution interval to calculate appropriate time bucket size
+func (s *Service) GetRuleTimeSeriesStats(duration time.Duration, _ int) ([]RuleTimeSeriesStats, error) {
 	// Explicitly get UTC time to ensure consistency
 	// Note: time.Now() respects TZ env var in Docker, but we explicitly convert to UTC for database queries
 	now := time.Now()
@@ -275,33 +310,6 @@ func (s *Service) GetRuleTimeSeriesStats(duration time.Duration, intervalMinutes
 		alertCountMap[ac.RuleID] = ac.Total
 	}
 
-	// Build rules with their counts (including 0 for rules with no alerts)
-	type RuleWithCount struct {
-		RuleID   uint
-		RuleName string
-		Total    int64
-	}
-
-	var rulesWithCounts []RuleWithCount
-	for _, rule := range allRules {
-		rulesWithCounts = append(rulesWithCounts, RuleWithCount{
-			RuleID:   rule.ID,
-			RuleName: rule.Name,
-			Total:    alertCountMap[rule.ID], // Will be 0 if not in map
-		})
-	}
-
-	// Generate time buckets - calculate from current time backwards
-	numBuckets := int(duration.Minutes()) / intervalMinutes
-	if numBuckets > 24 {
-		numBuckets = 24 // Max 24 points for readability
-	}
-	if numBuckets < 6 {
-		numBuckets = 6 // Min 6 points
-	}
-
-	result := make([]RuleTimeSeriesStats, len(rulesWithCounts))
-
 	// Load timezone for display (explicitly use Asia/Hong_Kong to match Docker TZ setting)
 	localTZ, err := time.LoadLocation("Asia/Hong_Kong")
 	if err != nil {
@@ -309,31 +317,38 @@ func (s *Service) GetRuleTimeSeriesStats(duration time.Duration, intervalMinutes
 		localTZ = time.UTC
 	}
 
-	// Align current time to interval boundaries, then go backwards
-	// Use ceiling (round up) to ensure the last bucket includes current time
-	intervalSeconds := intervalMinutes * 60
-	utcNowUnix := utcNow.Unix()
-	// Round UP current time to the next interval boundary
-	// This ensures the last bucket covers the current ongoing hour
-	// Example: if now is 16:45 and interval is 60min, alignedNow becomes 17:00
-	// So the last bucket will be 16:00-17:00 which includes current time
-	alignedNowUnix := ((utcNowUnix + int64(intervalSeconds) - 1) / int64(intervalSeconds)) * int64(intervalSeconds)
-	alignedNow := time.Unix(alignedNowUnix, 0).UTC()
+	result := make([]RuleTimeSeriesStats, len(allRules))
 
-	// Calculate start time: go backwards from aligned current time
-	alignedSince := alignedNow.Add(-duration)
+	for i, rule := range allRules {
+		// Calculate bucket interval based on rule's execution interval
+		bucketIntervalMinutes := calculateBucketInterval(rule.Interval)
 
-	// Use aligned times for bucketing to ensure buckets align nicely
-	// But use original 'since' for data queries to include all data
-	actualSince := alignedSince
+		// Calculate number of buckets for this rule
+		numBuckets := int(duration.Minutes()) / bucketIntervalMinutes
+		if numBuckets > 48 {
+			numBuckets = 48 // Max 48 points for readability
+		}
+		if numBuckets < 6 {
+			numBuckets = 6 // Min 6 points
+		}
 
-	for i, rule := range rulesWithCounts {
 		dataPoints := make([]TimeSeriesDataPoint, numBuckets)
+
+		// Align current time to bucket interval boundaries
+		intervalSeconds := bucketIntervalMinutes * 60
+		utcNowUnix := utcNow.Unix()
+		// Round UP current time to the next interval boundary
+		alignedNowUnix := ((utcNowUnix + int64(intervalSeconds) - 1) / int64(intervalSeconds)) * int64(intervalSeconds)
+		alignedNow := time.Unix(alignedNowUnix, 0).UTC()
+
+		// Calculate start time: go backwards from aligned current time
+		alignedSince := alignedNow.Add(-duration)
+		actualSince := alignedSince
 
 		// Initialize all buckets - from oldest to newest (current time)
 		for j := 0; j < numBuckets; j++ {
 			// Calculate bucket time in UTC, starting from aligned start time
-			bucketTimeUTC := actualSince.Add(time.Duration(j) * time.Duration(intervalMinutes) * time.Minute)
+			bucketTimeUTC := actualSince.Add(time.Duration(j) * time.Duration(bucketIntervalMinutes) * time.Minute)
 			// Convert to Hong Kong time for display
 			bucketTimeHK := bucketTimeUTC.In(localTZ)
 			dataPoints[j] = TimeSeriesDataPoint{
@@ -343,7 +358,7 @@ func (s *Service) GetRuleTimeSeriesStats(duration time.Duration, intervalMinutes
 		}
 
 		// Query alerts for this rule grouped by time bucket
-		// Sum log_count instead of COUNT(*) to get total log entries
+		// Use COUNT(*) to count alert records (execution count), not log entries
 		type BucketResult struct {
 			BucketIndex int
 			Count       int64
@@ -352,19 +367,19 @@ func (s *Service) GetRuleTimeSeriesStats(duration time.Duration, intervalMinutes
 		var bucketResults []BucketResult
 
 		// PostgreSQL time bucketing using EXTRACT(EPOCH FROM timestamp)
-		// Use SUM(log_count) to count total logs, not just alert records
+		// Use COUNT(*) to count alert records (execution count)
 		// Use aligned since time for consistent bucket indexing
 		err := database.DB.Model(&models.Alert{}).
 			Select(fmt.Sprintf(`
 				CAST((EXTRACT(EPOCH FROM created_at)::bigint - %d) / %d AS INTEGER) as bucket_index,
-				SUM(log_count) as count
-			`, actualSince.Unix(), intervalMinutes*60)).
-			Where("rule_id = ? AND created_at >= ? AND created_at <= ?", rule.RuleID, since, utcNow).
+				COUNT(*) as count
+			`, actualSince.Unix(), intervalSeconds)).
+			Where("rule_id = ? AND created_at >= ? AND created_at <= ?", rule.ID, since, utcNow).
 			Group("bucket_index").
 			Scan(&bucketResults).Error
 
 		if err != nil {
-			return nil, fmt.Errorf("failed to get time series data: %w", err)
+			return nil, fmt.Errorf("failed to get time series data for rule %d: %w", rule.ID, err)
 		}
 
 		// Fill in actual counts
@@ -375,9 +390,9 @@ func (s *Service) GetRuleTimeSeriesStats(duration time.Duration, intervalMinutes
 		}
 
 		result[i] = RuleTimeSeriesStats{
-			RuleID:     rule.RuleID,
-			RuleName:   rule.RuleName,
-			Total:      rule.Total,
+			RuleID:     rule.ID,
+			RuleName:   rule.Name,
+			Total:      alertCountMap[rule.ID], // Will be 0 if not in map
 			DataPoints: dataPoints,
 		}
 	}

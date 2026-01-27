@@ -32,7 +32,7 @@ The system SHALL display an interactive area chart showing alert trends over 24 
 
 The chart SHALL show data for all enabled rules.
 
-The chart SHALL aggregate alerts by time buckets (default: 60 minutes).
+The chart SHALL aggregate alerts by time buckets with intervals dynamically calculated based on each rule's execution frequency.
 
 The chart SHALL display rules with no alerts as value 0.
 
@@ -53,24 +53,31 @@ The chart SHALL be interactive with hover tooltips showing detailed values.
 
 #### Scenario: Interactive tooltip
 - **WHEN** user hovers over chart data point
-- **THEN** tooltip displays: rule name, time, and log count
+- **THEN** tooltip displays: rule name, time, and alert execution count
 - **AND** tooltip is formatted clearly
+- **AND** tooltip handles rules with different time bucket intervals correctly
 
 ### Requirement: Chart Data Aggregation
 
-The system SHALL aggregate alert log counts by time buckets.
+The system SHALL aggregate alert execution counts by time buckets.
 
-The system SHALL use SUM(log_count) for aggregation (not COUNT of alerts).
+The system SHALL use COUNT(*) for aggregation (counting alert records, not log entries).
 
-The system SHALL generate time buckets for 24-hour period with configurable interval (default: 60 minutes).
+The system SHALL calculate time bucket interval dynamically for each rule based on its execution interval.
+
+The system SHALL use bucket interval of approximately 5x the rule's execution interval, rounded to common intervals (5, 15, 30, or 60 minutes).
+
+The system SHALL generate time buckets for 24-hour period with rule-specific intervals.
 
 The system SHALL fill missing buckets with value 0.
 
-#### Scenario: Aggregate hourly data
+#### Scenario: Aggregate data with dynamic intervals
 - **WHEN** alerts are generated at various times
-- **THEN** system groups alerts into hourly buckets
-- **AND** each bucket shows total log count (SUM of log_count)
+- **THEN** system groups alerts into time buckets with interval based on each rule's execution frequency
+- **AND** each bucket shows alert execution count (COUNT of alert records)
 - **AND** buckets with no alerts show 0
+- **AND** rules with shorter execution intervals use finer-grained buckets (e.g., 5 minutes)
+- **AND** rules with longer execution intervals use coarser-grained buckets (e.g., 60 minutes)
 
 #### Scenario: Fill missing buckets
 - **WHEN** a rule has no alerts in certain time periods

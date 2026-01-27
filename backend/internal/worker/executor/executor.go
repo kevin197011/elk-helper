@@ -248,9 +248,10 @@ func (e *Executor) sendAlertAsync(ruleModel *models.Rule, logs []map[string]inte
 	}
 
 	// Update alert count if successful (async)
+	// Increment by 1 per alert record (execution count), not by log count
 	if err == nil {
 		go func() {
-			if err := e.ruleService.IncrementAlertCount(ruleModel.ID, int64(originalLogCount)); err != nil {
+			if err := e.ruleService.IncrementAlertCount(ruleModel.ID, 1); err != nil {
 				slog.Warn("Failed to increment alert count", "rule_id", ruleModel.ID, "error", err)
 			}
 		}()

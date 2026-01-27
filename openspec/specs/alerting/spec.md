@@ -175,7 +175,9 @@ Deleted alerts SHALL not be recoverable.
 
 The system SHALL provide time-series statistics for rule alerts.
 
-The system SHALL aggregate alert counts by time buckets (default: 60 minutes).
+The system SHALL aggregate alert execution counts by time buckets with intervals dynamically calculated based on each rule's execution frequency.
+
+The system SHALL calculate bucket interval as approximately 5x the rule's execution interval, rounded to common intervals (5, 15, 30, or 60 minutes).
 
 The system SHALL include all enabled rules, showing 0 for rules with no alerts.
 
@@ -185,12 +187,15 @@ The system SHALL return data for the last 24 hours by default.
 - **WHEN** a user requests rule time-series statistics
 - **THEN** system returns aggregated data per rule per time bucket
 - **AND** rules with no alerts show value 0 for all buckets
-- **AND** total log count (not alert count) is aggregated using SUM(log_count)
+- **AND** alert execution count is aggregated using COUNT(*) (counting alert records)
+- **AND** each rule uses time bucket interval appropriate for its execution frequency
 
-#### Scenario: Time bucket aggregation
+#### Scenario: Time bucket aggregation with dynamic intervals
 - **WHEN** alerts are generated at various times
-- **THEN** system groups alerts into time buckets (e.g., hourly)
-- **AND** each bucket shows total log count for that period
+- **THEN** system groups alerts into time buckets with interval based on each rule's execution interval
+- **AND** each bucket shows alert execution count for that period
+- **AND** rules with 60-second interval use 5-minute buckets
+- **AND** rules with 3600-second interval use 60-minute buckets
 
 ### Requirement: Alert Cleanup
 
