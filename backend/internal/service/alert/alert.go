@@ -348,18 +348,19 @@ func (s *Service) GetRuleTimeSeriesStats(duration time.Duration, _ int) ([]RuleT
 		// Calculate bucket duration
 		bucketDuration := time.Duration(bucketIntervalMinutes) * time.Minute
 
-		// Initialize all buckets - from oldest (since) to newest (utcNow)
-		// Time labels start from actual start time (since) to show rolling 24-hour window
-		// But we need to map these to the correct bucket indices for data aggregation
+		// Initialize all buckets - from newest (utcNow) to oldest (since)
+		// Time labels start from current time and go backwards to show rolling 24-hour window
+		// Chart displays: current time (right) -> yesterday (left)
 		for j := 0; j < numBuckets; j++ {
-			// Calculate bucket label time: from actual since time, not aligned time
-			// This ensures the first bucket label shows the actual start time (24 hours ago)
-			// and the last bucket shows time near current time
-			bucketLabelTime := since.Add(time.Duration(j) * bucketDuration)
+			// Calculate bucket label time: from current time backwards
+			// This ensures the first bucket label shows current time (right side of chart)
+			// and the last bucket shows time 24 hours ago (left side of chart)
+			bucketIndex := numBuckets - 1 - j // Reverse index: 0 = current time, numBuckets-1 = 24h ago
+			bucketLabelTime := utcNow.Add(-time.Duration(bucketIndex) * bucketDuration)
 			
-			// Ensure last bucket doesn't exceed current time
-			if bucketLabelTime.After(utcNow) {
-				bucketLabelTime = utcNow
+			// Ensure first bucket doesn't go before start time
+			if bucketLabelTime.Before(since) {
+				bucketLabelTime = since
 			}
 			
 			// Convert to Hong Kong time for display
@@ -398,14 +399,16 @@ func (s *Service) GetRuleTimeSeriesStats(duration time.Duration, _ int) ([]RuleT
 
 		// Fill in actual counts
 		// Map database bucket indices to display bucket indices
-		// Database uses alignedSince for indexing, but we display from actual since time
+		// Database uses alignedSince for indexing, but we display from current time backwards
 		for _, br := range bucketResults {
 			// Calculate the actual time for this database bucket
 			dbBucketTime := alignedSince.Add(time.Duration(br.BucketIndex) * bucketDuration)
 			
 			// Find the corresponding display bucket index
-			// Display buckets start from 'since', so we calculate the offset
-			displayBucketIndex := int(dbBucketTime.Sub(since) / bucketDuration)
+			// Display buckets are reversed: 0 = current time, numBuckets-1 = 24h ago
+			// So we need to calculate: how many buckets from current time?
+			timeFromNow := utcNow.Sub(dbBucketTime)
+			displayBucketIndex := numBuckets - 1 - int(timeFromNow/bucketDuration)
 			
 			// Ensure the index is within bounds
 			if displayBucketIndex >= 0 && displayBucketIndex < numBuckets {
