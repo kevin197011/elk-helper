@@ -336,22 +336,34 @@ func (s *Service) GetRuleTimeSeriesStats(duration time.Duration, _ int) ([]RuleT
 
 		// Use actual current time (not aligned) for query boundary to ensure exact 24-hour range
 		// Time range: [current_time - 24h, current_time]
-		// For bucket generation, align to interval boundaries for clean display
+		// Generate time buckets starting from actual start time (since) to show rolling 24-hour window
 		intervalSeconds := bucketIntervalMinutes * 60
 		sinceUnix := since.Unix()
 
-		// Align start time down to bucket boundary for consistent bucket indexing
-		// This ensures buckets align nicely while query still uses exact time range
+		// Align start time down to bucket boundary for consistent bucket indexing in database query
+		// This ensures buckets align nicely for data aggregation
 		alignedSinceUnix := (sinceUnix / int64(intervalSeconds)) * int64(intervalSeconds)
 		alignedSince := time.Unix(alignedSinceUnix, 0).UTC()
 
-		// Initialize all buckets - from oldest to newest
-		// Buckets are generated from aligned start time for display purposes
+		// Calculate bucket duration
+		bucketDuration := time.Duration(bucketIntervalMinutes) * time.Minute
+
+		// Initialize all buckets - from oldest (since) to newest (utcNow)
+		// Time labels start from actual start time (since) to show rolling 24-hour window
+		// But we need to map these to the correct bucket indices for data aggregation
 		for j := 0; j < numBuckets; j++ {
-			// Calculate bucket time in UTC, starting from aligned start time
-			bucketTimeUTC := alignedSince.Add(time.Duration(j) * time.Duration(bucketIntervalMinutes) * time.Minute)
+			// Calculate bucket label time: from actual since time, not aligned time
+			// This ensures the first bucket label shows the actual start time (24 hours ago)
+			// and the last bucket shows time near current time
+			bucketLabelTime := since.Add(time.Duration(j) * bucketDuration)
+			
+			// Ensure last bucket doesn't exceed current time
+			if bucketLabelTime.After(utcNow) {
+				bucketLabelTime = utcNow
+			}
+			
 			// Convert to Hong Kong time for display
-			bucketTimeHK := bucketTimeUTC.In(localTZ)
+			bucketTimeHK := bucketLabelTime.In(localTZ)
 			dataPoints[j] = TimeSeriesDataPoint{
 				Time:  bucketTimeHK.Format("15:04"),
 				Value: 0,
@@ -385,9 +397,19 @@ func (s *Service) GetRuleTimeSeriesStats(duration time.Duration, _ int) ([]RuleT
 		}
 
 		// Fill in actual counts
+		// Map database bucket indices to display bucket indices
+		// Database uses alignedSince for indexing, but we display from actual since time
 		for _, br := range bucketResults {
-			if br.BucketIndex >= 0 && br.BucketIndex < numBuckets {
-				dataPoints[br.BucketIndex].Value = br.Count
+			// Calculate the actual time for this database bucket
+			dbBucketTime := alignedSince.Add(time.Duration(br.BucketIndex) * bucketDuration)
+			
+			// Find the corresponding display bucket index
+			// Display buckets start from 'since', so we calculate the offset
+			displayBucketIndex := int(dbBucketTime.Sub(since) / bucketDuration)
+			
+			// Ensure the index is within bounds
+			if displayBucketIndex >= 0 && displayBucketIndex < numBuckets {
+				dataPoints[displayBucketIndex].Value = br.Count
 			}
 		}
 

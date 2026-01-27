@@ -52,8 +52,16 @@ function InteractiveAreaChart({ data }: { data: any[] }) {
       });
     });
 
-    // Sort time points
-    const sortedTimePoints = Array.from(timePointSet).sort();
+    // Sort time points by actual time (HH:mm format), not by string order
+    // This ensures correct chronological order for rolling 24-hour window
+    const sortedTimePoints = Array.from(timePointSet).sort((a: string, b: string) => {
+      // Parse HH:mm format to compare as time
+      const parseTime = (timeStr: string): number => {
+        const [hours, minutes] = timeStr.split(':').map(Number);
+        return hours * 60 + (minutes || 0); // Convert to minutes for comparison
+      };
+      return parseTime(a) - parseTime(b);
+    });
 
     // Create a map for each rule: time -> value
     const ruleValueMap = new Map<string, Map<string, number>>();
@@ -105,7 +113,12 @@ function InteractiveAreaChart({ data }: { data: any[] }) {
           tickMargin={8}
           tick={{ fill: token.colorTextSecondary }}
           tickFormatter={(v: string) => {
-            // v 可能是 ISO 字符串或已格式化字符串；尽量展示为 HH:mm
+            // v 是后端返回的 HH:mm 格式字符串（例如 "14:30"）
+            // 直接返回，因为已经是正确的格式
+            if (v && typeof v === 'string' && /^\d{2}:\d{2}$/.test(v)) {
+              return v;
+            }
+            // 如果不是 HH:mm 格式，尝试解析
             const d = new Date(v);
             if (!Number.isNaN(d.getTime())) {
               return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
