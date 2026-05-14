@@ -27,11 +27,28 @@ api.interceptors.request.use(
   }
 );
 
+/**
+ * Bearer token sent on this failed request (may be stale if user logged in since).
+ */
+function getRequestBearerToken(error: any): string | null {
+  const raw = error.config?.headers?.Authorization;
+  const authHeader = typeof raw === 'string' ? raw : raw?.toString?.() ?? '';
+  const m = authHeader.match(/^Bearer\s+(.+)$/i);
+  return m ? m[1].trim() : null;
+}
+
 // Add response interceptor to handle 401 errors
 api.interceptors.response.use(
   (response: any) => response,
   (error: any) => {
     if (error.response?.status === 401) {
+      const requestToken = getRequestBearerToken(error);
+      const currentToken = localStorage.getItem('token');
+      // Ignore 401 from a superseded session (e.g. initial /auth/me with old token
+      // completing after a successful login wrote a new token).
+      if (requestToken && currentToken && requestToken !== currentToken) {
+        return Promise.reject(error);
+      }
       // Clear token and redirect to login
       localStorage.removeItem('token');
       localStorage.removeItem('user');

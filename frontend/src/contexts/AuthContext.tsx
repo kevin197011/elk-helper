@@ -50,16 +50,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setToken(storedToken);
         setUser(parsedUser);
 
+        // Token used for this verification; ignore late responses after login replaces it.
+        const tokenAtRequestStart = storedToken;
+
         // Verify token by fetching current user
         authApi.getCurrentUser()
           .then((response) => {
             if (!isActive) return;
+            if (localStorage.getItem('token') !== tokenAtRequestStart) return;
             setUser(response.data.data);
             localStorage.setItem('user', JSON.stringify(response.data.data));
             setAuthStatus('authenticated');
           })
           .catch(() => {
             if (!isActive) return;
+            if (localStorage.getItem('token') !== tokenAtRequestStart) return;
             // Token invalid, clear storage
             localStorage.removeItem('token');
             localStorage.removeItem('user');

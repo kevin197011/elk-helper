@@ -317,7 +317,7 @@ export default function RuleEditPage() {
             rules={[{ required: true, message: '请输入查询间隔' }]}
             extra="规则执行查询的时间间隔，建议 60 秒以上"
           >
-            <InputNumber min={10} max={3600} style={{ width: '100%' }} />
+            <InputNumber min={10} style={{ width: '100%' }} />
           </Form.Item>
 
           <Form.Item
