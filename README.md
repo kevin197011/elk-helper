@@ -68,6 +68,7 @@
 
 ### 安全与权限
 - ✅ **JWT 认证**：Token 有效期 24 小时
+- ✅ **OIDC SSO**：管理员配置 IdP，登录页一键跳转；详见 [docs/dev/sso.md](docs/dev/sso.md)
 - ✅ **角色权限**：Admin/User 角色管理
 - ✅ **密码加密**：bcrypt 加密存储
 - ✅ **HTTPS 支持**：完整的 SSL/TLS 配置
@@ -209,6 +210,9 @@ ALERT_SEND_TIMEOUT_SECONDS=20
 
 # 可选：敏感信息加密（base64 编码的 32 字节 key；用于 ES 密码、Webhook 等）
 APP_ENCRYPTION_KEY=
+
+# SSO 登录成功后重定向的前端地址（默认取 CORS_ORIGINS 第一项）
+SSO_FRONTEND_BASE_URL=http://localhost:3000
 
 # 登录接口限流（默认: 60/min，burst 20）
 LOGIN_RATE_LIMIT_PER_MINUTE=60

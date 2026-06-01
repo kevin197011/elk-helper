@@ -72,6 +72,8 @@ type AuthConfig struct {
 	JWTSecret               string
 	LoginRateLimitPerMinute int
 	LoginRateLimitBurst     int
+	// SSOFrontendBaseURL is where OIDC callbacks redirect with ?token= (no trailing slash).
+	SSOFrontendBaseURL string
 }
 
 // SecurityConfig represents security related settings.
@@ -130,6 +132,7 @@ func Load() error {
 			JWTSecret:               jwtSecret,
 			LoginRateLimitPerMinute: parseIntWithDefault(getEnv("LOGIN_RATE_LIMIT_PER_MINUTE", "60"), 60),
 			LoginRateLimitBurst:     parseIntWithDefault(getEnv("LOGIN_RATE_LIMIT_BURST", "20"), 20),
+			SSOFrontendBaseURL:      resolveSSOFrontendBaseURL(),
 		},
 		Security: SecurityConfig{
 			EncryptionKeyBase64: getEnv("APP_ENCRYPTION_KEY", ""),
@@ -180,6 +183,17 @@ func getEnv(key, defaultValue string) string {
 		return defaultValue
 	}
 	return value
+}
+
+func resolveSSOFrontendBaseURL() string {
+	if v := strings.TrimSpace(os.Getenv("SSO_FRONTEND_BASE_URL")); v != "" {
+		return strings.TrimSuffix(v, "/")
+	}
+	origins := getEnvSlice("CORS_ORIGINS", []string{"http://localhost:3000", "http://localhost:5173"})
+	if len(origins) > 0 {
+		return strings.TrimSuffix(origins[0], "/")
+	}
+	return "http://localhost:3000"
 }
 
 func getEnvSlice(key string, defaultValue []string) []string {

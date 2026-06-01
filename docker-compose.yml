@@ -33,6 +33,7 @@ services:
       - WORKER_BATCH_SIZE=${WORKER_BATCH_SIZE:-200}
       - WORKER_MAX_CONCURRENCY=${WORKER_MAX_CONCURRENCY:-10}
       - CORS_ORIGINS=${CORS_ORIGINS:-http://localhost:3000}
+      - SSO_FRONTEND_BASE_URL=${SSO_FRONTEND_BASE_URL:-http://localhost:3000}
       - TZ=Asia/Hong_Kong
       # Admin account (optional, defaults: admin/admin123)
       - ADMIN_USERNAME=${ADMIN_USERNAME:-admin}

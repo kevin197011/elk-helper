@@ -18,6 +18,9 @@ type UserRole string
 const (
 	RoleAdmin UserRole = "admin"
 	RoleUser  UserRole = "user"
+
+	// AuthSourceLocal marks users that sign in with username/password.
+	AuthSourceLocal = "local"
 )
 
 // User represents a user in the system
@@ -27,12 +30,13 @@ type User struct {
 	UpdatedAt time.Time      `json:"updated_at"`
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
 
-	Username string   `gorm:"not null;uniqueIndex" json:"username"`      // 用户名
-	Password string   `gorm:"not null" json:"-"`                         // 密码（不返回）
-	Email    string   `gorm:"uniqueIndex" json:"email,omitempty"`        // 邮箱
-	Role     UserRole `gorm:"default:'user'" json:"role"`                // 角色：admin, user
-	Enabled  bool     `gorm:"default:true" json:"enabled"`               // 是否启用
-	LastLoginAt *time.Time `json:"last_login_at,omitempty"`             // 最后登录时间
+	Username    string     `gorm:"not null;uniqueIndex" json:"username"`         // 用户名
+	Password    string     `json:"-"`                                            // 密码（SSO 用户可为空）
+	Email       string     `gorm:"uniqueIndex" json:"email,omitempty"`           // 邮箱
+	Role        UserRole   `gorm:"default:'user'" json:"role"`                   // 角色：admin, user
+	Enabled     bool       `gorm:"default:true" json:"enabled"`                  // 是否启用
+	AuthSource  string     `gorm:"default:'local'" json:"auth_source,omitempty"` // local 或 oidc:<id>
+	LastLoginAt *time.Time `json:"last_login_at,omitempty"`                      // 最后登录时间
 }
 
 // TableName specifies the table name for User
@@ -60,4 +64,3 @@ func (u *User) CheckPassword(password string) bool {
 func (u *User) IsAdmin() bool {
 	return u.Role == RoleAdmin
 }
-

@@ -272,10 +272,67 @@ export interface User {
   email?: string;
   role: 'admin' | 'user';
   enabled: boolean;
+  auth_source?: string;
   last_login_at?: string;
   created_at: string;
   updated_at: string;
 }
+
+export interface SSOProviderPublic {
+  id: number;
+  type: string;
+  name: string;
+}
+
+export interface SSOProviderConfig {
+  issuer: string;
+  client_id: string;
+  client_secret: string;
+  redirect_url: string;
+  scopes?: string[];
+  username_claim?: string;
+  skip_tls_verify?: boolean;
+}
+
+export interface SSOAdminProvider {
+  id: number;
+  type: string;
+  name: string;
+  enabled: boolean;
+  config: SSOProviderConfig;
+}
+
+export interface SSOProviderPayload {
+  type: 'oidc';
+  name: string;
+  enabled: boolean;
+  config: SSOProviderConfig;
+}
+
+export interface CreateUserPayload {
+  username: string;
+  password: string;
+  email?: string;
+  role: 'admin' | 'user';
+  enabled?: boolean;
+}
+
+export interface UpdateUserPayload {
+  email?: string;
+  role?: 'admin' | 'user';
+  enabled?: boolean;
+}
+
+// Users API (admin only)
+export const usersApi = {
+  getAll: () => api.get<{ data: User[] }>('/users'),
+  getById: (id: number) => api.get<{ data: User }>(`/users/${id}`),
+  create: (payload: CreateUserPayload) => api.post<{ data: User }>('/users', payload),
+  update: (id: number, payload: UpdateUserPayload) => api.put<{ data: User }>(`/users/${id}`, payload),
+  delete: (id: number) => api.delete(`/users/${id}`),
+  resetPassword: (id: number, newPassword: string) =>
+    api.post<{ message: string }>(`/users/${id}/reset-password`, { new_password: newPassword }),
+};
 
 // Auth API
 export const authApi = {
@@ -292,6 +349,17 @@ export const authApi = {
       old_password: oldPassword,
       new_password: newPassword,
     }),
+};
+
+export const ssoApi = {
+  listPublic: () => api.get<{ data: SSOProviderPublic[] }>('/auth/sso/providers'),
+  oidcLoginURL: (id: number) => `/api/v1/auth/sso/oidc/${id}/login`,
+  listAdmin: () => api.get<{ data: SSOAdminProvider[] }>('/sso/providers'),
+  create: (payload: SSOProviderPayload) => api.post<{ data: { id: number } }>('/sso/providers', payload),
+  update: (id: number, payload: Omit<SSOProviderPayload, 'type'> & { type?: 'oidc' }) =>
+    api.put<{ data: { ok: boolean } }>(`/sso/providers/${id}`, payload),
+  toggle: (id: number) => api.post<{ data: { enabled: boolean } }>(`/sso/providers/${id}/toggle`),
+  delete: (id: number) => api.delete<{ data: { ok: boolean } }>(`/sso/providers/${id}`),
 };
 
 // Cleanup Config interface

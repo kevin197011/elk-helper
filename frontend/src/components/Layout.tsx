@@ -19,6 +19,7 @@ import {
   KeyOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
+  SafetyCertificateOutlined,
 } from '@ant-design/icons';
 import { useAuth } from '../contexts/AuthContext';
 import ChangePasswordDialog from './ChangePasswordDialog';
@@ -39,7 +40,8 @@ export default function Layout({ children }: LayoutProps) {
   const [changePasswordOpen, setChangePasswordOpen] = useState(false);
   const { token } = theme.useToken();
 
-  const menuItems: MenuProps['items'] = [
+  const menuItems: MenuProps['items'] = useMemo(() => {
+    const items: MenuProps['items'] = [
     {
       key: '/',
       icon: <DashboardOutlined />,
@@ -70,7 +72,21 @@ export default function Layout({ children }: LayoutProps) {
       icon: <DeleteOutlined />,
       label: <Link to="/cleanup-config">清理任务</Link>,
     },
-  ];
+    ];
+    if (user?.role === 'admin') {
+      items.push({
+        key: '/users',
+        icon: <UserOutlined />,
+        label: <Link to="/users">用户管理</Link>,
+      });
+      items.push({
+        key: '/sso-config',
+        icon: <SafetyCertificateOutlined />,
+        label: <Link to="/sso-config">SSO 配置</Link>,
+      });
+    }
+    return items;
+  }, [user?.role]);
 
   const getSelectedKeys = () => {
     const path = location.pathname;

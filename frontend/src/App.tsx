@@ -16,6 +16,10 @@ import RuleEditPage from './pages/RuleEditPage';
 import ESConfigPage from './pages/ESConfigPage';
 import LarkConfigPage from './pages/LarkConfigPage';
 import CleanupConfigPage from './pages/CleanupConfigPage';
+import UsersPage from './pages/UsersPage';
+import SsoCallbackPage from './pages/SsoCallbackPage';
+import SsoConfigPage from './pages/SsoConfigPage';
+import AdminRoute from './components/AdminRoute';
 
 function App() {
   return (
@@ -24,6 +28,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/sso-callback" element={<SsoCallbackPage />} />
             <Route
               path="/*"
               element={
@@ -38,6 +43,22 @@ function App() {
                       <Route path="/es-configs" element={<ESConfigPage />} />
                       <Route path="/lark-configs" element={<LarkConfigPage />} />
                       <Route path="/cleanup-config" element={<CleanupConfigPage />} />
+                      <Route
+                        path="/users"
+                        element={
+                          <AdminRoute>
+                            <UsersPage />
+                          </AdminRoute>
+                        }
+                      />
+                      <Route
+                        path="/sso-config"
+                        element={
+                          <AdminRoute>
+                            <SsoConfigPage />
+                          </AdminRoute>
+                        }
+                      />
                       <Route path="*" element={<Navigate to="/" replace />} />
                     </Routes>
                   </Layout>

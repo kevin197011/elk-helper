@@ -16,8 +16,9 @@ import (
 	"github.com/kk/elk-helper/backend/internal/repository/database"
 	"github.com/kk/elk-helper/backend/internal/service/alert"
 	"github.com/kk/elk-helper/backend/internal/service/auth"
-	"github.com/kk/elk-helper/backend/internal/service/esconfig"
+	es_config "github.com/kk/elk-helper/backend/internal/service/esconfig"
 	"github.com/kk/elk-helper/backend/internal/service/rule"
+	"github.com/kk/elk-helper/backend/internal/service/sso"
 	"golang.org/x/time/rate"
 )
 
@@ -35,8 +36,9 @@ func SetupRoutes(r *gin.Engine) {
 		c.Status(200)
 	})
 
-	// Initialize auth service
+	// Initialize auth and SSO services
 	authService := auth.NewService(database.DB, config.AppConfig.Auth.JWTSecret)
+	ssoService := sso.NewService(database.DB)
 
 	// Initialize default admin user if no users exist
 	if err := authService.InitDefaultAdmin(); err != nil {
@@ -49,6 +51,7 @@ func SetupRoutes(r *gin.Engine) {
 	{
 		// Public auth routes (no authentication required)
 		authHandler := handlers.NewAuthHandler(authService)
+		ssoHandler := handlers.NewSSOHandler(ssoService, authService)
 		authRoutes := v1.Group("/auth")
 		{
 			limiter := middleware.NewIPRateLimiter(
@@ -57,6 +60,10 @@ func SetupRoutes(r *gin.Engine) {
 				10*time.Minute,
 			)
 			authRoutes.POST("/login", middleware.RateLimitMiddleware(limiter), authHandler.Login)
+
+			authRoutes.GET("/sso/providers", ssoHandler.ListProviders)
+			authRoutes.GET("/sso/oidc/:id/login", ssoHandler.OIDCLogin)
+			authRoutes.GET("/sso/oidc/:id/callback", ssoHandler.OIDCCallback)
 		}
 
 		// Protected routes (authentication required)
@@ -143,6 +150,31 @@ func SetupRoutes(r *gin.Engine) {
 				systemConfigs.GET("/cleanup", systemConfigHandler.GetCleanupConfig)
 				systemConfigs.PUT("/cleanup", systemConfigHandler.UpdateCleanupConfig)
 				systemConfigs.POST("/cleanup/manual", systemConfigHandler.ManualCleanup)
+			}
+
+			// User management (admin only)
+			userHandler := handlers.NewUserHandler(authService)
+			users := protected.Group("/users")
+			users.Use(middleware.RequireAdmin())
+			{
+				users.GET("", userHandler.ListUsers)
+				users.GET("/:id", userHandler.GetUser)
+				users.POST("", userHandler.CreateUser)
+				users.PUT("/:id", userHandler.UpdateUser)
+				users.DELETE("/:id", userHandler.DeleteUser)
+				users.POST("/:id/reset-password", userHandler.ResetPassword)
+			}
+
+			// SSO provider management (admin only)
+			ssoAdminHandler := handlers.NewSSOAdminHandler(ssoService)
+			ssoProviders := protected.Group("/sso/providers")
+			ssoProviders.Use(middleware.RequireAdmin())
+			{
+				ssoProviders.GET("", ssoAdminHandler.List)
+				ssoProviders.POST("", ssoAdminHandler.Create)
+				ssoProviders.PUT("/:id", ssoAdminHandler.Update)
+				ssoProviders.POST("/:id/toggle", ssoAdminHandler.Toggle)
+				ssoProviders.DELETE("/:id", ssoAdminHandler.Delete)
 			}
 		}
 	}

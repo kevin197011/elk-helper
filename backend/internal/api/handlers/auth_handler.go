@@ -31,9 +31,9 @@ type LoginRequest struct {
 
 // LoginResponse represents login response
 type LoginResponse struct {
-	Token    string       `json:"token"`
-	User     *models.User `json:"user"`
-	ExpiresAt string      `json:"expires_at"`
+	Token     string       `json:"token"`
+	User      *models.User `json:"user"`
+	ExpiresAt string       `json:"expires_at"`
 }
 
 // Login handles user login
@@ -61,6 +61,10 @@ func (h *AuthHandler) Login(c *gin.Context) {
 			c.JSON(http.StatusForbidden, gin.H{"error": "user is disabled"})
 			return
 		}
+		if err == auth.ErrSSOOnlyLogin {
+			c.JSON(http.StatusForbidden, gin.H{"error": "this account uses SSO login; password login is not available"})
+			return
+		}
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -69,8 +73,8 @@ func (h *AuthHandler) Login(c *gin.Context) {
 	user.Password = ""
 
 	c.JSON(http.StatusOK, LoginResponse{
-		Token: token,
-		User:  user,
+		Token:     token,
+		User:      user,
 		ExpiresAt: "24h", // Token expires in 24 hours
 	})
 }
@@ -151,4 +155,3 @@ func (h *AuthHandler) GetCurrentUser(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"data": userModel})
 }
-

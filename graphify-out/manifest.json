@@ -1,0 +1,647 @@
+{
+  "/Users/kevin/projects/src/kk-elk-helper/push.rb": {
+    "mtime": 1769478199.382299,
+    "ast_hash": "1a4a126df6a1c6c408a593686dd241d7",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/deploy.sh": {
+    "mtime": 1769478199.3815558,
+    "ast_hash": "850f99771dbb1bb2cda6779fc89ecf57",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/exception-query.json": {
+    "mtime": 1769244133.9194367,
+    "ast_hash": "9282e5413f2629f1d63187da33717770",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/frontend/tsconfig.node.json": {
+    "mtime": 1769244133.9237676,
+    "ast_hash": "fdad50457a9cb7df721a9ffb2fa59af6",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/frontend/package.json": {
+    "mtime": 1769244133.9203694,
+    "ast_hash": "bba073753ba7328770ab61d3d8c5370c",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/frontend/tsconfig.json": {
+    "mtime": 1769244133.9236465,
+    "ast_hash": "c80f274f5c5146e8b01260a537dcccf5",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/frontend/vite.config.ts": {
+    "mtime": 1769244133.9238892,
+    "ast_hash": "a1a3bd8bbde3c29dcc90adcf450d38e1",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/frontend/src/App.tsx": {
+    "mtime": 1780302810.6331503,
+    "ast_hash": "5817931adb7e0387eff5cbc7c06be17a",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/frontend/src/main.tsx": {
+    "mtime": 1769247807.62235,
+    "ast_hash": "1242392f1b8a40035b192556db845901",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/frontend/src/contexts/AuthContext.tsx": {
+    "mtime": 1780302803.1285279,
+    "ast_hash": "450e039b9f072f027bdc8043a429d9ef",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/frontend/src/components/RuleEditDialog.tsx": {
+    "mtime": 1778738199.1679997,
+    "ast_hash": "d343b9455b39e465f30c3d5777ec3696",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/frontend/src/components/ProtectedRoute.tsx": {
+    "mtime": 1780301987.204379,
+    "ast_hash": "e4deaa0cf87853a0e86ea466dd7c6cff",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/frontend/src/components/UserEditDialog.tsx": {
+    "mtime": 1780302318.982666,
+    "ast_hash": "33dfedcddfadc9f20417cd051ef78aed",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/frontend/src/components/PageHeader.tsx": {
+    "mtime": 1769246507.8248055,
+    "ast_hash": "ee0b04829b1d644ac188798a6c12ef85",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/frontend/src/components/ESConfigEditDialog.tsx": {
+    "mtime": 1769246392.5952408,
+    "ast_hash": "36f9956dcaa7ff59fd5fdb1fd61cd2ca",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/frontend/src/components/ChangePasswordDialog.tsx": {
+    "mtime": 1769244133.921022,
+    "ast_hash": "1c62cce2c2e196e52f072d0db85609b5",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/frontend/src/components/AdminRoute.tsx": {
+    "mtime": 1780302318.9960914,
+    "ast_hash": "491654fd5d021bc260abae47a5cc1e0b",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/frontend/src/components/Layout.tsx": {
+    "mtime": 1780302812.002586,
+    "ast_hash": "439001e0aa123798faa3444ef5a0fbc7",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/frontend/src/components/LarkConfigEditDialog.tsx": {
+    "mtime": 1769253983.8344927,
+    "ast_hash": "b327b9d349346a93ef4ed8a99ee890a3",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/frontend/src/components/ErrorBoundary.tsx": {
+    "mtime": 1769244133.9212625,
+    "ast_hash": "f6a119bd4eb9fc7bd8c748b6db45b730",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/frontend/src/pages/LoginPage.tsx": {
+    "mtime": 1780302808.9470744,
+    "ast_hash": "a2a29ac52af81c130b6f3197c40e3ffe",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/frontend/src/pages/LarkConfigPage.tsx": {
+    "mtime": 1769253835.1927218,
+    "ast_hash": "9025d02daeb651f582e65b020762cef1",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/frontend/src/pages/AlertsPage.tsx": {
+    "mtime": 1769246655.2351804,
+    "ast_hash": "bbabfb889bb0829c1603516dddfd18b1",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/frontend/src/pages/RulesPage.tsx": {
+    "mtime": 1769246951.3822613,
+    "ast_hash": "8f437512238da416dd7eda89c6a86c8d",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/frontend/src/pages/UsersPage.tsx": {
+    "mtime": 1780302318.982653,
+    "ast_hash": "04c0ad92ed7a5fe7a12e969292d7afa1",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/frontend/src/pages/CleanupConfigPage.tsx": {
+    "mtime": 1769246641.9898894,
+    "ast_hash": "7c0849110ea797632287733a87cb205f",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/frontend/src/pages/RuleEditPage.tsx": {
+    "mtime": 1778738199.1678736,
+    "ast_hash": "6cb096f94927d42b0408166e021742cd",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/frontend/src/pages/ESConfigPage.tsx": {
+    "mtime": 1769246564.7593434,
+    "ast_hash": "2924dd31dda53b351180d9836f04cafb",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/frontend/src/pages/DashboardPage.tsx": {
+    "mtime": 1769482877.800459,
+    "ast_hash": "c8c9125071c5c8459ba3bc456084931b",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/frontend/src/services/api.ts": {
+    "mtime": 1780302799.2672398,
+    "ast_hash": "c35f12e915be2f55d8a8289a6f44fe47",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/.shared/ui-ux-pro-max/scripts/core.py": {
+    "mtime": 1769244398.2241251,
+    "ast_hash": "c110668f73bc97ea929ab1b868b3cdcf",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/.shared/ui-ux-pro-max/scripts/search.py": {
+    "mtime": 1769244398.2247477,
+    "ast_hash": "d9c90ae79e7d48fec1bee18edd693a18",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/cmd/server/main.go": {
+    "mtime": 1769255734.156882,
+    "ast_hash": "27986f5f913d9d1955fa2c7eff0c2b7d",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/internal/migrations/000002_add_updated_at_trigger.up.sql": {
+    "mtime": 1769244133.9150193,
+    "ast_hash": "8193f77fe79683c83984b421fc107b6a",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/internal/migrations/000001_init_schema.down.sql": {
+    "mtime": 1769244133.914654,
+    "ast_hash": "9945fe97087f62d8ff97291276e82878",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/internal/migrations/000002_add_updated_at_trigger.down.sql": {
+    "mtime": 1769244133.9148746,
+    "ast_hash": "1ecfec5a326548220b8eec0fb05ea151",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/internal/migrations/migrations.go": {
+    "mtime": 1769244133.9151704,
+    "ast_hash": "066f8706593997f1589a25355e85dbe6",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/internal/migrations/000001_init_schema.up.sql": {
+    "mtime": 1769244133.9147758,
+    "ast_hash": "866c02d9b7b11981e355d22e1a62c155",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/internal/repository/database/database.go": {
+    "mtime": 1769256674.1033046,
+    "ast_hash": "59e8a2710eb39f7b1d2d04a19d54e9f2",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/internal/config/config.go": {
+    "mtime": 1780302735.9330628,
+    "ast_hash": "1a343b8d850d833a753c45b40082ac04",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/internal/models/user.go": {
+    "mtime": 1780302624.6267395,
+    "ast_hash": "5a0e46e65b294612e92b4e7320495e5f",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/internal/models/system_config.go": {
+    "mtime": 1769244133.915797,
+    "ast_hash": "2ca194057b7358fab4dbd46204cbe9a7",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/internal/models/es_config.go": {
+    "mtime": 1769244133.9154675,
+    "ast_hash": "7783323be9adcc7017e60234b735e440",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/internal/models/rule.go": {
+    "mtime": 1769244133.9156907,
+    "ast_hash": "d410aa8747a12f94a5c46b71ee205818",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/internal/models/alert.go": {
+    "mtime": 1769244133.9153533,
+    "ast_hash": "6124e67a6bfc585254ecd2d7251eeee7",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/internal/models/lark_config.go": {
+    "mtime": 1769244133.9155774,
+    "ast_hash": "e705273489577d5887ff4977b87cf161",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/internal/api/middleware/cors.go": {
+    "mtime": 1769255734.1565685,
+    "ast_hash": "8f8bbe7325896ad789a36fa754646ab7",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/internal/api/middleware/auth.go": {
+    "mtime": 1769244133.914021,
+    "ast_hash": "57b3ffecc55807fabed9fe8840a1418b",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/internal/api/middleware/rate_limit.go": {
+    "mtime": 1769257076.5340476,
+    "ast_hash": "2fe36ac1be3c1ca7a7bbf8b2cf7519c8",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/internal/api/routes/routes.go": {
+    "mtime": 1780302743.8208828,
+    "ast_hash": "3715f74574be053d54255e34c5e02576",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/internal/api/handlers/auth_handler.go": {
+    "mtime": 1780302706.5377314,
+    "ast_hash": "95bbff446339cade7afb5e0e8bf5c495",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/internal/api/handlers/status_handler.go": {
+    "mtime": 1769244133.9137444,
+    "ast_hash": "8d339422ca43ab631d68065d717cb956",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/internal/api/handlers/lark_config_handler.go": {
+    "mtime": 1769244133.9134827,
+    "ast_hash": "f10db55a3682c52d86813c79604adeca",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/internal/api/handlers/es_config_handler.go": {
+    "mtime": 1769244133.9133747,
+    "ast_hash": "3237bdf3276af16b056c2a442cc91078",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/internal/api/handlers/rule_handler.go": {
+    "mtime": 1769256651.9958866,
+    "ast_hash": "ca51acedfc7ca54d66c243d4791637ca",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/internal/api/handlers/system_config_handler.go": {
+    "mtime": 1769244133.9138477,
+    "ast_hash": "e3fb11c5e43f5a90b641bf4e423c2698",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/internal/api/handlers/alert_handler.go": {
+    "mtime": 1769244133.9131339,
+    "ast_hash": "0515960cb3009e5f3577172b377bb3db",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/internal/api/handlers/user_handler.go": {
+    "mtime": 1780302319.0700352,
+    "ast_hash": "a75ed4acfd8b380ec179f5f6eac7ecde",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/internal/service/auth/auth.go": {
+    "mtime": 1780302705.1465664,
+    "ast_hash": "71e125fb2548fc9a0b62a160a6d723a3",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/internal/service/larkconfig/lark_config.go": {
+    "mtime": 1769256940.117622,
+    "ast_hash": "436c455be7606f9f927098f18c078e6b",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/internal/service/alert/alert.go": {
+    "mtime": 1769483632.8152769,
+    "ast_hash": "e00c83cf5925e18cbcc99e719b513f52",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/internal/service/rule/rule.go": {
+    "mtime": 1769261535.5275943,
+    "ast_hash": "3d951e9ec99bc5da3b8ef6e2a7b9e417",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/internal/service/esconfig/es_config.go": {
+    "mtime": 1769256921.979005,
+    "ast_hash": "b495c012116767b0f8f0f67f4992bbf6",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/internal/service/systemconfig/system_config.go": {
+    "mtime": 1769244133.9176002,
+    "ast_hash": "f3eafbf5e4916f464715b371da2a0ec2",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/internal/service/query/query.go": {
+    "mtime": 1769263052.1779447,
+    "ast_hash": "2b032000a7c21c3deab13823625cf817",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/internal/worker/notifier/lark.go": {
+    "mtime": 1769256720.3467503,
+    "ast_hash": "3f585fb90c95d240e4c6e010825f1751",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/internal/worker/scheduler/scheduler.go": {
+    "mtime": 1780298038.4958584,
+    "ast_hash": "ee0f6f80a7cd796553e8d30bfeca8fc0",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/internal/worker/executor/interval_gate.go": {
+    "mtime": 1780298038.4958372,
+    "ast_hash": "8ae897884cb6ea244fda3834083710b7",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/internal/worker/executor/interval_gate_test.go": {
+    "mtime": 1780298038.485918,
+    "ast_hash": "3dffa27d0326969cd8e4aa2462e05f38",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/internal/worker/executor/executor.go": {
+    "mtime": 1780298038.4877715,
+    "ast_hash": "2da41d606b581d72868ccfa9d944ab70",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/internal/worker/executor/errors.go": {
+    "mtime": 1780298038.4958384,
+    "ast_hash": "e097fb1824be4637c6e9697671ddbb44",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/scripts/generate-test-logs.rb": {
+    "mtime": 1769244133.9276514,
+    "ast_hash": "9767c6ec941add17221b3e9cf69aff8c",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/README.md": {
+    "mtime": 1769261346.2794008,
+    "ast_hash": "6b457adadfba413810f3782f88606f44",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/docker-compose-prod.yml": {
+    "mtime": 1769261327.3606915,
+    "ast_hash": "88b1e409e0048301516ca0a0ee7e5444",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/.rubocop.yml": {
+    "mtime": 1769478199.3797789,
+    "ast_hash": "38eb0a2a3c2e8c4fae2861d84280fc79",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/docker-compose.yml": {
+    "mtime": 1780302812.462329,
+    "ast_hash": "4a8081a84520d8d88d162c6fdbae995c",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/AGENTS.md": {
+    "mtime": 1769478199.3799567,
+    "ast_hash": "20e021bc0804e03bd75005141b6a7937",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/frontend/index.html": {
+    "mtime": 1769244133.919745,
+    "ast_hash": "1da3012ae4d9f5a821b9d22f4739b998",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/.github/workflows/frontend-image.yml": {
+    "mtime": 1769244133.9112399,
+    "ast_hash": "0747653f197499c60732c16ced3f5dc6",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/.github/workflows/backend-image.yml": {
+    "mtime": 1769244133.9111376,
+    "ast_hash": "d78a54c7b1f88397cdca03cb30d8d2a9",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/openspec/project.md": {
+    "mtime": 1769244133.9255757,
+    "ast_hash": "b6a65f7a1e9c8a3ce8c693224eaf26f8",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/openspec/AGENTS.md": {
+    "mtime": 1769244133.9242394,
+    "ast_hash": "eb1cdbb30dbcce5b07bbbc5c0f8aa90c",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/openspec/specs/alerting/spec.md": {
+    "mtime": 1769478275.7679672,
+    "ast_hash": "876991d810b2886e29e39578882e9c43",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/openspec/specs/notification/spec.md": {
+    "mtime": 1769244133.9263554,
+    "ast_hash": "62e012fcab55858ac8000cec32c15c97",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/openspec/specs/rule-management/spec.md": {
+    "mtime": 1769244133.9266133,
+    "ast_hash": "8398141e69daafad2020b949e1dcf388",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/openspec/specs/user-auth/spec.md": {
+    "mtime": 1769244133.9270997,
+    "ast_hash": "6324dcff3928c9f77ed75db945a24194",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/openspec/specs/dashboard/spec.md": {
+    "mtime": 1769480527.5181272,
+    "ast_hash": "94d433d6eac0e81f2c3f2abaf3ff4ecd",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/openspec/specs/data-source/spec.md": {
+    "mtime": 1769244133.9261708,
+    "ast_hash": "6063f3ab963dca0a01d1e7e71b2bd75e",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/openspec/specs/system-config/spec.md": {
+    "mtime": 1769244133.926885,
+    "ast_hash": "2636aa902700a063b76e3707f3cd10c7",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/openspec/changes/archive/2025-12-10-add-cleanup-execution-status/tasks.md": {
+    "mtime": 1769244133.9254217,
+    "ast_hash": "e5081a53c2c14573d3e27d2f22291f28",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/openspec/changes/archive/2025-12-10-add-cleanup-execution-status/proposal.md": {
+    "mtime": 1769244133.9250722,
+    "ast_hash": "1fa3b743da7674c8342821fc9a77e2f8",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/openspec/changes/archive/2025-12-10-add-cleanup-execution-status/specs/system-config/spec.md": {
+    "mtime": 1769244133.9253082,
+    "ast_hash": "8f295c0e8499d0d315edfdf6f56aec8f",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/openspec/changes/clarify-alert-count-calculation/tasks.md": {
+    "mtime": 1769478006.3322983,
+    "ast_hash": "f8fdd011e8483befea0749d64286f489",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/openspec/changes/clarify-alert-count-calculation/proposal.md": {
+    "mtime": 1769477981.9795911,
+    "ast_hash": "17a6e2c6187551df0fb65632ae29cbf6",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/openspec/changes/clarify-alert-count-calculation/specs/rule-management/spec.md": {
+    "mtime": 1769477995.7357697,
+    "ast_hash": "a436089a274a8d884a8a0117045c4d32",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/openspec/changes/fix-chart-time-range-display/tasks.md": {
+    "mtime": 1769480533.2499955,
+    "ast_hash": "c641ee611cce1cba6d01be044100413a",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/openspec/changes/fix-chart-time-range-display/proposal.md": {
+    "mtime": 1769480256.7207608,
+    "ast_hash": "d1d4abaa76c120ef5c9ce5d555339d35",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/openspec/changes/fix-chart-time-range-display/specs/dashboard/spec.md": {
+    "mtime": 1769480265.872871,
+    "ast_hash": "a6499fbc9b258fd41abd9bef245403b3",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/openspec/changes/harden-backend-runtime/tasks.md": {
+    "mtime": 1769256269.7829456,
+    "ast_hash": "692c95d33f74c665bce7376ebe5eb1e7",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/openspec/changes/harden-backend-runtime/design.md": {
+    "mtime": 1769255325.2494028,
+    "ast_hash": "d44c842405c0714ec06cf2c19f94aa59",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/openspec/changes/harden-backend-runtime/proposal.md": {
+    "mtime": 1769255292.5921075,
+    "ast_hash": "6d84285c5308b32f89ff65835b4e17cb",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/openspec/changes/harden-backend-runtime/specs/service-runtime/spec.md": {
+    "mtime": 1769255356.6911275,
+    "ast_hash": "0c33506ab76176be3339fb263a0172da",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/openspec/changes/harden-backend-runtime/specs/rule-management/spec.md": {
+    "mtime": 1769255385.335569,
+    "ast_hash": "52694286c435f1e219157d3721fd805e",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/openspec/changes/harden-backend-runtime/specs/user-auth/spec.md": {
+    "mtime": 1769255376.2587945,
+    "ast_hash": "9dbcefba7adaa54f7156e5cb80a17934",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/openspec/changes/harden-backend-runtime/specs/api-security/spec.md": {
+    "mtime": 1769255366.6036844,
+    "ast_hash": "f0b8aa54ae632c1f9fd99821d11e4cda",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/openspec/changes/update-backend-followup-optimizations/tasks.md": {
+    "mtime": 1769257222.7569416,
+    "ast_hash": "24acf860e06e6568e0d40e6b83f36960",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/openspec/changes/update-backend-followup-optimizations/proposal.md": {
+    "mtime": 1769256583.3755867,
+    "ast_hash": "2e98be7044383708c56771b4cccfd642",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/openspec/changes/update-backend-followup-optimizations/specs/alerting/spec.md": {
+    "mtime": 1769256607.668758,
+    "ast_hash": "b1ae245947f33000d68c480e95c73377",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/openspec/changes/update-backend-followup-optimizations/specs/notification/spec.md": {
+    "mtime": 1769256617.0793707,
+    "ast_hash": "5790276555283803527523e3237ab689",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/openspec/changes/update-backend-followup-optimizations/specs/rule-management/spec.md": {
+    "mtime": 1769256595.5483382,
+    "ast_hash": "f4f996e4b1058c9bf7ae65709e9e76c0",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/openspec/changes/update-backend-followup-optimizations/specs/user-auth/spec.md": {
+    "mtime": 1769256601.1122708,
+    "ast_hash": "1c9e01f5332fd625d0cb98da4b990aef",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/openspec/changes/update-backend-followup-optimizations/specs/data-source/spec.md": {
+    "mtime": 1769256613.338954,
+    "ast_hash": "f2c7205180d499e0b2be1a578625b2ad",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/openspec/changes/ensure-chart-shows-current-time-24h/tasks.md": {
+    "mtime": 1769479181.8566422,
+    "ast_hash": "99cfb959f5fa829bb6649e8d404fc15c",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/openspec/changes/ensure-chart-shows-current-time-24h/proposal.md": {
+    "mtime": 1769479030.738802,
+    "ast_hash": "71b4bc87116900ea4289bf6802296d4d",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/openspec/changes/ensure-chart-shows-current-time-24h/specs/dashboard/spec.md": {
+    "mtime": 1769479041.0259705,
+    "ast_hash": "f2931d6a9559095e6c0ae6b0ae5fcef7",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/openspec/changes/add-cleanup-execution-status/tasks.md": {
+    "mtime": 1769244133.9248202,
+    "ast_hash": "e5081a53c2c14573d3e27d2f22291f28",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/openspec/changes/add-cleanup-execution-status/proposal.md": {
+    "mtime": 1769244133.9244738,
+    "ast_hash": "1fa3b743da7674c8342821fc9a77e2f8",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/openspec/changes/add-cleanup-execution-status/specs/system-config/spec.md": {
+    "mtime": 1769244133.9247222,
+    "ast_hash": "8f295c0e8499d0d315edfdf6f56aec8f",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/frontend/public/logo.svg": {
+    "mtime": 1769252690.7610924,
+    "ast_hash": "419f521bbb0fe25f2f0d8343b1b6033d",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/frontend/public/favicon.svg": {
+    "mtime": 1769252665.0610244,
+    "ast_hash": "a98f0753034098d736bd4c55728d77dd",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/frontend/src/pages/SsoConfigPage.tsx": {
+    "mtime": 1780302792.1676962,
+    "ast_hash": "e8908ba04ec11f1bf54369d823560904",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/frontend/src/pages/SsoCallbackPage.tsx": {
+    "mtime": 1780302776.0904665,
+    "ast_hash": "0b71f5e1cd40cbecc119f70e1bcd7a32",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/internal/migrations/000003_add_sso.down.sql": {
+    "mtime": 1780302618.1932673,
+    "ast_hash": "0484fc4286b014332583928030b805fb",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/internal/migrations/000003_add_sso.up.sql": {
+    "mtime": 1780302616.3874934,
+    "ast_hash": "52e027ad7fa62cb33349223a92950724",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/internal/models/sso_provider.go": {
+    "mtime": 1780302620.8786747,
+    "ast_hash": "bee4fcc8b06a050385d7d589a7ffde9a",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/internal/api/handlers/sso_admin_handler.go": {
+    "mtime": 1780302731.0078542,
+    "ast_hash": "80365376d36484afa1280a118d667e17",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/internal/api/handlers/sso_handler.go": {
+    "mtime": 1780302719.6907308,
+    "ast_hash": "68a1859df36ba78e8ee625fd888eb0fc",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/internal/service/auth/sso_user.go": {
+    "mtime": 1780302700.532357,
+    "ast_hash": "e9702de67737276bca91b025aaf92728",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/backend/internal/service/sso/service.go": {
+    "mtime": 1780302696.5693257,
+    "ast_hash": "bf59902efec6d23d61c6e6037c3f4dca",
+    "semantic_hash": ""
+  }
+}

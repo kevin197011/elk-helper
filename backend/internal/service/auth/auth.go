@@ -20,6 +20,12 @@ import (
 var (
 	ErrInvalidCredentials = errors.New("invalid credentials")
 	ErrUserDisabled       = errors.New("user is disabled")
+	ErrUserNotFound       = errors.New("user not found")
+	ErrUsernameExists     = errors.New("username already exists")
+	ErrEmailExists        = errors.New("email already exists")
+	ErrCannotDeleteSelf   = errors.New("cannot delete your own account")
+	ErrLastAdmin          = errors.New("cannot remove the last admin user")
+	ErrInvalidRole        = errors.New("invalid role")
 )
 
 // Service provides authentication services
@@ -59,6 +65,10 @@ func (s *Service) Login(username, password string) (string, *models.User, error)
 	// Check if user is enabled
 	if !user.Enabled {
 		return "", nil, ErrUserDisabled
+	}
+
+	if !isLocalAuthSource(user.AuthSource) {
+		return "", nil, ErrSSOOnlyLogin
 	}
 
 	// Verify password
@@ -105,24 +115,174 @@ func (s *Service) ValidateToken(tokenString string) (*Claims, error) {
 func (s *Service) GetUserByID(userID uint) (*models.User, error) {
 	var user models.User
 	if err := s.db.First(&user, userID).Error; err != nil {
-		return nil, err
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, ErrUserNotFound
+		}
+		return nil, fmt.Errorf("failed to load user: %w", err)
 	}
 	return &user, nil
 }
 
+// UpdateUserInput holds fields an admin may change on a user.
+type UpdateUserInput struct {
+	Email   *string
+	Role    *models.UserRole
+	Enabled *bool
+}
+
+// ListUsers returns all users (newest first).
+func (s *Service) ListUsers() ([]models.User, error) {
+	var users []models.User
+	if err := s.db.Order("id ASC").Find(&users).Error; err != nil {
+		return nil, fmt.Errorf("failed to list users: %w", err)
+	}
+	return users, nil
+}
+
+// UpdateUser updates profile fields for a user (admin only).
+func (s *Service) UpdateUser(userID uint, input UpdateUserInput) (*models.User, error) {
+	var user models.User
+	if err := s.db.First(&user, userID).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, ErrUserNotFound
+		}
+		return nil, fmt.Errorf("failed to load user: %w", err)
+	}
+
+	if input.Email != nil {
+		email := *input.Email
+		if email != "" {
+			var other models.User
+			if err := s.db.Where("email = ? AND id <> ?", email, userID).First(&other).Error; err == nil {
+				return nil, ErrEmailExists
+			} else if !errors.Is(err, gorm.ErrRecordNotFound) {
+				return nil, fmt.Errorf("failed to check email: %w", err)
+			}
+		}
+		user.Email = email
+	}
+
+	if input.Role != nil {
+		role := *input.Role
+		if role != models.RoleAdmin && role != models.RoleUser {
+			return nil, ErrInvalidRole
+		}
+		if user.Role == models.RoleAdmin && role != models.RoleAdmin {
+			if err := s.ensureAnotherAdmin(userID); err != nil {
+				return nil, err
+			}
+		}
+		user.Role = role
+	}
+
+	if input.Enabled != nil {
+		if user.Role == models.RoleAdmin && !*input.Enabled {
+			if err := s.ensureAnotherAdmin(userID); err != nil {
+				return nil, err
+			}
+		}
+		user.Enabled = *input.Enabled
+	}
+
+	if err := s.db.Save(&user).Error; err != nil {
+		return nil, fmt.Errorf("failed to update user: %w", err)
+	}
+	return &user, nil
+}
+
+// DeleteUser soft-deletes a user (admin only).
+func (s *Service) DeleteUser(actorID, targetID uint) error {
+	if actorID == targetID {
+		return ErrCannotDeleteSelf
+	}
+
+	var user models.User
+	if err := s.db.First(&user, targetID).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return ErrUserNotFound
+		}
+		return fmt.Errorf("failed to load user: %w", err)
+	}
+
+	if user.Role == models.RoleAdmin {
+		if err := s.ensureAnotherAdmin(targetID); err != nil {
+			return err
+		}
+	}
+
+	if err := s.db.Delete(&user).Error; err != nil {
+		return fmt.Errorf("failed to delete user: %w", err)
+	}
+	return nil
+}
+
+// ResetPassword sets a new password for a user (admin only).
+func (s *Service) ResetPassword(userID uint, newPassword string) error {
+	if len(newPassword) < 6 {
+		return fmt.Errorf("new password must be at least 6 characters")
+	}
+
+	var user models.User
+	if err := s.db.First(&user, userID).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return ErrUserNotFound
+		}
+		return fmt.Errorf("failed to load user: %w", err)
+	}
+
+	if err := user.HashPassword(newPassword); err != nil {
+		return fmt.Errorf("failed to hash password: %w", err)
+	}
+	if err := s.db.Save(&user).Error; err != nil {
+		return fmt.Errorf("failed to update password: %w", err)
+	}
+	return nil
+}
+
+func (s *Service) ensureAnotherAdmin(excludeUserID uint) error {
+	var count int64
+	if err := s.db.Model(&models.User{}).
+		Where("role = ? AND enabled = ? AND id <> ?", models.RoleAdmin, true, excludeUserID).
+		Count(&count).Error; err != nil {
+		return fmt.Errorf("failed to count admins: %w", err)
+	}
+	if count == 0 {
+		return ErrLastAdmin
+	}
+	return nil
+}
+
 // CreateUser creates a new user
 func (s *Service) CreateUser(username, password, email string, role models.UserRole) (*models.User, error) {
+	if role != models.RoleAdmin && role != models.RoleUser {
+		return nil, ErrInvalidRole
+	}
+	if len(password) < 6 {
+		return nil, fmt.Errorf("password must be at least 6 characters")
+	}
+
 	// Check if user already exists
 	var existingUser models.User
 	if err := s.db.Where("username = ?", username).First(&existingUser).Error; err == nil {
-		return nil, fmt.Errorf("username already exists")
+		return nil, ErrUsernameExists
+	} else if !errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, fmt.Errorf("failed to check username: %w", err)
+	}
+
+	if email != "" {
+		if err := s.db.Where("email = ?", email).First(&existingUser).Error; err == nil {
+			return nil, ErrEmailExists
+		} else if !errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, fmt.Errorf("failed to check email: %w", err)
+		}
 	}
 
 	user := &models.User{
-		Username: username,
-		Email:    email,
-		Role:     role,
-		Enabled:  true,
+		Username:   username,
+		Email:      email,
+		Role:       role,
+		Enabled:    true,
+		AuthSource: models.AuthSourceLocal,
 	}
 
 	if err := user.HashPassword(password); err != nil {
@@ -181,10 +341,11 @@ func (s *Service) InitDefaultAdmin() error {
 
 		// Create default admin user
 		adminUser := &models.User{
-			Username: adminUsername,
-			Email:    adminEmail,
-			Role:     models.RoleAdmin,
-			Enabled:  true,
+			Username:   adminUsername,
+			Email:      adminEmail,
+			Role:       models.RoleAdmin,
+			Enabled:    true,
+			AuthSource: models.AuthSourceLocal,
 		}
 
 		if err := adminUser.HashPassword(adminPassword); err != nil {

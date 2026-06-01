@@ -12,6 +12,7 @@ interface AuthContextType {
   user: User | null;
   token: string | null;
   login: (username: string, password: string) => Promise<void>;
+  loginWithToken: (token: string, username: string, role: 'admin' | 'user') => Promise<void>;
   logout: () => void;
   isLoading: boolean;
   isAuthenticated: boolean;
@@ -125,6 +126,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('user', JSON.stringify(newUser));
   };
 
+  const loginWithToken = async (newToken: string, username: string, role: 'admin' | 'user') => {
+    cancelPendingVerification();
+    localStorage.setItem('token', newToken);
+    setToken(newToken);
+    setAuthStatus('authenticated');
+    setIsLoading(false);
+
+    try {
+      const response = await authApi.getCurrentUser();
+      setUser(response.data.data);
+      localStorage.setItem('user', JSON.stringify(response.data.data));
+    } catch {
+      const stub: User = {
+        id: 0,
+        username,
+        role,
+        enabled: true,
+        created_at: '',
+        updated_at: '',
+      };
+      setUser(stub);
+      localStorage.setItem('user', JSON.stringify(stub));
+    }
+  };
+
   const logout = () => {
     cancelPendingVerification();
     setToken(null);
@@ -145,6 +171,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         user,
         token,
         login,
+        loginWithToken,
         logout,
         isLoading,
         isAuthenticated: !!user && !!token,

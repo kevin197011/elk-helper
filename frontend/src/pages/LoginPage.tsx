@@ -5,14 +5,16 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { Form, Input, Button, Typography, App, theme, Card, Space } from 'antd';
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import { Form, Input, Button, Typography, App, theme, Card, Space, Divider } from 'antd';
+import { UserOutlined, LockOutlined, CloudOutlined } from '@ant-design/icons';
 import { useAuth } from '../contexts/AuthContext';
+import { ssoApi, SSOProviderPublic } from '../services/api';
 
 const { Title, Text } = Typography;
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
+  const [ssoProviders, setSsoProviders] = useState<SSOProviderPublic[]>([]);
   const { login, isAuthenticated, authStatus } = useAuth();
   const { message } = App.useApp();
   const navigate = useNavigate();
@@ -28,6 +30,17 @@ export default function LoginPage() {
       navigate(redirectTo, { replace: true });
     }
   }, [authStatus, isAuthenticated, navigate, redirectTo]);
+
+  useEffect(() => {
+    void (async () => {
+      try {
+        const res = await ssoApi.listPublic();
+        setSsoProviders(res.data.data || []);
+      } catch {
+        // SSO list is optional on the login page
+      }
+    })();
+  }, []);
 
   const handleSubmit = async (values: { username: string; password: string }) => {
     setLoading(true);
@@ -105,6 +118,31 @@ export default function LoginPage() {
                 </Button>
               </Form.Item>
             </Form>
+
+            {ssoProviders.length > 0 && (
+              <>
+                <Divider plain style={{ marginTop: 8 }}>
+                  <span style={{ fontSize: 12, color: token.colorTextTertiary }}>或使用单点登录</span>
+                </Divider>
+                <Space direction="vertical" style={{ width: '100%' }}>
+                  {ssoProviders
+                    .filter((p) => p.type === 'oidc')
+                    .map((p) => (
+                      <Button
+                        key={`oidc-${p.id}`}
+                        block
+                        size="large"
+                        icon={<CloudOutlined />}
+                        onClick={() => {
+                          window.location.href = ssoApi.oidcLoginURL(p.id);
+                        }}
+                      >
+                        使用 {p.name} 登录
+                      </Button>
+                    ))}
+                </Space>
+              </>
+            )}
           </Card>
         </div>
       </div>
