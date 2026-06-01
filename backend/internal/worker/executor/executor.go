@@ -20,6 +20,19 @@ import (
 	"github.com/kk/elk-helper/backend/internal/worker/notifier"
 )
 
+// recordAttemptMarker updates last_run_time before ES when the rule has never succeeded.
+// That timestamp is only used for retry throttling until run_count > 0; ES window still uses full interval lookback.
+func (e *Executor) recordAttemptMarker(ruleModel *models.Rule, attemptAt time.Time) {
+	if hasSuccessfulRun(ruleModel) {
+		return
+	}
+	if err := e.ruleService.UpdateLastRunTime(ruleModel.ID, &attemptAt); err != nil {
+		slog.Warn("Failed to record attempt marker", "rule_id", ruleModel.ID, "error", err)
+		return
+	}
+	ruleModel.LastRunTime = &attemptAt
+}
+
 // Executor executes rule queries and sends alerts
 type Executor struct {
 	defaultQueryService *query.Service // Fallback service using environment variables
@@ -58,35 +71,51 @@ func (e *Executor) ExecuteRuleForce(ctx context.Context, ruleModel *models.Rule)
 func (e *Executor) ExecuteRuleWithOptions(ctx context.Context, ruleModel *models.Rule, forceExecute bool) error {
 	slog.Info("ExecuteRule called", "rule_id", ruleModel.ID, "rule_name", ruleModel.Name, "interval", ruleModel.Interval, "force_execute", forceExecute)
 
-	// Get last run time
-	lastRun := time.Now().Add(-5 * time.Minute) // Default fallback
-	if ruleModel.LastRunTime != nil {
-		lastRun = *ruleModel.LastRunTime
-		// Add a small overlap (2 seconds) to avoid missing data at boundaries
-		// This ensures we don't miss logs that might have timestamps exactly at the boundary
-		// or logs that arrived during the previous query execution
-		lastRun = lastRun.Add(-2 * time.Second)
-		slog.Info("Using last run time", "rule_id", ruleModel.ID, "last_run", ruleModel.LastRunTime.Format("2006-01-02 15:04:05"), "adjusted_last_run", lastRun.Format("2006-01-02 15:04:05"))
-	} else {
-		slog.Info("No last run time, using default", "rule_id", ruleModel.ID, "default_last_run", lastRun.Format("2006-01-02 15:04:05"))
+	currentTime := time.Now()
+	requiredInterval := ruleIntervalDuration(ruleModel.Interval)
+
+	if !shouldRunNow(ruleModel, currentTime, forceExecute) {
+		anchor := ruleModel.LastRunTime
+		var since time.Duration
+		if anchor != nil {
+			since = currentTime.Sub(*anchor)
+		}
+		slog.Info("Skipping execution - not enough time passed",
+			"rule_id", ruleModel.ID,
+			"run_count", ruleModel.RunCount,
+			"time_since_anchor", since,
+			"required_interval", requiredInterval,
+			"has_successful_run", hasSuccessfulRun(ruleModel))
+		return ErrSkippedInterval
 	}
 
-	currentTime := time.Now()
-
-	// Check if enough time has passed (skip if forceExecute is true)
-	timeSinceLastRun := currentTime.Sub(lastRun)
-	requiredInterval := time.Duration(ruleModel.Interval) * time.Second
-
-	if !forceExecute && timeSinceLastRun < requiredInterval {
-		slog.Info("Skipping execution - not enough time passed", "rule_id", ruleModel.ID, "time_since_last_run", timeSinceLastRun, "required_interval", requiredInterval)
-		return nil // Skip if not enough time has passed
+	lastRun := computeESWindowStart(ruleModel, currentTime)
+	timeSinceAnchor := currentTime.Sub(lastRun)
+	if hasSuccessfulRun(ruleModel) {
+		slog.Info("Using last successful run for ES window",
+			"rule_id", ruleModel.ID,
+			"last_run", ruleModel.LastRunTime.Format("2006-01-02 15:04:05"),
+			"es_from", lastRun.Format("2006-01-02 15:04:05"))
+	} else if ruleModel.LastRunTime != nil {
+		slog.Info("Retry after failed attempt (ES window uses full interval lookback)",
+			"rule_id", ruleModel.ID,
+			"last_attempt", ruleModel.LastRunTime.Format("2006-01-02 15:04:05"),
+			"es_from", lastRun.Format("2006-01-02 15:04:05"),
+			"lookback", requiredInterval)
+	} else {
+		slog.Info("First execution (no prior run)",
+			"rule_id", ruleModel.ID,
+			"es_from", lastRun.Format("2006-01-02 15:04:05"),
+			"lookback", requiredInterval)
 	}
 
 	if forceExecute {
-		slog.Info("Force executing rule (skip time check)", "rule_id", ruleModel.ID, "time_since_last_run", timeSinceLastRun, "required_interval", requiredInterval)
+		slog.Info("Force executing rule (skip time check)", "rule_id", ruleModel.ID, "time_since_anchor", timeSinceAnchor, "required_interval", requiredInterval)
 	} else {
-		slog.Info("Proceeding with execution", "rule_id", ruleModel.ID, "time_since_last_run", timeSinceLastRun, "required_interval", requiredInterval)
+		slog.Info("Proceeding with execution", "rule_id", ruleModel.ID, "time_since_anchor", timeSinceAnchor, "required_interval", requiredInterval)
 	}
+
+	e.recordAttemptMarker(ruleModel, currentTime)
 
 	// Get webhook URL from config or fallback to direct URL
 	webhookURL := ruleModel.LarkWebhook
@@ -135,12 +164,11 @@ func (e *Executor) ExecuteRuleWithOptions(ctx context.Context, ruleModel *models
 		// Continue even if update fails, but log the error
 	}
 
-	// Update run count asynchronously (non-critical)
-	go func() {
-		if err := e.ruleService.IncrementRunCount(ruleModel.ID); err != nil {
-			slog.Warn("Failed to increment run count", "rule_id", ruleModel.ID, "error", err)
-		}
-	}()
+	if err := e.ruleService.IncrementRunCount(ruleModel.ID); err != nil {
+		slog.Warn("Failed to increment run count", "rule_id", ruleModel.ID, "error", err)
+	} else {
+		ruleModel.RunCount++
+	}
 
 	if len(logs) == 0 {
 		slog.Info("No logs matched, skipping alert", "rule_id", ruleModel.ID, "rule_name", ruleModel.Name)

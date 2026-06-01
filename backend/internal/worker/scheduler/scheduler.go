@@ -7,6 +7,7 @@ package scheduler
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log/slog"
 	"sync"
@@ -377,7 +378,13 @@ func (s *Scheduler) executeRuleWithOptions(ctx context.Context, ruleModel *model
 		err = s.executor.ExecuteRule(ctx, ruleModel)
 	}
 
-	if err != nil {
+	switch {
+	case errors.Is(err, executor.ErrSkippedInterval):
+		slog.Debug("Rule tick skipped (interval not elapsed)",
+			"rule_id", ruleModel.ID,
+			"rule_name", ruleModel.Name,
+			"force_execute", forceExecute)
+	case err != nil:
 		slog.Error("Failed to execute rule",
 			"rule_id", ruleModel.ID,
 			"rule_name", ruleModel.Name,
@@ -387,7 +394,7 @@ func (s *Scheduler) executeRuleWithOptions(ctx context.Context, ruleModel *model
 			"lark_config_loaded", ruleModel.LarkConfig != nil,
 			"es_config_id", ruleModel.ESConfigID,
 			"es_config_loaded", ruleModel.ESConfig != nil)
-	} else {
+	default:
 		slog.Info("Rule executed successfully", "rule_id", ruleModel.ID, "rule_name", ruleModel.Name, "force_execute", forceExecute)
 	}
 }
