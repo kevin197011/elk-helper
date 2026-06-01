@@ -37,19 +37,28 @@ function getRequestBearerToken(error: any): string | null {
   return m ? m[1].trim() : null;
 }
 
+/**
+ * Only treat 401 as "current session expired" when the failed request clearly used
+ * the same Bearer token as localStorage. Avoids wiping a fresh login when a stale
+ * /auth/me completes without Authorization on error.config, or with an old token.
+ */
+function shouldInvalidateSessionOn401(error: any): boolean {
+  const currentToken = localStorage.getItem('token');
+  if (!currentToken) {
+    return false;
+  }
+  const requestToken = getRequestBearerToken(error);
+  if (!requestToken) {
+    return false;
+  }
+  return requestToken === currentToken;
+}
+
 // Add response interceptor to handle 401 errors
 api.interceptors.response.use(
   (response: any) => response,
   (error: any) => {
-    if (error.response?.status === 401) {
-      const requestToken = getRequestBearerToken(error);
-      const currentToken = localStorage.getItem('token');
-      // Ignore 401 from a superseded session (e.g. initial /auth/me with old token
-      // completing after a successful login wrote a new token).
-      if (requestToken && currentToken && requestToken !== currentToken) {
-        return Promise.reject(error);
-      }
-      // Clear token and redirect to login
+    if (error.response?.status === 401 && shouldInvalidateSessionOn401(error)) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       if (window.location.pathname !== '/login') {
@@ -276,7 +285,8 @@ export const authApi = {
       password,
     }),
   logout: () => api.post<{ message: string }>('/auth/logout'),
-  getCurrentUser: () => api.get<{ data: User }>('/auth/me'),
+  getCurrentUser: (config?: { signal?: AbortSignal }) =>
+    api.get<{ data: User }>('/auth/me', config),
   updatePassword: (oldPassword: string, newPassword: string) =>
     api.put<{ message: string }>('/auth/password', {
       old_password: oldPassword,

@@ -25,97 +25,115 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [authStatus, setAuthStatus] = useState<AuthStatus>('checking');
-  const initCompletedRef = useRef(false);
+  const verifyAbortRef = useRef<AbortController | null>(null);
+  const sessionGenRef = useRef(0);
 
-  // Load user from localStorage on mount
+  const cancelPendingVerification = () => {
+    verifyAbortRef.current?.abort();
+    verifyAbortRef.current = null;
+    sessionGenRef.current += 1;
+  };
+
+  // Restore session from localStorage on mount (re-runs under React StrictMode with abort).
   useEffect(() => {
-    if (initCompletedRef.current) {
-      return;
-    }
-    initCompletedRef.current = true;
+    const controller = new AbortController();
+    verifyAbortRef.current = controller;
+    const generation = ++sessionGenRef.current;
+    const { signal } = controller;
 
     let isActive = true;
     const storedToken = localStorage.getItem('token');
     const storedUser = localStorage.getItem('user');
+
     const loadingFallbackTimer = window.setTimeout(() => {
-      if (isActive) {
-        setIsLoading(false);
-        setAuthStatus(storedToken ? 'authenticated' : 'guest');
+      if (!isActive || generation !== sessionGenRef.current) return;
+      setIsLoading(false);
+      if (localStorage.getItem('token')) {
+        setAuthStatus('authenticated');
+      } else {
+        setAuthStatus('guest');
       }
     }, 12000);
 
-    if (storedToken) {
-      try {
-        const parsedUser = storedUser ? JSON.parse(storedUser) : null;
-        setToken(storedToken);
-        setUser(parsedUser);
+    if (!storedToken) {
+      setAuthStatus('guest');
+      setIsLoading(false);
+      return () => {
+        isActive = false;
+        controller.abort();
+        window.clearTimeout(loadingFallbackTimer);
+      };
+    }
 
-        // Token used for this verification; ignore late responses after login replaces it.
-        const tokenAtRequestStart = storedToken;
+    try {
+      const parsedUser = storedUser ? JSON.parse(storedUser) : null;
+      setToken(storedToken);
+      setUser(parsedUser);
 
-        // Verify token by fetching current user
-        authApi.getCurrentUser()
-          .then((response) => {
-            if (!isActive) return;
-            if (localStorage.getItem('token') !== tokenAtRequestStart) return;
-            setUser(response.data.data);
-            localStorage.setItem('user', JSON.stringify(response.data.data));
-            setAuthStatus('authenticated');
-          })
-          .catch(() => {
-            if (!isActive) return;
-            if (localStorage.getItem('token') !== tokenAtRequestStart) return;
-            // Token invalid, clear storage
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            setToken(null);
-            setUser(null);
-            setAuthStatus('guest');
-          })
-          .finally(() => {
-            if (!isActive) return;
-            setIsLoading(false);
-          });
-      } catch (error) {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        setToken(null);
-        setUser(null);
-        setAuthStatus('guest');
-        if (isActive) {
+      const tokenAtRequestStart = storedToken;
+
+      authApi
+        .getCurrentUser({ signal })
+        .then((response) => {
+          if (!isActive || generation !== sessionGenRef.current) return;
+          if (localStorage.getItem('token') !== tokenAtRequestStart) return;
+          setUser(response.data.data);
+          localStorage.setItem('user', JSON.stringify(response.data.data));
+          setAuthStatus('authenticated');
+        })
+        .catch(() => {
+          if (!isActive || generation !== sessionGenRef.current) return;
+          if (signal.aborted) return;
+          if (localStorage.getItem('token') !== tokenAtRequestStart) return;
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          setToken(null);
+          setUser(null);
+          setAuthStatus('guest');
+        })
+        .finally(() => {
+          if (!isActive || generation !== sessionGenRef.current) return;
           setIsLoading(false);
-        }
-      }
-    } else {
+        });
+    } catch {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      setToken(null);
+      setUser(null);
       setAuthStatus('guest');
       setIsLoading(false);
     }
 
     return () => {
       isActive = false;
+      controller.abort();
       window.clearTimeout(loadingFallbackTimer);
     };
   }, []);
 
   const login = async (username: string, password: string) => {
+    cancelPendingVerification();
+
     const response = await authApi.login(username, password);
     const { token: newToken, user: newUser } = response.data;
 
     setToken(newToken);
     setUser(newUser);
     setAuthStatus('authenticated');
+    setIsLoading(false);
     localStorage.setItem('token', newToken);
     localStorage.setItem('user', JSON.stringify(newUser));
   };
 
   const logout = () => {
+    cancelPendingVerification();
     setToken(null);
     setUser(null);
     setAuthStatus('guest');
+    setIsLoading(false);
     localStorage.removeItem('token');
     localStorage.removeItem('user');
 
-    // Call logout API (optional, for server-side cleanup if needed)
     authApi.logout().catch(() => {
       // Ignore errors on logout
     });
@@ -145,4 +163,3 @@ export function useAuth() {
   }
   return context;
 }
-

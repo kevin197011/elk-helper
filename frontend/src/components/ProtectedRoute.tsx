@@ -15,7 +15,8 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
   const { isAuthenticated, isLoading, authStatus } = useAuth();
   const location = useLocation();
 
-  if (isLoading || authStatus === 'checking') {
+  // Allow entry when login already succeeded even if a stale /auth/me verify is still finishing.
+  if ((isLoading || authStatus === 'checking') && !isAuthenticated) {
     return (
       <div style={{ 
         height: '100vh', 
