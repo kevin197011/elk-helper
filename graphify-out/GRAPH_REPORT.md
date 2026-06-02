@@ -1,16 +1,16 @@
 # Graph Report - kk-elk-helper  (2026-06-01)
 
 ## Corpus Check
-- 121 files · ~64,025 words
+- 122 files · ~64,497 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1131 nodes · 1357 edges · 102 communities (82 shown, 20 thin omitted)
+- 1139 nodes · 1368 edges · 103 communities (83 shown, 20 thin omitted)
 - Extraction: 93% EXTRACTED · 7% INFERRED · 0% AMBIGUOUS · INFERRED: 91 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `b041349a`
+- Built from commit: `c68bf41a`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -111,10 +111,11 @@
 - [[_COMMUNITY_Community 93|Community 93]]
 - [[_COMMUNITY_Community 100|Community 100]]
 - [[_COMMUNITY_Community 101|Community 101]]
+- [[_COMMUNITY_Community 102|Community 102]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `WithTimeout()` - 42 edges
-2. `ELK Helper - 智能日志告警系统` - 20 edges
+2. `ELK Helper - 智能日志告警系统` - 21 edges
 3. `compilerOptions` - 19 edges
 4. `SetupRoutes()` - 17 edges
 5. `Service` - 16 edges
@@ -136,7 +137,7 @@
 - `SetupRoutes()` --calls--> `NewAlertHandler()`  [INFERRED]
   backend/internal/api/routes/routes.go → backend/internal/api/handlers/alert_handler.go
 
-## Communities (102 total, 20 thin omitted)
+## Communities (103 total, 20 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.04
@@ -228,7 +229,7 @@ Nodes (13): NewSSOHandler(), oidcStateCookieName(), parseSSOProviderID(), SSOHan
 
 ### Community 23 - "Community 23"
 Cohesion: 0.13
-Nodes (19): AuthConfig, Config, getEnv(), getEnvSlice(), Load(), parseBoolWithDefault(), parseIntWithDefault(), resolveSSOFrontendBaseURL() (+11 more)
+Nodes (20): AuthConfig, Config, getEnv(), getEnvSlice(), Load(), parseBoolWithDefault(), parseIntWithDefault(), resolveSSOFrontendBaseURL() (+12 more)
 
 ### Community 24 - "Community 24"
 Cohesion: 0.16
@@ -315,8 +316,8 @@ Cohesion: 0.29
 Nodes (6): Change: Harden Backend Runtime Guardrails, Impact, In scope (P0), Out of scope (P1/P2, tracked as follow-ups), What Changes, Why
 
 ### Community 48 - "Community 48"
-Cohesion: 0.29
-Nodes (7): code:bash (# 查看迁移状态), code:bash (# 执行索引优化脚本), code:block23 (启用清理: ✓), 定期清理数据, ⚡ 性能优化, 数据库索引优化, 数据库迁移管理
+Cohesion: 0.32
+Nodes (8): code:bash (# 查看迁移状态), code:bash (# 执行索引优化脚本), code:block23 (启用清理: ✓), 定期清理数据, ⚡ 性能优化, ⚡ 性能优化, 数据库索引优化, 数据库迁移管理
 
 ### Community 49 - "Community 49"
 Cohesion: 0.33
@@ -442,8 +443,12 @@ Nodes (3): ADDED Requirements, Requirement: Rule Execution Concurrency Limit, Sc
 Cohesion: 0.25
 Nodes (4): DEFAULT_OIDC_CONFIG, FormValues, SSOAdminProvider, SSOProviderConfig
 
+### Community 102 - "Community 102"
+Cohesion: 0.33
+Nodes (5): Admin setup, API summary, Environment, Flow, OIDC SSO
+
 ## Knowledge Gaps
-- **434 isolated node(s):** `composite`, `skipLibCheck`, `module`, `moduleResolution`, `allowSyntheticDefaultImports` (+429 more)
+- **438 isolated node(s):** `composite`, `skipLibCheck`, `module`, `moduleResolution`, `allowSyntheticDefaultImports` (+433 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **20 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -451,16 +456,16 @@ Nodes (4): DEFAULT_OIDC_CONFIG, FormValues, SSOAdminProvider, SSOProviderConfig
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `SetupRoutes()` connect `Community 49` to `Community 32`, `Community 69`, `Community 11`, `Community 16`, `Community 50`, `Community 19`, `Community 21`, `Community 55`, `Community 23`, `Community 25`, `Community 30`, `Community 31`?**
-  _High betweenness centrality (0.059) - this node is a cross-community bridge._
+  _High betweenness centrality (0.062) - this node is a cross-community bridge._
 - **Why does `WithTimeout()` connect `Community 2` to `Community 32`, `Community 3`, `Community 11`, `Community 23`?**
-  _High betweenness centrality (0.055) - this node is a cross-community bridge._
+  _High betweenness centrality (0.057) - this node is a cross-community bridge._
 - **Why does `main()` connect `Community 23` to `Community 49`, `Community 10`, `Community 2`?**
-  _High betweenness centrality (0.048) - this node is a cross-community bridge._
+  _High betweenness centrality (0.051) - this node is a cross-community bridge._
 - **Are the 41 inferred relationships involving `WithTimeout()` (e.g. with `main()` and `.TestLarkConfig()`) actually correct?**
   _`WithTimeout()` has 41 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 16 inferred relationships involving `SetupRoutes()` (e.g. with `main()` and `CORSMiddleware()`) actually correct?**
   _`SetupRoutes()` has 16 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `composite`, `skipLibCheck`, `module` to the rest of the system?**
-  _444 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _448 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
   _Cohesion score 0.043478260869565216 - nodes in this community are weakly interconnected._

@@ -1834,7 +1834,7 @@
       "label": "WithTimeout()",
       "file_type": "code",
       "source_file": "backend/internal/repository/database/database.go",
-      "source_location": "L30",
+      "source_location": "L31",
       "id": "database_database_withtimeout",
       "community": 2,
       "norm_label": "withtimeout()"
@@ -1843,16 +1843,25 @@
       "label": "Init()",
       "file_type": "code",
       "source_file": "backend/internal/repository/database/database.go",
-      "source_location": "L40",
+      "source_location": "L41",
       "id": "database_database_init",
       "community": 23,
       "norm_label": "init()"
     },
     {
+      "label": "ensureSchemaCompatibility()",
+      "file_type": "code",
+      "source_file": "backend/internal/repository/database/database.go",
+      "source_location": "L88",
+      "id": "database_database_ensureschemacompatibility",
+      "community": 23,
+      "norm_label": "ensureschemacompatibility()"
+    },
+    {
       "label": "runMigrations()",
       "file_type": "code",
       "source_file": "backend/internal/repository/database/database.go",
-      "source_location": "L82",
+      "source_location": "L101",
       "id": "database_database_runmigrations",
       "community": 23,
       "norm_label": "runmigrations()"
@@ -1861,7 +1870,7 @@
       "label": "Close()",
       "file_type": "code",
       "source_file": "backend/internal/repository/database/database.go",
-      "source_location": "L124",
+      "source_location": "L143",
       "id": "database_database_close",
       "community": 23,
       "norm_label": "close()"
@@ -3526,7 +3535,7 @@
       "label": "getEnv()",
       "file_type": "code",
       "source_file": "backend/internal/service/auth/auth.go",
-      "source_location": "L363",
+      "source_location": "L381",
       "id": "auth_auth_getenv",
       "community": 18,
       "norm_label": "getenv()"
@@ -3535,7 +3544,7 @@
       "label": ".UpdatePassword()",
       "file_type": "code",
       "source_file": "backend/internal/service/auth/auth.go",
-      "source_location": "L372",
+      "source_location": "L390",
       "id": "auth_service_updatepassword",
       "community": 18,
       "norm_label": ".updatepassword()"
@@ -5209,7 +5218,7 @@
       "label": "\u6570\u636e\u5e93\u7ba1\u7406",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L76",
+      "source_location": "L77",
       "id": "kk_elk_helper_readme_\u6570\u636e\u5e93\u7ba1\u7406",
       "community": 36,
       "norm_label": "\u6570\u636e\u5e93\u7ba1\u7406"
@@ -5218,7 +5227,7 @@
       "label": "\ud83c\udfd7\ufe0f \u6280\u672f\u67b6\u6784",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L81",
+      "source_location": "L82",
       "id": "kk_elk_helper_readme_\u6280\u672f\u67b6\u6784",
       "community": 29,
       "norm_label": "\ud83c\udfd7\ufe0f \u6280\u672f\u67b6\u6784"
@@ -5227,7 +5236,7 @@
       "label": "code:block1 (\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L83",
+      "source_location": "L84",
       "id": "kk_elk_helper_readme_codeblock_1",
       "community": 29,
       "norm_label": "code:block1 (\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510)"
@@ -5236,7 +5245,7 @@
       "label": "\ud83d\ude80 \u5feb\u901f\u5f00\u59cb",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L113",
+      "source_location": "L114",
       "id": "kk_elk_helper_readme_\u5feb\u901f\u5f00\u59cb",
       "community": 65,
       "norm_label": "\ud83d\ude80 \u5feb\u901f\u5f00\u59cb"
@@ -5245,7 +5254,7 @@
       "label": "\u65b9\u5f0f 1: \u4f7f\u7528\u9884\u6784\u5efa\u955c\u50cf\uff08\u63a8\u8350\u751f\u4ea7\u73af\u5883\uff09",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L115",
+      "source_location": "L116",
       "id": "kk_elk_helper_readme_\u65b9\u5f0f_1_\u4f7f\u7528\u9884\u6784\u5efa\u955c\u50cf_\u63a8\u8350\u751f\u4ea7\u73af\u5883",
       "community": 65,
       "norm_label": "\u65b9\u5f0f 1: \u4f7f\u7528\u9884\u6784\u5efa\u955c\u50cf(\u63a8\u8350\u751f\u4ea7\u73af\u5883)"
@@ -5254,7 +5263,7 @@
       "label": "code:bash (# 1. \u514b\u9686\u9879\u76ee)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L117",
+      "source_location": "L118",
       "id": "kk_elk_helper_readme_codeblock_2",
       "community": 65,
       "norm_label": "code:bash (# 1. \u514b\u9686\u9879\u76ee)"
@@ -5263,7 +5272,7 @@
       "label": "\u65b9\u5f0f 2: \u672c\u5730\u6784\u5efa\uff08\u5f00\u53d1\u73af\u5883\uff09",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L146",
+      "source_location": "L147",
       "id": "kk_elk_helper_readme_\u65b9\u5f0f_2_\u672c\u5730\u6784\u5efa_\u5f00\u53d1\u73af\u5883",
       "community": 65,
       "norm_label": "\u65b9\u5f0f 2: \u672c\u5730\u6784\u5efa(\u5f00\u53d1\u73af\u5883)"
@@ -5272,7 +5281,7 @@
       "label": "code:bash (# 1. \u514b\u9686\u9879\u76ee)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L148",
+      "source_location": "L149",
       "id": "kk_elk_helper_readme_codeblock_3",
       "community": 65,
       "norm_label": "code:bash (# 1. \u514b\u9686\u9879\u76ee)"
@@ -5281,7 +5290,7 @@
       "label": "\ud83d\udccb \u73af\u5883\u914d\u7f6e",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L160",
+      "source_location": "L161",
       "id": "kk_elk_helper_readme_\u73af\u5883\u914d\u7f6e",
       "community": 67,
       "norm_label": "\ud83d\udccb \u73af\u5883\u914d\u7f6e"
@@ -5290,7 +5299,7 @@
       "label": "\u57fa\u672c\u914d\u7f6e\uff08.env \u6587\u4ef6\uff09",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L162",
+      "source_location": "L163",
       "id": "kk_elk_helper_readme_\u57fa\u672c\u914d\u7f6e_env_\u6587\u4ef6",
       "community": 67,
       "norm_label": "\u57fa\u672c\u914d\u7f6e(.env \u6587\u4ef6)"
@@ -5299,7 +5308,7 @@
       "label": "code:bash (# \u540e\u7aef\u7aef\u53e3\uff08\u9ed8\u8ba4 8080\uff09)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L164",
+      "source_location": "L165",
       "id": "kk_elk_helper_readme_codeblock_4",
       "community": 67,
       "norm_label": "code:bash (# \u540e\u7aef\u7aef\u53e3(\u9ed8\u8ba4 8080))"
@@ -5308,7 +5317,7 @@
       "label": "Nginx \u53cd\u5411\u4ee3\u7406\u914d\u7f6e",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L218",
+      "source_location": "L222",
       "id": "kk_elk_helper_readme_nginx_\u53cd\u5411\u4ee3\u7406\u914d\u7f6e",
       "community": 67,
       "norm_label": "nginx \u53cd\u5411\u4ee3\u7406\u914d\u7f6e"
@@ -5317,7 +5326,7 @@
       "label": "code:bash (# 1. \u590d\u5236\u914d\u7f6e\u6587\u4ef6)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L222",
+      "source_location": "L226",
       "id": "kk_elk_helper_readme_codeblock_5",
       "community": 67,
       "norm_label": "code:bash (# 1. \u590d\u5236\u914d\u7f6e\u6587\u4ef6)"
@@ -5326,7 +5335,7 @@
       "label": "\ud83c\udfa8 \u529f\u80fd\u7279\u6027",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L240",
+      "source_location": "L244",
       "id": "kk_elk_helper_readme_\u529f\u80fd\u7279\u6027",
       "community": 17,
       "norm_label": "\ud83c\udfa8 \u529f\u80fd\u7279\u6027"
@@ -5335,7 +5344,7 @@
       "label": "1. \u591a ES \u8282\u70b9\u652f\u6301",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L242",
+      "source_location": "L246",
       "id": "kk_elk_helper_readme_1_\u591a_es_\u8282\u70b9\u652f\u6301",
       "community": 17,
       "norm_label": "1. \u591a es \u8282\u70b9\u652f\u6301"
@@ -5344,7 +5353,7 @@
       "label": "code:block6 (https://10.170.1.54:9200)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L247",
+      "source_location": "L251",
       "id": "kk_elk_helper_readme_codeblock_6",
       "community": 17,
       "norm_label": "code:block6 (https://10.170.1.54:9200)"
@@ -5353,7 +5362,7 @@
       "label": "code:block7 (https://10.170.1.54:9200;https://10.170.1.55:9200;https://10)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L252",
+      "source_location": "L256",
       "id": "kk_elk_helper_readme_codeblock_7",
       "community": 17,
       "norm_label": "code:block7 (https://10.170.1.54:9200;https://10.170.1.55:9200;https://10)"
@@ -5362,7 +5371,7 @@
       "label": "2. \u667a\u80fd\u544a\u8b66\u683c\u5f0f",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L261",
+      "source_location": "L265",
       "id": "kk_elk_helper_readme_2_\u667a\u80fd\u544a\u8b66\u683c\u5f0f",
       "community": 17,
       "norm_label": "2. \u667a\u80fd\u544a\u8b66\u683c\u5f0f"
@@ -5371,7 +5380,7 @@
       "label": "Nginx \u65e5\u5fd7\u544a\u8b66",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L265",
+      "source_location": "L269",
       "id": "kk_elk_helper_readme_nginx_\u65e5\u5fd7\u544a\u8b66",
       "community": 17,
       "norm_label": "nginx \u65e5\u5fd7\u544a\u8b66"
@@ -5380,7 +5389,7 @@
       "label": "code:block8 (\ud83d\udea8 ELK \u544a\u8b66)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L266",
+      "source_location": "L270",
       "id": "kk_elk_helper_readme_codeblock_8",
       "community": 17,
       "norm_label": "code:block8 (\ud83d\udea8 elk \u544a\u8b66)"
@@ -5389,7 +5398,7 @@
       "label": "Java \u5e94\u7528\u65e5\u5fd7\u544a\u8b66",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L279",
+      "source_location": "L283",
       "id": "kk_elk_helper_readme_java_\u5e94\u7528\u65e5\u5fd7\u544a\u8b66",
       "community": 17,
       "norm_label": "java \u5e94\u7528\u65e5\u5fd7\u544a\u8b66"
@@ -5398,7 +5407,7 @@
       "label": "code:block9 (\ud83d\udea8 ELK \u544a\u8b66)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L280",
+      "source_location": "L284",
       "id": "kk_elk_helper_readme_codeblock_9",
       "community": 17,
       "norm_label": "code:block9 (\ud83d\udea8 elk \u544a\u8b66)"
@@ -5407,7 +5416,7 @@
       "label": "3. \u67e5\u8be2\u6761\u4ef6\u914d\u7f6e",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L294",
+      "source_location": "L298",
       "id": "kk_elk_helper_readme_3_\u67e5\u8be2\u6761\u4ef6\u914d\u7f6e",
       "community": 17,
       "norm_label": "3. \u67e5\u8be2\u6761\u4ef6\u914d\u7f6e"
@@ -5416,7 +5425,7 @@
       "label": "\u4f7f\u7528\u5feb\u901f\u793a\u4f8b\u6309\u94ae",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L296",
+      "source_location": "L300",
       "id": "kk_elk_helper_readme_\u4f7f\u7528\u5feb\u901f\u793a\u4f8b\u6309\u94ae",
       "community": 17,
       "norm_label": "\u4f7f\u7528\u5feb\u901f\u793a\u4f8b\u6309\u94ae"
@@ -5425,7 +5434,7 @@
       "label": "\u6216\u624b\u52a8\u7f16\u8f91 JSON",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L302",
+      "source_location": "L306",
       "id": "kk_elk_helper_readme_\u6216\u624b\u52a8\u7f16\u8f91_json",
       "community": 17,
       "norm_label": "\u6216\u624b\u52a8\u7f16\u8f91 json"
@@ -5434,7 +5443,7 @@
       "label": "code:json ([)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L305",
+      "source_location": "L309",
       "id": "kk_elk_helper_readme_codeblock_10",
       "community": 17,
       "norm_label": "code:json ([)"
@@ -5443,7 +5452,7 @@
       "label": "code:json ([)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L316",
+      "source_location": "L320",
       "id": "kk_elk_helper_readme_codeblock_11",
       "community": 17,
       "norm_label": "code:json ([)"
@@ -5452,7 +5461,7 @@
       "label": "4. \u89c4\u5219\u5b9e\u65f6\u66f4\u65b0",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L341",
+      "source_location": "L345",
       "id": "kk_elk_helper_readme_4_\u89c4\u5219\u5b9e\u65f6\u66f4\u65b0",
       "community": 17,
       "norm_label": "4. \u89c4\u5219\u5b9e\u65f6\u66f4\u65b0"
@@ -5461,7 +5470,7 @@
       "label": "5. \u89c4\u5219\u5bfc\u5165\u5bfc\u51fa",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L351",
+      "source_location": "L355",
       "id": "kk_elk_helper_readme_5_\u89c4\u5219\u5bfc\u5165\u5bfc\u51fa",
       "community": 17,
       "norm_label": "5. \u89c4\u5219\u5bfc\u5165\u5bfc\u51fa"
@@ -5470,7 +5479,7 @@
       "label": "6. \u6e05\u7406\u4efb\u52a1\u914d\u7f6e",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L367",
+      "source_location": "L371",
       "id": "kk_elk_helper_readme_6_\u6e05\u7406\u4efb\u52a1\u914d\u7f6e",
       "community": 17,
       "norm_label": "6. \u6e05\u7406\u4efb\u52a1\u914d\u7f6e"
@@ -5479,7 +5488,7 @@
       "label": "7. \u6027\u80fd\u4f18\u5316",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L376",
+      "source_location": "L380",
       "id": "kk_elk_helper_readme_7_\u6027\u80fd\u4f18\u5316",
       "community": 17,
       "norm_label": "7. \u6027\u80fd\u4f18\u5316"
@@ -5488,7 +5497,7 @@
       "label": "\u544a\u8b66\u5386\u53f2\u52a0\u901f",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L378",
+      "source_location": "L382",
       "id": "kk_elk_helper_readme_\u544a\u8b66\u5386\u53f2\u52a0\u901f",
       "community": 17,
       "norm_label": "\u544a\u8b66\u5386\u53f2\u52a0\u901f"
@@ -5497,7 +5506,7 @@
       "label": "\ud83d\udce6 Docker \u955c\u50cf",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L391",
+      "source_location": "L395",
       "id": "kk_elk_helper_readme_docker_\u955c\u50cf",
       "community": 64,
       "norm_label": "\ud83d\udce6 docker \u955c\u50cf"
@@ -5506,7 +5515,7 @@
       "label": "GitHub Container Registry",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L393",
+      "source_location": "L397",
       "id": "kk_elk_helper_readme_github_container_registry",
       "community": 64,
       "norm_label": "github container registry"
@@ -5515,7 +5524,7 @@
       "label": "code:yaml (services:)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L397",
+      "source_location": "L401",
       "id": "kk_elk_helper_readme_codeblock_12",
       "community": 64,
       "norm_label": "code:yaml (services:)"
@@ -5524,7 +5533,7 @@
       "label": "\u955c\u50cf\u6807\u7b7e",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L406",
+      "source_location": "L410",
       "id": "kk_elk_helper_readme_\u955c\u50cf\u6807\u7b7e",
       "community": 64,
       "norm_label": "\u955c\u50cf\u6807\u7b7e"
@@ -5533,7 +5542,7 @@
       "label": "\u6784\u5efa\u4f18\u5316",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L412",
+      "source_location": "L416",
       "id": "kk_elk_helper_readme_\u6784\u5efa\u4f18\u5316",
       "community": 64,
       "norm_label": "\u6784\u5efa\u4f18\u5316"
@@ -5542,7 +5551,7 @@
       "label": "\ud83d\udd27 \u90e8\u7f72\u914d\u7f6e",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L419",
+      "source_location": "L423",
       "id": "kk_elk_helper_readme_\u90e8\u7f72\u914d\u7f6e",
       "community": 68,
       "norm_label": "\ud83d\udd27 \u90e8\u7f72\u914d\u7f6e"
@@ -5551,7 +5560,7 @@
       "label": "\u751f\u4ea7\u73af\u5883\u90e8\u7f72",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L421",
+      "source_location": "L425",
       "id": "kk_elk_helper_readme_\u751f\u4ea7\u73af\u5883\u90e8\u7f72",
       "community": 68,
       "norm_label": "\u751f\u4ea7\u73af\u5883\u90e8\u7f72"
@@ -5560,7 +5569,7 @@
       "label": "code:yaml (# docker-compose-prod.yml)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L425",
+      "source_location": "L429",
       "id": "kk_elk_helper_readme_codeblock_13",
       "community": 68,
       "norm_label": "code:yaml (# docker-compose-prod.yml)"
@@ -5569,7 +5578,7 @@
       "label": "Nginx \u53cd\u5411\u4ee3\u7406",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L441",
+      "source_location": "L445",
       "id": "kk_elk_helper_readme_nginx_\u53cd\u5411\u4ee3\u7406",
       "community": 68,
       "norm_label": "nginx \u53cd\u5411\u4ee3\u7406"
@@ -5578,7 +5587,7 @@
       "label": "code:nginx (# nginx/simple.conf)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L445",
+      "source_location": "L449",
       "id": "kk_elk_helper_readme_codeblock_14",
       "community": 68,
       "norm_label": "code:nginx (# nginx/simple.conf)"
@@ -5587,7 +5596,7 @@
       "label": "\ud83d\udcd6 \u4f7f\u7528\u6307\u5357",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L464",
+      "source_location": "L468",
       "id": "kk_elk_helper_readme_\u4f7f\u7528\u6307\u5357",
       "community": 26,
       "norm_label": "\ud83d\udcd6 \u4f7f\u7528\u6307\u5357"
@@ -5596,7 +5605,7 @@
       "label": "1. \u914d\u7f6e ES \u6570\u636e\u6e90",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L466",
+      "source_location": "L470",
       "id": "kk_elk_helper_readme_1_\u914d\u7f6e_es_\u6570\u636e\u6e90",
       "community": 26,
       "norm_label": "1. \u914d\u7f6e es \u6570\u636e\u6e90"
@@ -5605,7 +5614,7 @@
       "label": "code:block15 (ES \u5730\u5740: https://es.example.com:9200)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L471",
+      "source_location": "L475",
       "id": "kk_elk_helper_readme_codeblock_15",
       "community": 26,
       "norm_label": "code:block15 (es \u5730\u5740: https://es.example.com:9200)"
@@ -5614,7 +5623,7 @@
       "label": "code:block16 (ES \u5730\u5740: https://es-node1.example.com:9200;https://es-node2.ex)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L479",
+      "source_location": "L483",
       "id": "kk_elk_helper_readme_codeblock_16",
       "community": 26,
       "norm_label": "code:block16 (es \u5730\u5740: https://es-node1.example.com:9200;https://es-node2.ex)"
@@ -5623,7 +5632,7 @@
       "label": "2. \u521b\u5efa\u544a\u8b66\u89c4\u5219",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L488",
+      "source_location": "L492",
       "id": "kk_elk_helper_readme_2_\u521b\u5efa\u544a\u8b66\u89c4\u5219",
       "community": 26,
       "norm_label": "2. \u521b\u5efa\u544a\u8b66\u89c4\u5219"
@@ -5632,7 +5641,7 @@
       "label": "\u793a\u4f8b 1: \u76d1\u63a7 Nginx 5xx \u9519\u8bef",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L492",
+      "source_location": "L496",
       "id": "kk_elk_helper_readme_\u793a\u4f8b_1_\u76d1\u63a7_nginx_5xx_\u9519\u8bef",
       "community": 26,
       "norm_label": "\u793a\u4f8b 1: \u76d1\u63a7 nginx 5xx \u9519\u8bef"
@@ -5641,7 +5650,7 @@
       "label": "code:block17 (\u89c4\u5219\u540d\u79f0: Nginx 5xx \u9519\u8bef\u544a\u8b66)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L494",
+      "source_location": "L498",
       "id": "kk_elk_helper_readme_codeblock_17",
       "community": 26,
       "norm_label": "code:block17 (\u89c4\u5219\u540d\u79f0: nginx 5xx \u9519\u8bef\u544a\u8b66)"
@@ -5650,7 +5659,7 @@
       "label": "\u793a\u4f8b 2: \u76d1\u63a7 Java ERROR \u65e5\u5fd7",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L503",
+      "source_location": "L507",
       "id": "kk_elk_helper_readme_\u793a\u4f8b_2_\u76d1\u63a7_java_error_\u65e5\u5fd7",
       "community": 26,
       "norm_label": "\u793a\u4f8b 2: \u76d1\u63a7 java error \u65e5\u5fd7"
@@ -5659,7 +5668,7 @@
       "label": "code:block18 (\u89c4\u5219\u540d\u79f0: Java ERROR \u7ea7\u522b\u65e5\u5fd7)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L505",
+      "source_location": "L509",
       "id": "kk_elk_helper_readme_codeblock_18",
       "community": 26,
       "norm_label": "code:block18 (\u89c4\u5219\u540d\u79f0: java error \u7ea7\u522b\u65e5\u5fd7)"
@@ -5668,7 +5677,7 @@
       "label": "\u793a\u4f8b 3: \u76d1\u63a7\u6162\u8bf7\u6c42",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L525",
+      "source_location": "L529",
       "id": "kk_elk_helper_readme_\u793a\u4f8b_3_\u76d1\u63a7\u6162\u8bf7\u6c42",
       "community": 26,
       "norm_label": "\u793a\u4f8b 3: \u76d1\u63a7\u6162\u8bf7\u6c42"
@@ -5677,7 +5686,7 @@
       "label": "code:json ([)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L528",
+      "source_location": "L532",
       "id": "kk_elk_helper_readme_codeblock_19",
       "community": 26,
       "norm_label": "code:json ([)"
@@ -5686,7 +5695,7 @@
       "label": "3. \u914d\u7f6e\u544a\u8b66\u901a\u77e5\uff08Webhook\uff09",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L545",
+      "source_location": "L549",
       "id": "kk_elk_helper_readme_3_\u914d\u7f6e\u544a\u8b66\u901a\u77e5_webhook",
       "community": 26,
       "norm_label": "3. \u914d\u7f6e\u544a\u8b66\u901a\u77e5(webhook)"
@@ -5695,7 +5704,7 @@
       "label": "code:block20 (\u914d\u7f6e\u540d\u79f0: \u751f\u4ea7\u544a\u8b66\u7fa4)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L549",
+      "source_location": "L553",
       "id": "kk_elk_helper_readme_codeblock_20",
       "community": 26,
       "norm_label": "code:block20 (\u914d\u7f6e\u540d\u79f0: \u751f\u4ea7\u544a\u8b66\u7fa4)"
@@ -5704,7 +5713,7 @@
       "label": "4. \u67e5\u770b\u544a\u8b66\u5386\u53f2",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L556",
+      "source_location": "L560",
       "id": "kk_elk_helper_readme_4_\u67e5\u770b\u544a\u8b66\u5386\u53f2",
       "community": 26,
       "norm_label": "4. \u67e5\u770b\u544a\u8b66\u5386\u53f2"
@@ -5713,8 +5722,8 @@
       "label": "\u26a1 \u6027\u80fd\u4f18\u5316",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L571",
-      "id": "kk_elk_helper_readme_\u6027\u80fd\u4f18\u5316_571",
+      "source_location": "L575",
+      "id": "kk_elk_helper_readme_\u6027\u80fd\u4f18\u5316_575",
       "community": 48,
       "norm_label": "\u26a1 \u6027\u80fd\u4f18\u5316"
     },
@@ -5722,7 +5731,7 @@
       "label": "\u6570\u636e\u5e93\u8fc1\u79fb\u7ba1\u7406",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L573",
+      "source_location": "L577",
       "id": "kk_elk_helper_readme_\u6570\u636e\u5e93\u8fc1\u79fb\u7ba1\u7406",
       "community": 48,
       "norm_label": "\u6570\u636e\u5e93\u8fc1\u79fb\u7ba1\u7406"
@@ -5731,7 +5740,7 @@
       "label": "code:bash (# \u67e5\u770b\u8fc1\u79fb\u72b6\u6001)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L577",
+      "source_location": "L581",
       "id": "kk_elk_helper_readme_codeblock_21",
       "community": 48,
       "norm_label": "code:bash (# \u67e5\u770b\u8fc1\u79fb\u72b6\u6001)"
@@ -5740,7 +5749,7 @@
       "label": "\u6570\u636e\u5e93\u7d22\u5f15\u4f18\u5316",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L595",
+      "source_location": "L599",
       "id": "kk_elk_helper_readme_\u6570\u636e\u5e93\u7d22\u5f15\u4f18\u5316",
       "community": 48,
       "norm_label": "\u6570\u636e\u5e93\u7d22\u5f15\u4f18\u5316"
@@ -5749,7 +5758,7 @@
       "label": "code:bash (# \u6267\u884c\u7d22\u5f15\u4f18\u5316\u811a\u672c)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L597",
+      "source_location": "L601",
       "id": "kk_elk_helper_readme_codeblock_22",
       "community": 48,
       "norm_label": "code:bash (# \u6267\u884c\u7d22\u5f15\u4f18\u5316\u811a\u672c)"
@@ -5758,7 +5767,7 @@
       "label": "\u5b9a\u671f\u6e05\u7406\u6570\u636e",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L612",
+      "source_location": "L616",
       "id": "kk_elk_helper_readme_\u5b9a\u671f\u6e05\u7406\u6570\u636e",
       "community": 48,
       "norm_label": "\u5b9a\u671f\u6e05\u7406\u6570\u636e"
@@ -5767,7 +5776,7 @@
       "label": "code:block23 (\u542f\u7528\u6e05\u7406: \u2713)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L616",
+      "source_location": "L620",
       "id": "kk_elk_helper_readme_codeblock_23",
       "community": 48,
       "norm_label": "code:block23 (\u542f\u7528\u6e05\u7406: \u2713)"
@@ -5776,7 +5785,7 @@
       "label": "\ud83d\udd10 \u5b89\u5168\u914d\u7f6e",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L630",
+      "source_location": "L634",
       "id": "kk_elk_helper_readme_\u5b89\u5168\u914d\u7f6e",
       "community": 38,
       "norm_label": "\ud83d\udd10 \u5b89\u5168\u914d\u7f6e"
@@ -5785,7 +5794,7 @@
       "label": "\u751f\u4ea7\u73af\u5883\u5fc5\u6539\u9879",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L632",
+      "source_location": "L636",
       "id": "kk_elk_helper_readme_\u751f\u4ea7\u73af\u5883\u5fc5\u6539\u9879",
       "community": 38,
       "norm_label": "\u751f\u4ea7\u73af\u5883\u5fc5\u6539\u9879"
@@ -5794,7 +5803,7 @@
       "label": "code:bash (# 1. JWT \u5bc6\u94a5\uff08\u81f3\u5c11 32 \u5b57\u7b26\uff09)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L634",
+      "source_location": "L638",
       "id": "kk_elk_helper_readme_codeblock_24",
       "community": 38,
       "norm_label": "code:bash (# 1. jwt \u5bc6\u94a5(\u81f3\u5c11 32 \u5b57\u7b26))"
@@ -5803,7 +5812,7 @@
       "label": "SSL/TLS \u914d\u7f6e",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L648",
+      "source_location": "L652",
       "id": "kk_elk_helper_readme_ssl_tls_\u914d\u7f6e",
       "community": 38,
       "norm_label": "ssl/tls \u914d\u7f6e"
@@ -5812,7 +5821,7 @@
       "label": "Let's Encrypt\uff08\u63a8\u8350\uff09",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L650",
+      "source_location": "L654",
       "id": "kk_elk_helper_readme_let_s_encrypt_\u63a8\u8350",
       "community": 38,
       "norm_label": "let's encrypt(\u63a8\u8350)"
@@ -5821,7 +5830,7 @@
       "label": "code:bash (# \u83b7\u53d6\u514d\u8d39 SSL \u8bc1\u4e66)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L652",
+      "source_location": "L656",
       "id": "kk_elk_helper_readme_codeblock_25",
       "community": 38,
       "norm_label": "code:bash (# \u83b7\u53d6\u514d\u8d39 ssl \u8bc1\u4e66)"
@@ -5830,7 +5839,7 @@
       "label": "\u81ea\u7b7e\u540d\u8bc1\u4e66\uff08\u6d4b\u8bd5\u73af\u5883\uff09",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L657",
+      "source_location": "L661",
       "id": "kk_elk_helper_readme_\u81ea\u7b7e\u540d\u8bc1\u4e66_\u6d4b\u8bd5\u73af\u5883",
       "community": 38,
       "norm_label": "\u81ea\u7b7e\u540d\u8bc1\u4e66(\u6d4b\u8bd5\u73af\u5883)"
@@ -5839,7 +5848,7 @@
       "label": "code:bash (cd ssl)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L659",
+      "source_location": "L663",
       "id": "kk_elk_helper_readme_codeblock_26",
       "community": 38,
       "norm_label": "code:bash (cd ssl)"
@@ -5848,7 +5857,7 @@
       "label": "\ud83d\udee0\ufe0f \u8fd0\u7ef4\u7ba1\u7406",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L666",
+      "source_location": "L670",
       "id": "kk_elk_helper_readme_\u8fd0\u7ef4\u7ba1\u7406",
       "community": 34,
       "norm_label": "\ud83d\udee0\ufe0f \u8fd0\u7ef4\u7ba1\u7406"
@@ -5857,7 +5866,7 @@
       "label": "\u67e5\u770b\u670d\u52a1\u72b6\u6001",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L668",
+      "source_location": "L672",
       "id": "kk_elk_helper_readme_\u67e5\u770b\u670d\u52a1\u72b6\u6001",
       "community": 34,
       "norm_label": "\u67e5\u770b\u670d\u52a1\u72b6\u6001"
@@ -5866,7 +5875,7 @@
       "label": "code:bash (# \u67e5\u770b\u6240\u6709\u670d\u52a1)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L670",
+      "source_location": "L674",
       "id": "kk_elk_helper_readme_codeblock_27",
       "community": 34,
       "norm_label": "code:bash (# \u67e5\u770b\u6240\u6709\u670d\u52a1)"
@@ -5875,7 +5884,7 @@
       "label": "\u66f4\u65b0\u670d\u52a1",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L682",
+      "source_location": "L686",
       "id": "kk_elk_helper_readme_\u66f4\u65b0\u670d\u52a1",
       "community": 34,
       "norm_label": "\u66f4\u65b0\u670d\u52a1"
@@ -5884,7 +5893,7 @@
       "label": "code:bash (# 1. \u62c9\u53d6\u6700\u65b0\u955c\u50cf)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L684",
+      "source_location": "L688",
       "id": "kk_elk_helper_readme_codeblock_28",
       "community": 34,
       "norm_label": "code:bash (# 1. \u62c9\u53d6\u6700\u65b0\u955c\u50cf)"
@@ -5893,7 +5902,7 @@
       "label": "\u5907\u4efd\u6570\u636e\uff08\u91cd\u8981\uff01\uff09",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L695",
+      "source_location": "L699",
       "id": "kk_elk_helper_readme_\u5907\u4efd\u6570\u636e_\u91cd\u8981",
       "community": 34,
       "norm_label": "\u5907\u4efd\u6570\u636e(\u91cd\u8981!)"
@@ -5902,7 +5911,7 @@
       "label": "code:bash (# \u624b\u52a8\u5907\u4efd)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L699",
+      "source_location": "L703",
       "id": "kk_elk_helper_readme_codeblock_29",
       "community": 34,
       "norm_label": "code:bash (# \u624b\u52a8\u5907\u4efd)"
@@ -5911,7 +5920,7 @@
       "label": "\u624b\u52a8\u521b\u5efa\u7528\u6237",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L715",
+      "source_location": "L719",
       "id": "kk_elk_helper_readme_\u624b\u52a8\u521b\u5efa\u7528\u6237",
       "community": 34,
       "norm_label": "\u624b\u52a8\u521b\u5efa\u7528\u6237"
@@ -5920,7 +5929,7 @@
       "label": "code:bash (# \u521b\u5efa devops \u7ba1\u7406\u5458\u8d26\u6237)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L717",
+      "source_location": "L721",
       "id": "kk_elk_helper_readme_codeblock_30",
       "community": 34,
       "norm_label": "code:bash (# \u521b\u5efa devops \u7ba1\u7406\u5458\u8d26\u6237)"
@@ -5929,7 +5938,7 @@
       "label": "\ud83d\udcca \u76d1\u63a7\u4e0e\u544a\u8b66",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L734",
+      "source_location": "L738",
       "id": "kk_elk_helper_readme_\u76d1\u63a7\u4e0e\u544a\u8b66",
       "community": 35,
       "norm_label": "\ud83d\udcca \u76d1\u63a7\u4e0e\u544a\u8b66"
@@ -5938,7 +5947,7 @@
       "label": "\u7cfb\u7edf\u76d1\u63a7\u6307\u6807",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L736",
+      "source_location": "L740",
       "id": "kk_elk_helper_readme_\u7cfb\u7edf\u76d1\u63a7\u6307\u6807",
       "community": 35,
       "norm_label": "\u7cfb\u7edf\u76d1\u63a7\u6307\u6807"
@@ -5947,7 +5956,7 @@
       "label": "\u63a8\u8350\u7684\u544a\u8b66\u89c4\u5219",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L743",
+      "source_location": "L747",
       "id": "kk_elk_helper_readme_\u63a8\u8350\u7684\u544a\u8b66\u89c4\u5219",
       "community": 35,
       "norm_label": "\u63a8\u8350\u7684\u544a\u8b66\u89c4\u5219"
@@ -5956,7 +5965,7 @@
       "label": "1. Web \u670d\u52a1\u5668\u76d1\u63a7",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L745",
+      "source_location": "L749",
       "id": "kk_elk_helper_readme_1_web_\u670d\u52a1\u5668\u76d1\u63a7",
       "community": 35,
       "norm_label": "1. web \u670d\u52a1\u5668\u76d1\u63a7"
@@ -5965,7 +5974,7 @@
       "label": "code:block31 (\u89c4\u5219\u540d\u79f0: Nginx 5xx \u9519\u8bef\u544a\u8b66)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L747",
+      "source_location": "L751",
       "id": "kk_elk_helper_readme_codeblock_31",
       "community": 35,
       "norm_label": "code:block31 (\u89c4\u5219\u540d\u79f0: nginx 5xx \u9519\u8bef\u544a\u8b66)"
@@ -5974,7 +5983,7 @@
       "label": "2. \u5e94\u7528\u9519\u8bef\u76d1\u63a7",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L754",
+      "source_location": "L758",
       "id": "kk_elk_helper_readme_2_\u5e94\u7528\u9519\u8bef\u76d1\u63a7",
       "community": 35,
       "norm_label": "2. \u5e94\u7528\u9519\u8bef\u76d1\u63a7"
@@ -5983,7 +5992,7 @@
       "label": "code:block32 (\u89c4\u5219\u540d\u79f0: \u5e94\u7528 ERROR \u65e5\u5fd7)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L756",
+      "source_location": "L760",
       "id": "kk_elk_helper_readme_codeblock_32",
       "community": 35,
       "norm_label": "code:block32 (\u89c4\u5219\u540d\u79f0: \u5e94\u7528 error \u65e5\u5fd7)"
@@ -5992,7 +6001,7 @@
       "label": "3. \u6162\u8bf7\u6c42\u76d1\u63a7",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L763",
+      "source_location": "L767",
       "id": "kk_elk_helper_readme_3_\u6162\u8bf7\u6c42\u76d1\u63a7",
       "community": 35,
       "norm_label": "3. \u6162\u8bf7\u6c42\u76d1\u63a7"
@@ -6001,7 +6010,7 @@
       "label": "code:block33 (\u89c4\u5219\u540d\u79f0: API \u54cd\u5e94\u8d85\u65f6)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L765",
+      "source_location": "L769",
       "id": "kk_elk_helper_readme_codeblock_33",
       "community": 35,
       "norm_label": "code:block33 (\u89c4\u5219\u540d\u79f0: api \u54cd\u5e94\u8d85\u65f6)"
@@ -6010,7 +6019,7 @@
       "label": "\ud83d\udc1b \u6545\u969c\u6392\u67e5",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L772",
+      "source_location": "L776",
       "id": "kk_elk_helper_readme_\u6545\u969c\u6392\u67e5",
       "community": 54,
       "norm_label": "\ud83d\udc1b \u6545\u969c\u6392\u67e5"
@@ -6019,7 +6028,7 @@
       "label": "502 Bad Gateway",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L774",
+      "source_location": "L778",
       "id": "kk_elk_helper_readme_502_bad_gateway",
       "community": 54,
       "norm_label": "502 bad gateway"
@@ -6028,7 +6037,7 @@
       "label": "code:bash (# 1. \u786e\u4fdd\u4ee3\u7801\u6700\u65b0)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L779",
+      "source_location": "L783",
       "id": "kk_elk_helper_readme_codeblock_34",
       "community": 54,
       "norm_label": "code:bash (# 1. \u786e\u4fdd\u4ee3\u7801\u6700\u65b0)"
@@ -6037,7 +6046,7 @@
       "label": "\u544a\u8b66\u672a\u89e6\u53d1",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L797",
+      "source_location": "L801",
       "id": "kk_elk_helper_readme_\u544a\u8b66\u672a\u89e6\u53d1",
       "community": 54,
       "norm_label": "\u544a\u8b66\u672a\u89e6\u53d1"
@@ -6046,7 +6055,7 @@
       "label": "\u9875\u9762\u52a0\u8f7d\u6162",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L806",
+      "source_location": "L810",
       "id": "kk_elk_helper_readme_\u9875\u9762\u52a0\u8f7d\u6162",
       "community": 54,
       "norm_label": "\u9875\u9762\u52a0\u8f7d\u6162"
@@ -6055,7 +6064,7 @@
       "label": "code:bash (# \u6267\u884c\u6027\u80fd\u4f18\u5316)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L809",
+      "source_location": "L813",
       "id": "kk_elk_helper_readme_codeblock_35",
       "community": 54,
       "norm_label": "code:bash (# \u6267\u884c\u6027\u80fd\u4f18\u5316)"
@@ -6064,7 +6073,7 @@
       "label": "\ud83d\udcda \u53c2\u8003\u6587\u6863",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L819",
+      "source_location": "L823",
       "id": "kk_elk_helper_readme_\u53c2\u8003\u6587\u6863",
       "community": 29,
       "norm_label": "\ud83d\udcda \u53c2\u8003\u6587\u6863"
@@ -6073,7 +6082,7 @@
       "label": "\ud83d\udee0\ufe0f \u5f00\u53d1\u5de5\u5177",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L827",
+      "source_location": "L831",
       "id": "kk_elk_helper_readme_\u5f00\u53d1\u5de5\u5177",
       "community": 66,
       "norm_label": "\ud83d\udee0\ufe0f \u5f00\u53d1\u5de5\u5177"
@@ -6082,7 +6091,7 @@
       "label": "\u6d4b\u8bd5\u65e5\u5fd7\u751f\u6210",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L829",
+      "source_location": "L833",
       "id": "kk_elk_helper_readme_\u6d4b\u8bd5\u65e5\u5fd7\u751f\u6210",
       "community": 66,
       "norm_label": "\u6d4b\u8bd5\u65e5\u5fd7\u751f\u6210"
@@ -6091,7 +6100,7 @@
       "label": "code:bash (# \u4f7f\u7528\u9ed8\u8ba4\u914d\u7f6e\uff08https://localhost:9200, elastic/changeme\uff09)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L833",
+      "source_location": "L837",
       "id": "kk_elk_helper_readme_codeblock_36",
       "community": 66,
       "norm_label": "code:bash (# \u4f7f\u7528\u9ed8\u8ba4\u914d\u7f6e(https://localhost:9200, elastic/changeme))"
@@ -6100,7 +6109,7 @@
       "label": "\u5bc6\u7801\u7ba1\u7406",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L844",
+      "source_location": "L848",
       "id": "kk_elk_helper_readme_\u5bc6\u7801\u7ba1\u7406",
       "community": 66,
       "norm_label": "\u5bc6\u7801\u7ba1\u7406"
@@ -6109,7 +6118,7 @@
       "label": "code:bash (# \u751f\u6210\u5bc6\u7801\u54c8\u5e0c)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L846",
+      "source_location": "L850",
       "id": "kk_elk_helper_readme_codeblock_37",
       "community": 66,
       "norm_label": "code:bash (# \u751f\u6210\u5bc6\u7801\u54c8\u5e0c)"
@@ -6118,7 +6127,7 @@
       "label": "\ud83d\udd04 \u66f4\u65b0\u65e5\u5fd7",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L854",
+      "source_location": "L858",
       "id": "kk_elk_helper_readme_\u66f4\u65b0\u65e5\u5fd7",
       "community": 74,
       "norm_label": "\ud83d\udd04 \u66f4\u65b0\u65e5\u5fd7"
@@ -6127,7 +6136,7 @@
       "label": "v1.2.0 (2025-12-23)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L856",
+      "source_location": "L860",
       "id": "kk_elk_helper_readme_v1_2_0_2025_12_23",
       "community": 74,
       "norm_label": "v1.2.0 (2025-12-23)"
@@ -6136,7 +6145,7 @@
       "label": "v1.1.0 (2025-12-03)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L881",
+      "source_location": "L885",
       "id": "kk_elk_helper_readme_v1_1_0_2025_12_03",
       "community": 74,
       "norm_label": "v1.1.0 (2025-12-03)"
@@ -6145,7 +6154,7 @@
       "label": "v1.0.0 (\u521d\u59cb\u7248\u672c)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L906",
+      "source_location": "L910",
       "id": "kk_elk_helper_readme_v1_0_0_\u521d\u59cb\u7248\u672c",
       "community": 74,
       "norm_label": "v1.0.0 (\u521d\u59cb\u7248\u672c)"
@@ -6154,7 +6163,7 @@
       "label": "\ud83e\udd1d \u8d21\u732e\u6307\u5357",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L910",
+      "source_location": "L914",
       "id": "kk_elk_helper_readme_\u8d21\u732e\u6307\u5357",
       "community": 29,
       "norm_label": "\ud83e\udd1d \u8d21\u732e\u6307\u5357"
@@ -6163,7 +6172,7 @@
       "label": "Commit \u89c4\u8303",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L918",
+      "source_location": "L922",
       "id": "kk_elk_helper_readme_commit_\u89c4\u8303",
       "community": 29,
       "norm_label": "commit \u89c4\u8303"
@@ -6172,7 +6181,7 @@
       "label": "code:block38 (feat: \u65b0\u529f\u80fd)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L922",
+      "source_location": "L926",
       "id": "kk_elk_helper_readme_codeblock_38",
       "community": 29,
       "norm_label": "code:block38 (feat: \u65b0\u529f\u80fd)"
@@ -6181,7 +6190,7 @@
       "label": "\ud83d\udcc4 \u8bb8\u53ef\u8bc1",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L933",
+      "source_location": "L937",
       "id": "kk_elk_helper_readme_\u8bb8\u53ef\u8bc1",
       "community": 29,
       "norm_label": "\ud83d\udcc4 \u8bb8\u53ef\u8bc1"
@@ -6190,7 +6199,7 @@
       "label": "\ud83d\udc65 \u652f\u6301",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L937",
+      "source_location": "L941",
       "id": "kk_elk_helper_readme_\u652f\u6301",
       "community": 29,
       "norm_label": "\ud83d\udc65 \u652f\u6301"
@@ -6212,6 +6221,60 @@
       "id": "kk_elk_helper_agents_openspec_instructions",
       "community": 89,
       "norm_label": "openspec instructions"
+    },
+    {
+      "label": "sso.md",
+      "file_type": "document",
+      "source_file": "docs/dev/sso.md",
+      "source_location": "L1",
+      "id": "docs_dev_sso_md",
+      "community": 102,
+      "norm_label": "sso.md"
+    },
+    {
+      "label": "OIDC SSO",
+      "file_type": "document",
+      "source_file": "docs/dev/sso.md",
+      "source_location": "L1",
+      "id": "dev_sso_oidc_sso",
+      "community": 102,
+      "norm_label": "oidc sso"
+    },
+    {
+      "label": "Flow",
+      "file_type": "document",
+      "source_file": "docs/dev/sso.md",
+      "source_location": "L5",
+      "id": "dev_sso_flow",
+      "community": 102,
+      "norm_label": "flow"
+    },
+    {
+      "label": "Admin setup",
+      "file_type": "document",
+      "source_file": "docs/dev/sso.md",
+      "source_location": "L13",
+      "id": "dev_sso_admin_setup",
+      "community": 102,
+      "norm_label": "admin setup"
+    },
+    {
+      "label": "Environment",
+      "file_type": "document",
+      "source_file": "docs/dev/sso.md",
+      "source_location": "L24",
+      "id": "dev_sso_environment",
+      "community": 102,
+      "norm_label": "environment"
+    },
+    {
+      "label": "API summary",
+      "file_type": "document",
+      "source_file": "docs/dev/sso.md",
+      "source_location": "L31",
+      "id": "dev_sso_api_summary",
+      "community": 102,
+      "norm_label": "api summary"
     },
     {
       "label": "project.md",
@@ -10181,6 +10244,15 @@
       "id": "openspec_changes_add_cleanup_execution_status_specs_system_config_spec_md",
       "community": 9,
       "norm_label": "spec.md"
+    },
+    {
+      "label": "\u26a1 \u6027\u80fd\u4f18\u5316",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L571",
+      "community": 48,
+      "norm_label": "\u26a1 \u6027\u80fd\u4f18\u5316",
+      "id": "kk_elk_helper_readme_\u6027\u80fd\u4f18\u5316_571"
     }
   ],
   "links": [
@@ -10925,9 +10997,9 @@
       "source_file": "frontend/src/App.tsx",
       "source_location": "L20",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_src_app_tsx",
-      "target": "frontend_src_pages_ssocallbackpage_tsx",
-      "confidence_score": 1.0
+      "target": "frontend_src_pages_ssocallbackpage_tsx"
     },
     {
       "relation": "imports_from",
@@ -10936,9 +11008,9 @@
       "source_file": "frontend/src/App.tsx",
       "source_location": "L21",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_src_app_tsx",
-      "target": "frontend_src_pages_ssoconfigpage_tsx",
-      "confidence_score": 1.0
+      "target": "frontend_src_pages_ssoconfigpage_tsx"
     },
     {
       "relation": "imports_from",
@@ -11137,9 +11209,9 @@
       "source_file": "frontend/src/pages/SsoCallbackPage.tsx",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_src_pages_ssocallbackpage_tsx",
-      "target": "frontend_src_contexts_authcontext_tsx",
-      "confidence_score": 1.0
+      "target": "frontend_src_contexts_authcontext_tsx"
     },
     {
       "relation": "imports",
@@ -11203,9 +11275,9 @@
       "source_file": "frontend/src/pages/SsoCallbackPage.tsx",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_src_pages_ssocallbackpage_tsx",
-      "target": "contexts_authcontext_useauth",
-      "confidence_score": 1.0
+      "target": "contexts_authcontext_useauth"
     },
     {
       "relation": "calls",
@@ -11869,9 +11941,9 @@
       "source_file": "frontend/src/pages/SsoConfigPage.tsx",
       "source_location": "L23",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_src_pages_ssoconfigpage_tsx",
-      "target": "frontend_src_services_api_ts",
-      "confidence_score": 1.0
+      "target": "frontend_src_services_api_ts"
     },
     {
       "relation": "imports",
@@ -11880,9 +11952,9 @@
       "source_file": "frontend/src/pages/SsoConfigPage.tsx",
       "source_location": "L23",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_src_pages_ssoconfigpage_tsx",
-      "target": "services_api_ssoapi",
-      "confidence_score": 1.0
+      "target": "services_api_ssoapi"
     },
     {
       "relation": "imports",
@@ -11891,9 +11963,9 @@
       "source_file": "frontend/src/pages/SsoConfigPage.tsx",
       "source_location": "L23",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_src_pages_ssoconfigpage_tsx",
-      "target": "services_api_ssoadminprovider",
-      "confidence_score": 1.0
+      "target": "services_api_ssoadminprovider"
     },
     {
       "relation": "imports",
@@ -11902,9 +11974,9 @@
       "source_file": "frontend/src/pages/SsoConfigPage.tsx",
       "source_location": "L23",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_src_pages_ssoconfigpage_tsx",
-      "target": "services_api_ssoproviderconfig",
-      "confidence_score": 1.0
+      "target": "services_api_ssoproviderconfig"
     },
     {
       "relation": "contains",
@@ -11912,9 +11984,9 @@
       "source_file": "frontend/src/pages/SsoConfigPage.tsx",
       "source_location": "L27",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_src_pages_ssoconfigpage_tsx",
-      "target": "pages_ssoconfigpage_default_oidc_config",
-      "confidence_score": 1.0
+      "target": "pages_ssoconfigpage_default_oidc_config"
     },
     {
       "relation": "contains",
@@ -11922,9 +11994,9 @@
       "source_file": "frontend/src/pages/SsoConfigPage.tsx",
       "source_location": "L37",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_src_pages_ssoconfigpage_tsx",
-      "target": "pages_ssoconfigpage_formvalues",
-      "confidence_score": 1.0
+      "target": "pages_ssoconfigpage_formvalues"
     },
     {
       "relation": "contains",
@@ -11932,9 +12004,9 @@
       "source_file": "frontend/src/pages/SsoConfigPage.tsx",
       "source_location": "L49",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_src_pages_ssoconfigpage_tsx",
-      "target": "pages_ssoconfigpage_flatten",
-      "confidence_score": 1.0
+      "target": "pages_ssoconfigpage_flatten"
     },
     {
       "relation": "contains",
@@ -11942,9 +12014,9 @@
       "source_file": "frontend/src/pages/SsoConfigPage.tsx",
       "source_location": "L61",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_src_pages_ssoconfigpage_tsx",
-      "target": "pages_ssoconfigpage_unflatten",
-      "confidence_score": 1.0
+      "target": "pages_ssoconfigpage_unflatten"
     },
     {
       "relation": "contains",
@@ -11952,9 +12024,9 @@
       "source_file": "frontend/src/pages/SsoConfigPage.tsx",
       "source_location": "L77",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_src_pages_ssoconfigpage_tsx",
-      "target": "pages_ssoconfigpage_ssoconfigpage",
-      "confidence_score": 1.0
+      "target": "pages_ssoconfigpage_ssoconfigpage"
     },
     {
       "relation": "imports_from",
@@ -11963,9 +12035,9 @@
       "source_file": "frontend/src/pages/LoginPage.tsx",
       "source_location": "L11",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_src_pages_loginpage_tsx",
-      "target": "frontend_src_services_api_ts",
-      "confidence_score": 1.0
+      "target": "frontend_src_services_api_ts"
     },
     {
       "relation": "imports",
@@ -11974,9 +12046,9 @@
       "source_file": "frontend/src/pages/LoginPage.tsx",
       "source_location": "L11",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_src_pages_loginpage_tsx",
-      "target": "services_api_ssoapi",
-      "confidence_score": 1.0
+      "target": "services_api_ssoapi"
     },
     {
       "relation": "imports",
@@ -11985,9 +12057,9 @@
       "source_file": "frontend/src/pages/LoginPage.tsx",
       "source_location": "L11",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_src_pages_loginpage_tsx",
-      "target": "services_api_ssoproviderpublic",
-      "confidence_score": 1.0
+      "target": "services_api_ssoproviderpublic"
     },
     {
       "relation": "contains",
@@ -12187,9 +12259,9 @@
       "source_file": "frontend/src/pages/SsoCallbackPage.tsx",
       "source_location": "L11",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_src_pages_ssocallbackpage_tsx",
-      "target": "pages_ssocallbackpage_ssocallbackpage",
-      "confidence_score": 1.0
+      "target": "pages_ssocallbackpage_ssocallbackpage"
     },
     {
       "relation": "imports_from",
@@ -12631,9 +12703,9 @@
       "source_file": "frontend/src/services/api.ts",
       "source_location": "L281",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_src_services_api_ts",
-      "target": "services_api_ssoproviderpublic",
-      "confidence_score": 1.0
+      "target": "services_api_ssoproviderpublic"
     },
     {
       "relation": "contains",
@@ -12641,9 +12713,9 @@
       "source_file": "frontend/src/services/api.ts",
       "source_location": "L287",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_src_services_api_ts",
-      "target": "services_api_ssoproviderconfig",
-      "confidence_score": 1.0
+      "target": "services_api_ssoproviderconfig"
     },
     {
       "relation": "contains",
@@ -12651,9 +12723,9 @@
       "source_file": "frontend/src/services/api.ts",
       "source_location": "L297",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_src_services_api_ts",
-      "target": "services_api_ssoadminprovider",
-      "confidence_score": 1.0
+      "target": "services_api_ssoadminprovider"
     },
     {
       "relation": "contains",
@@ -12661,9 +12733,9 @@
       "source_file": "frontend/src/services/api.ts",
       "source_location": "L305",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_src_services_api_ts",
-      "target": "services_api_ssoproviderpayload",
-      "confidence_score": 1.0
+      "target": "services_api_ssoproviderpayload"
     },
     {
       "relation": "contains",
@@ -12711,9 +12783,9 @@
       "source_file": "frontend/src/services/api.ts",
       "source_location": "L354",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_src_services_api_ts",
-      "target": "services_api_ssoapi",
-      "confidence_score": 1.0
+      "target": "services_api_ssoapi"
     },
     {
       "relation": "contains",
@@ -13161,6 +13233,16 @@
       "confidence_score": 1.0,
       "source": "backend_internal_repository_database_database_go",
       "target": "database_database_init"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/internal/repository/database/database.go",
+      "source_location": "L88",
+      "weight": 1.0,
+      "source": "backend_internal_repository_database_database_go",
+      "target": "database_database_ensureschemacompatibility",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -13634,6 +13716,17 @@
       "target": "database_database_runmigrations"
     },
     {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/internal/repository/database/database.go",
+      "source_location": "L79",
+      "weight": 1.0,
+      "source": "database_database_init",
+      "target": "database_database_ensureschemacompatibility",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/internal/config/config.go",
@@ -13749,9 +13842,9 @@
       "source_file": "backend/internal/config/config.go",
       "source_location": "L188",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_internal_config_config_go",
-      "target": "config_config_resolvessofrontendbaseurl",
-      "confidence_score": 1.0
+      "target": "config_config_resolvessofrontendbaseurl"
     },
     {
       "relation": "contains",
@@ -13844,9 +13937,9 @@
       "source_file": "backend/internal/config/config.go",
       "source_location": "L135",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "config_config_load",
-      "target": "config_config_resolvessofrontendbaseurl",
-      "confidence_score": 1.0
+      "target": "config_config_resolvessofrontendbaseurl"
     },
     {
       "relation": "calls",
@@ -13855,9 +13948,9 @@
       "source_file": "backend/internal/config/config.go",
       "source_location": "L189",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "config_config_resolvessofrontendbaseurl",
-      "target": "config_config_getenv",
-      "confidence_score": 1.0
+      "target": "config_config_getenv"
     },
     {
       "relation": "calls",
@@ -13877,9 +13970,9 @@
       "source_file": "backend/internal/config/config.go",
       "source_location": "L192",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "config_config_resolvessofrontendbaseurl",
-      "target": "config_config_getenvslice",
-      "confidence_score": 1.0
+      "target": "config_config_getenvslice"
     },
     {
       "relation": "calls",
@@ -13969,9 +14062,9 @@
       "source_file": "backend/internal/models/sso_provider.go",
       "source_location": "L17",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_internal_models_sso_provider_go",
-      "target": "models_ssoprovider",
-      "confidence_score": 1.0
+      "target": "models_ssoprovider"
     },
     {
       "relation": "method",
@@ -13979,9 +14072,9 @@
       "source_file": "backend/internal/models/sso_provider.go",
       "source_location": "L30",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_ssoprovider",
-      "target": "models_ssoprovider_tablename",
-      "confidence_score": 1.0
+      "target": "models_ssoprovider_tablename"
     },
     {
       "relation": "contains",
@@ -15117,9 +15210,9 @@
       "source_file": "backend/internal/api/handlers/sso_admin_handler.go",
       "source_location": "L19",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_internal_api_handlers_sso_admin_handler_go",
-      "target": "handlers_ssoadminhandler",
-      "confidence_score": 1.0
+      "target": "handlers_ssoadminhandler"
     },
     {
       "relation": "contains",
@@ -15127,9 +15220,9 @@
       "source_file": "backend/internal/api/handlers/sso_admin_handler.go",
       "source_location": "L24",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_internal_api_handlers_sso_admin_handler_go",
-      "target": "handlers_sso_admin_handler_newssoadminhandler",
-      "confidence_score": 1.0
+      "target": "handlers_sso_admin_handler_newssoadminhandler"
     },
     {
       "relation": "contains",
@@ -15137,9 +15230,9 @@
       "source_file": "backend/internal/api/handlers/sso_admin_handler.go",
       "source_location": "L29",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_internal_api_handlers_sso_admin_handler_go",
-      "target": "handlers_ssoproviderrequest",
-      "confidence_score": 1.0
+      "target": "handlers_ssoproviderrequest"
     },
     {
       "relation": "contains",
@@ -15147,9 +15240,9 @@
       "source_file": "backend/internal/api/handlers/sso_admin_handler.go",
       "source_location": "L151",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_internal_api_handlers_sso_admin_handler_go",
-      "target": "handlers_sso_admin_handler_parseadminssoid",
-      "confidence_score": 1.0
+      "target": "handlers_sso_admin_handler_parseadminssoid"
     },
     {
       "relation": "method",
@@ -15157,9 +15250,9 @@
       "source_file": "backend/internal/api/handlers/sso_admin_handler.go",
       "source_location": "L37",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "handlers_ssoadminhandler",
-      "target": "handlers_ssoadminhandler_list",
-      "confidence_score": 1.0
+      "target": "handlers_ssoadminhandler_list"
     },
     {
       "relation": "method",
@@ -15167,9 +15260,9 @@
       "source_file": "backend/internal/api/handlers/sso_admin_handler.go",
       "source_location": "L47",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "handlers_ssoadminhandler",
-      "target": "handlers_ssoadminhandler_create",
-      "confidence_score": 1.0
+      "target": "handlers_ssoadminhandler_create"
     },
     {
       "relation": "method",
@@ -15177,9 +15270,9 @@
       "source_file": "backend/internal/api/handlers/sso_admin_handler.go",
       "source_location": "L85",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "handlers_ssoadminhandler",
-      "target": "handlers_ssoadminhandler_update",
-      "confidence_score": 1.0
+      "target": "handlers_ssoadminhandler_update"
     },
     {
       "relation": "method",
@@ -15187,9 +15280,9 @@
       "source_file": "backend/internal/api/handlers/sso_admin_handler.go",
       "source_location": "L120",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "handlers_ssoadminhandler",
-      "target": "handlers_ssoadminhandler_toggle",
-      "confidence_score": 1.0
+      "target": "handlers_ssoadminhandler_toggle"
     },
     {
       "relation": "method",
@@ -15197,9 +15290,9 @@
       "source_file": "backend/internal/api/handlers/sso_admin_handler.go",
       "source_location": "L139",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "handlers_ssoadminhandler",
-      "target": "handlers_ssoadminhandler_delete",
-      "confidence_score": 1.0
+      "target": "handlers_ssoadminhandler_delete"
     },
     {
       "relation": "calls",
@@ -15219,9 +15312,9 @@
       "source_file": "backend/internal/api/handlers/sso_admin_handler.go",
       "source_location": "L86",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "handlers_ssoadminhandler_update",
-      "target": "handlers_sso_admin_handler_parseadminssoid",
-      "confidence_score": 1.0
+      "target": "handlers_sso_admin_handler_parseadminssoid"
     },
     {
       "relation": "calls",
@@ -15241,9 +15334,9 @@
       "source_file": "backend/internal/api/handlers/sso_admin_handler.go",
       "source_location": "L121",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "handlers_ssoadminhandler_toggle",
-      "target": "handlers_sso_admin_handler_parseadminssoid",
-      "confidence_score": 1.0
+      "target": "handlers_sso_admin_handler_parseadminssoid"
     },
     {
       "relation": "calls",
@@ -15252,9 +15345,9 @@
       "source_file": "backend/internal/api/handlers/sso_admin_handler.go",
       "source_location": "L140",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "handlers_ssoadminhandler_delete",
-      "target": "handlers_sso_admin_handler_parseadminssoid",
-      "confidence_score": 1.0
+      "target": "handlers_sso_admin_handler_parseadminssoid"
     },
     {
       "relation": "contains",
@@ -15646,9 +15739,9 @@
       "source_file": "backend/internal/api/handlers/sso_handler.go",
       "source_location": "L23",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_internal_api_handlers_sso_handler_go",
-      "target": "handlers_ssohandler",
-      "confidence_score": 1.0
+      "target": "handlers_ssohandler"
     },
     {
       "relation": "contains",
@@ -15656,9 +15749,9 @@
       "source_file": "backend/internal/api/handlers/sso_handler.go",
       "source_location": "L29",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_internal_api_handlers_sso_handler_go",
-      "target": "handlers_sso_handler_newssohandler",
-      "confidence_score": 1.0
+      "target": "handlers_sso_handler_newssohandler"
     },
     {
       "relation": "contains",
@@ -15666,9 +15759,9 @@
       "source_file": "backend/internal/api/handlers/sso_handler.go",
       "source_location": "L127",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_internal_api_handlers_sso_handler_go",
-      "target": "handlers_sso_handler_parsessoproviderid",
-      "confidence_score": 1.0
+      "target": "handlers_sso_handler_parsessoproviderid"
     },
     {
       "relation": "contains",
@@ -15676,9 +15769,9 @@
       "source_file": "backend/internal/api/handlers/sso_handler.go",
       "source_location": "L136",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_internal_api_handlers_sso_handler_go",
-      "target": "handlers_sso_handler_oidcstatecookiename",
-      "confidence_score": 1.0
+      "target": "handlers_sso_handler_oidcstatecookiename"
     },
     {
       "relation": "method",
@@ -15686,9 +15779,9 @@
       "source_file": "backend/internal/api/handlers/sso_handler.go",
       "source_location": "L37",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "handlers_ssohandler",
-      "target": "handlers_ssohandler_listproviders",
-      "confidence_score": 1.0
+      "target": "handlers_ssohandler_listproviders"
     },
     {
       "relation": "method",
@@ -15696,9 +15789,9 @@
       "source_file": "backend/internal/api/handlers/sso_handler.go",
       "source_location": "L47",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "handlers_ssohandler",
-      "target": "handlers_ssohandler_oidclogin",
-      "confidence_score": 1.0
+      "target": "handlers_ssohandler_oidclogin"
     },
     {
       "relation": "method",
@@ -15706,9 +15799,9 @@
       "source_file": "backend/internal/api/handlers/sso_handler.go",
       "source_location": "L68",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "handlers_ssohandler",
-      "target": "handlers_ssohandler_oidccallback",
-      "confidence_score": 1.0
+      "target": "handlers_ssohandler_oidccallback"
     },
     {
       "relation": "method",
@@ -15716,9 +15809,9 @@
       "source_file": "backend/internal/api/handlers/sso_handler.go",
       "source_location": "L123",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "handlers_ssohandler",
-      "target": "handlers_ssohandler_redirectssoerror",
-      "confidence_score": 1.0
+      "target": "handlers_ssohandler_redirectssoerror"
     },
     {
       "relation": "calls",
@@ -15727,9 +15820,9 @@
       "source_file": "backend/internal/api/handlers/sso_handler.go",
       "source_location": "L48",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "handlers_ssohandler_oidclogin",
-      "target": "handlers_sso_handler_parsessoproviderid",
-      "confidence_score": 1.0
+      "target": "handlers_sso_handler_parsessoproviderid"
     },
     {
       "relation": "calls",
@@ -15738,9 +15831,9 @@
       "source_file": "backend/internal/api/handlers/sso_handler.go",
       "source_location": "L63",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "handlers_ssohandler_oidclogin",
-      "target": "handlers_sso_handler_oidcstatecookiename",
-      "confidence_score": 1.0
+      "target": "handlers_sso_handler_oidcstatecookiename"
     },
     {
       "relation": "calls",
@@ -15760,9 +15853,9 @@
       "source_file": "backend/internal/api/handlers/sso_handler.go",
       "source_location": "L69",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "handlers_ssohandler_oidccallback",
-      "target": "handlers_sso_handler_parsessoproviderid",
-      "confidence_score": 1.0
+      "target": "handlers_sso_handler_parsessoproviderid"
     },
     {
       "relation": "calls",
@@ -15771,9 +15864,9 @@
       "source_file": "backend/internal/api/handlers/sso_handler.go",
       "source_location": "L77",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "handlers_ssohandler_oidccallback",
-      "target": "handlers_ssohandler_redirectssoerror",
-      "confidence_score": 1.0
+      "target": "handlers_ssohandler_redirectssoerror"
     },
     {
       "relation": "calls",
@@ -15782,9 +15875,9 @@
       "source_file": "backend/internal/api/handlers/sso_handler.go",
       "source_location": "L88",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "handlers_ssohandler_oidccallback",
-      "target": "handlers_sso_handler_oidcstatecookiename",
-      "confidence_score": 1.0
+      "target": "handlers_sso_handler_oidcstatecookiename"
     },
     {
       "relation": "contains",
@@ -15962,9 +16055,9 @@
       "source_file": "backend/internal/service/auth/sso_user.go",
       "source_location": "L24",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "auth_service",
-      "target": "auth_service_findorcreatessouser",
-      "confidence_score": 1.0
+      "target": "auth_service_findorcreatessouser"
     },
     {
       "relation": "method",
@@ -15972,9 +16065,9 @@
       "source_file": "backend/internal/service/auth/sso_user.go",
       "source_location": "L65",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "auth_service",
-      "target": "auth_service_issuesessiontoken",
-      "confidence_score": 1.0
+      "target": "auth_service_issuesessiontoken"
     },
     {
       "relation": "calls",
@@ -16037,9 +16130,9 @@
       "source_file": "backend/internal/service/auth/sso_user.go",
       "source_location": "L81",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_internal_service_auth_sso_user_go",
-      "target": "auth_sso_user_randompassword",
-      "confidence_score": 1.0
+      "target": "auth_sso_user_randompassword"
     },
     {
       "relation": "contains",
@@ -16047,9 +16140,9 @@
       "source_file": "backend/internal/service/auth/sso_user.go",
       "source_location": "L89",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_internal_service_auth_sso_user_go",
-      "target": "auth_sso_user_islocalauthsource",
-      "confidence_score": 1.0
+      "target": "auth_sso_user_islocalauthsource"
     },
     {
       "relation": "calls",
@@ -16058,9 +16151,9 @@
       "source_file": "backend/internal/service/auth/sso_user.go",
       "source_location": "L51",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "auth_service_findorcreatessouser",
-      "target": "auth_sso_user_randompassword",
-      "confidence_score": 1.0
+      "target": "auth_sso_user_randompassword"
     },
     {
       "relation": "contains",
@@ -16736,9 +16829,9 @@
       "source_file": "backend/internal/service/sso/service.go",
       "source_location": "L30",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_internal_service_sso_service_go",
-      "target": "sso_oidcconfig",
-      "confidence_score": 1.0
+      "target": "sso_oidcconfig"
     },
     {
       "relation": "contains",
@@ -16746,9 +16839,9 @@
       "source_file": "backend/internal/service/sso/service.go",
       "source_location": "L41",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_internal_service_sso_service_go",
-      "target": "sso_providerinfo",
-      "confidence_score": 1.0
+      "target": "sso_providerinfo"
     },
     {
       "relation": "contains",
@@ -16756,9 +16849,9 @@
       "source_file": "backend/internal/service/sso/service.go",
       "source_location": "L48",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_internal_service_sso_service_go",
-      "target": "sso_adminprovideritem",
-      "confidence_score": 1.0
+      "target": "sso_adminprovideritem"
     },
     {
       "relation": "contains",
@@ -16766,9 +16859,9 @@
       "source_file": "backend/internal/service/sso/service.go",
       "source_location": "L56",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_internal_service_sso_service_go",
-      "target": "sso_oidcruntime",
-      "confidence_score": 1.0
+      "target": "sso_oidcruntime"
     },
     {
       "relation": "contains",
@@ -16776,9 +16869,9 @@
       "source_file": "backend/internal/service/sso/service.go",
       "source_location": "L66",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_internal_service_sso_service_go",
-      "target": "sso_service",
-      "confidence_score": 1.0
+      "target": "sso_service"
     },
     {
       "relation": "contains",
@@ -16786,9 +16879,9 @@
       "source_file": "backend/internal/service/sso/service.go",
       "source_location": "L75",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_internal_service_sso_service_go",
-      "target": "sso_service_newservice",
-      "confidence_score": 1.0
+      "target": "sso_service_newservice"
     },
     {
       "relation": "contains",
@@ -16796,9 +16889,9 @@
       "source_file": "backend/internal/service/sso/service.go",
       "source_location": "L246",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_internal_service_sso_service_go",
-      "target": "sso_service_validateproviderconfig",
-      "confidence_score": 1.0
+      "target": "sso_service_validateproviderconfig"
     },
     {
       "relation": "contains",
@@ -16806,9 +16899,9 @@
       "source_file": "backend/internal/service/sso/service.go",
       "source_location": "L259",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_internal_service_sso_service_go",
-      "target": "sso_service_generatestate",
-      "confidence_score": 1.0
+      "target": "sso_service_generatestate"
     },
     {
       "relation": "contains",
@@ -16816,9 +16909,9 @@
       "source_file": "backend/internal/service/sso/service.go",
       "source_location": "L267",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_internal_service_sso_service_go",
-      "target": "sso_service_buildoidcruntime",
-      "confidence_score": 1.0
+      "target": "sso_service_buildoidcruntime"
     },
     {
       "relation": "contains",
@@ -16826,9 +16919,9 @@
       "source_file": "backend/internal/service/sso/service.go",
       "source_location": "L312",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_internal_service_sso_service_go",
-      "target": "sso_service_pickstringclaim",
-      "confidence_score": 1.0
+      "target": "sso_service_pickstringclaim"
     },
     {
       "relation": "method",
@@ -16836,9 +16929,9 @@
       "source_file": "backend/internal/service/sso/service.go",
       "source_location": "L84",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "sso_service",
-      "target": "sso_service_reload",
-      "confidence_score": 1.0
+      "target": "sso_service_reload"
     },
     {
       "relation": "method",
@@ -16846,9 +16939,9 @@
       "source_file": "backend/internal/service/sso/service.go",
       "source_location": "L111",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "sso_service",
-      "target": "sso_service_listproviders",
-      "confidence_score": 1.0
+      "target": "sso_service_listproviders"
     },
     {
       "relation": "method",
@@ -16856,9 +16949,9 @@
       "source_file": "backend/internal/service/sso/service.go",
       "source_location": "L129",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "sso_service",
-      "target": "sso_service_buildoidcauthurl",
-      "confidence_score": 1.0
+      "target": "sso_service_buildoidcauthurl"
     },
     {
       "relation": "method",
@@ -16866,9 +16959,9 @@
       "source_file": "backend/internal/service/sso/service.go",
       "source_location": "L140",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "sso_service",
-      "target": "sso_service_exchangeoidc",
-      "confidence_score": 1.0
+      "target": "sso_service_exchangeoidc"
     },
     {
       "relation": "method",
@@ -16876,9 +16969,9 @@
       "source_file": "backend/internal/service/sso/service.go",
       "source_location": "L180",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "sso_service",
-      "target": "sso_service_listall",
-      "confidence_score": 1.0
+      "target": "sso_service_listall"
     },
     {
       "relation": "method",
@@ -16886,9 +16979,9 @@
       "source_file": "backend/internal/service/sso/service.go",
       "source_location": "L201",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "sso_service",
-      "target": "sso_service_getbyid",
-      "confidence_score": 1.0
+      "target": "sso_service_getbyid"
     },
     {
       "relation": "method",
@@ -16896,9 +16989,9 @@
       "source_file": "backend/internal/service/sso/service.go",
       "source_location": "L213",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "sso_service",
-      "target": "sso_service_createprovider",
-      "confidence_score": 1.0
+      "target": "sso_service_createprovider"
     },
     {
       "relation": "method",
@@ -16906,9 +16999,9 @@
       "source_file": "backend/internal/service/sso/service.go",
       "source_location": "L222",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "sso_service",
-      "target": "sso_service_updateprovider",
-      "confidence_score": 1.0
+      "target": "sso_service_updateprovider"
     },
     {
       "relation": "method",
@@ -16916,9 +17009,9 @@
       "source_file": "backend/internal/service/sso/service.go",
       "source_location": "L230",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "sso_service",
-      "target": "sso_service_setenabled",
-      "confidence_score": 1.0
+      "target": "sso_service_setenabled"
     },
     {
       "relation": "method",
@@ -16926,9 +17019,9 @@
       "source_file": "backend/internal/service/sso/service.go",
       "source_location": "L238",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "sso_service",
-      "target": "sso_service_deleteprovider",
-      "confidence_score": 1.0
+      "target": "sso_service_deleteprovider"
     },
     {
       "relation": "calls",
@@ -16937,9 +17030,9 @@
       "source_file": "backend/internal/service/sso/service.go",
       "source_location": "L77",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "sso_service_newservice",
-      "target": "sso_service_reload",
-      "confidence_score": 1.0
+      "target": "sso_service_reload"
     },
     {
       "relation": "calls",
@@ -16948,9 +17041,9 @@
       "source_file": "backend/internal/service/sso/service.go",
       "source_location": "L95",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "sso_service_reload",
-      "target": "sso_service_buildoidcruntime",
-      "confidence_score": 1.0
+      "target": "sso_service_buildoidcruntime"
     },
     {
       "relation": "calls",
@@ -16959,9 +17052,9 @@
       "source_file": "backend/internal/service/sso/service.go",
       "source_location": "L217",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "sso_service_createprovider",
-      "target": "sso_service_reload",
-      "confidence_score": 1.0
+      "target": "sso_service_reload"
     },
     {
       "relation": "calls",
@@ -16970,9 +17063,9 @@
       "source_file": "backend/internal/service/sso/service.go",
       "source_location": "L226",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "sso_service_updateprovider",
-      "target": "sso_service_reload",
-      "confidence_score": 1.0
+      "target": "sso_service_reload"
     },
     {
       "relation": "calls",
@@ -16981,9 +17074,9 @@
       "source_file": "backend/internal/service/sso/service.go",
       "source_location": "L234",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "sso_service_setenabled",
-      "target": "sso_service_reload",
-      "confidence_score": 1.0
+      "target": "sso_service_reload"
     },
     {
       "relation": "calls",
@@ -16992,9 +17085,9 @@
       "source_file": "backend/internal/service/sso/service.go",
       "source_location": "L242",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "sso_service_deleteprovider",
-      "target": "sso_service_reload",
-      "confidence_score": 1.0
+      "target": "sso_service_reload"
     },
     {
       "relation": "calls",
@@ -17003,9 +17096,9 @@
       "source_file": "backend/internal/service/sso/service.go",
       "source_location": "L172",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "sso_service_exchangeoidc",
-      "target": "sso_service_pickstringclaim",
-      "confidence_score": 1.0
+      "target": "sso_service_pickstringclaim"
     },
     {
       "relation": "contains",
@@ -18838,11 +18931,11 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L571",
+      "source_location": "L575",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "kk_elk_helper_readme_elk_helper_\u667a\u80fd\u65e5\u5fd7\u544a\u8b66\u7cfb\u7edf",
-      "target": "kk_elk_helper_readme_\u6027\u80fd\u4f18\u5316_571"
+      "target": "kk_elk_helper_readme_\u6027\u80fd\u4f18\u5316_575",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -18943,6 +19036,16 @@
       "confidence_score": 1.0,
       "source": "kk_elk_helper_readme_elk_helper_\u667a\u80fd\u65e5\u5fd7\u544a\u8b66\u7cfb\u7edf",
       "target": "kk_elk_helper_readme_\u652f\u6301"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L571",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "kk_elk_helper_readme_elk_helper_\u667a\u80fd\u65e5\u5fd7\u544a\u8b66\u7cfb\u7edf",
+      "target": "kk_elk_helper_readme_\u6027\u80fd\u4f18\u5316_571"
     },
     {
       "relation": "contains",
@@ -19508,31 +19611,31 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L573",
+      "source_location": "L577",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "kk_elk_helper_readme_\u6027\u80fd\u4f18\u5316_571",
-      "target": "kk_elk_helper_readme_\u6570\u636e\u5e93\u8fc1\u79fb\u7ba1\u7406"
+      "source": "kk_elk_helper_readme_\u6027\u80fd\u4f18\u5316_575",
+      "target": "kk_elk_helper_readme_\u6570\u636e\u5e93\u8fc1\u79fb\u7ba1\u7406",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L595",
+      "source_location": "L599",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "kk_elk_helper_readme_\u6027\u80fd\u4f18\u5316_571",
-      "target": "kk_elk_helper_readme_\u6570\u636e\u5e93\u7d22\u5f15\u4f18\u5316"
+      "source": "kk_elk_helper_readme_\u6027\u80fd\u4f18\u5316_575",
+      "target": "kk_elk_helper_readme_\u6570\u636e\u5e93\u7d22\u5f15\u4f18\u5316",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L612",
+      "source_location": "L616",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "kk_elk_helper_readme_\u6027\u80fd\u4f18\u5316_571",
-      "target": "kk_elk_helper_readme_\u5b9a\u671f\u6e05\u7406\u6570\u636e"
+      "source": "kk_elk_helper_readme_\u6027\u80fd\u4f18\u5316_575",
+      "target": "kk_elk_helper_readme_\u5b9a\u671f\u6e05\u7406\u6570\u636e",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -19548,6 +19651,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
+      "source_location": "L573",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "kk_elk_helper_readme_\u6027\u80fd\u4f18\u5316_571",
+      "target": "kk_elk_helper_readme_\u6570\u636e\u5e93\u8fc1\u79fb\u7ba1\u7406"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
       "source_location": "L597",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -19558,11 +19671,31 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
+      "source_location": "L595",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "kk_elk_helper_readme_\u6027\u80fd\u4f18\u5316_571",
+      "target": "kk_elk_helper_readme_\u6570\u636e\u5e93\u7d22\u5f15\u4f18\u5316"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
       "source_location": "L616",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "kk_elk_helper_readme_\u5b9a\u671f\u6e05\u7406\u6570\u636e",
       "target": "kk_elk_helper_readme_codeblock_23"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L612",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "kk_elk_helper_readme_\u6027\u80fd\u4f18\u5316_571",
+      "target": "kk_elk_helper_readme_\u5b9a\u671f\u6e05\u7406\u6570\u636e"
     },
     {
       "relation": "contains",
@@ -19943,6 +20076,56 @@
       "confidence_score": 1.0,
       "source": "agents_md",
       "target": "kk_elk_helper_agents_openspec_instructions"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/dev/sso.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "docs_dev_sso_md",
+      "target": "dev_sso_oidc_sso",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/dev/sso.md",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "dev_sso_oidc_sso",
+      "target": "dev_sso_flow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/dev/sso.md",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "dev_sso_oidc_sso",
+      "target": "dev_sso_admin_setup",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/dev/sso.md",
+      "source_location": "L24",
+      "weight": 1.0,
+      "source": "dev_sso_oidc_sso",
+      "target": "dev_sso_environment",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/dev/sso.md",
+      "source_location": "L31",
+      "weight": 1.0,
+      "source": "dev_sso_oidc_sso",
+      "target": "dev_sso_api_summary",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -24086,5 +24269,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "b041349a66f68f399250f7ad5ba2aa3784ea1d65"
+  "built_at_commit": "c68bf41ab52574ab6213342dba770d2fc3ee3a7b"
 }

@@ -18,6 +18,7 @@ import (
 	"github.com/golang-migrate/migrate/v4/source/iofs"
 	"github.com/kk/elk-helper/backend/internal/config"
 	"github.com/kk/elk-helper/backend/internal/migrations"
+	"github.com/kk/elk-helper/backend/internal/models"
 	pgdriver "gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -75,6 +76,24 @@ func Init(dbConfig config.DatabaseConfig) error {
 		return fmt.Errorf("failed to run migrations: %w", err)
 	}
 
+	if err := ensureSchemaCompatibility(); err != nil {
+		return fmt.Errorf("failed to ensure schema compatibility: %w", err)
+	}
+
+	return nil
+}
+
+// ensureSchemaCompatibility applies GORM AutoMigrate for models added after initial deploy.
+// SQL migrations remain the source of truth; this heals DBs that missed a migrate step.
+func ensureSchemaCompatibility() error {
+	if err := DB.AutoMigrate(&models.User{}, &models.SSOProvider{}); err != nil {
+		return err
+	}
+	// Backfill auth_source for rows created before SSO migration.
+	if err := DB.Exec("UPDATE users SET auth_source = ? WHERE auth_source IS NULL OR auth_source = ''", models.AuthSourceLocal).Error; err != nil {
+		return err
+	}
+	slog.Info("Schema compatibility check completed")
 	return nil
 }
 

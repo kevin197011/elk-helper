@@ -88,7 +88,15 @@ export default function SsoConfigPage() {
       const res = await ssoApi.listAdmin();
       setList(res.data.data || []);
     } catch (err: any) {
-      message.error(err.response?.data?.error || 'Failed to load SSO providers');
+      const status = err.response?.status;
+      const detail = err.response?.data?.error || err.message;
+      const hint =
+        status === 404
+          ? '接口不存在，请重新构建并重启 backend 服务'
+          : status === 403
+            ? '需要管理员权限'
+            : detail;
+      message.error(hint || 'Failed to load SSO providers');
     } finally {
       setLoading(false);
     }

@@ -38,13 +38,13 @@ func SetupRoutes(r *gin.Engine) {
 
 	// Initialize auth and SSO services
 	authService := auth.NewService(database.DB, config.AppConfig.Auth.JWTSecret)
-	ssoService := sso.NewService(database.DB)
 
-	// Initialize default admin user if no users exist
+	// Ensure bootstrap admin exists before SSO reload (needs users table columns).
 	if err := authService.InitDefaultAdmin(); err != nil {
-		// Log error but don't fail startup
 		slog.Warn("Failed to initialize default admin", "error", err)
 	}
+
+	ssoService := sso.NewService(database.DB)
 
 	// API routes
 	v1 := r.Group("/api/v1")

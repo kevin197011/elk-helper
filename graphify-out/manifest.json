@@ -35,7 +35,7 @@
     "semantic_hash": ""
   },
   "/Users/kevin/projects/src/kk-elk-helper/frontend/src/App.tsx": {
-    "mtime": 1780302810.6331503,
+    "mtime": 1780302861.0871277,
     "ast_hash": "5817931adb7e0387eff5cbc7c06be17a",
     "semantic_hash": ""
   },
@@ -45,7 +45,7 @@
     "semantic_hash": ""
   },
   "/Users/kevin/projects/src/kk-elk-helper/frontend/src/contexts/AuthContext.tsx": {
-    "mtime": 1780302803.1285279,
+    "mtime": 1780302861.0871453,
     "ast_hash": "450e039b9f072f027bdc8043a429d9ef",
     "semantic_hash": ""
   },
@@ -85,7 +85,7 @@
     "semantic_hash": ""
   },
   "/Users/kevin/projects/src/kk-elk-helper/frontend/src/components/Layout.tsx": {
-    "mtime": 1780302812.002586,
+    "mtime": 1780302861.0871205,
     "ast_hash": "439001e0aa123798faa3444ef5a0fbc7",
     "semantic_hash": ""
   },
@@ -100,7 +100,7 @@
     "semantic_hash": ""
   },
   "/Users/kevin/projects/src/kk-elk-helper/frontend/src/pages/LoginPage.tsx": {
-    "mtime": 1780302808.9470744,
+    "mtime": 1780302861.087005,
     "ast_hash": "a2a29ac52af81c130b6f3197c40e3ffe",
     "semantic_hash": ""
   },
@@ -120,8 +120,8 @@
     "semantic_hash": ""
   },
   "/Users/kevin/projects/src/kk-elk-helper/frontend/src/pages/UsersPage.tsx": {
-    "mtime": 1780302318.982653,
-    "ast_hash": "04c0ad92ed7a5fe7a12e969292d7afa1",
+    "mtime": 1780304698.533232,
+    "ast_hash": "d3a59ed8d3ec094231874cbfa107a936",
     "semantic_hash": ""
   },
   "/Users/kevin/projects/src/kk-elk-helper/frontend/src/pages/CleanupConfigPage.tsx": {
@@ -145,7 +145,7 @@
     "semantic_hash": ""
   },
   "/Users/kevin/projects/src/kk-elk-helper/frontend/src/services/api.ts": {
-    "mtime": 1780302799.2672398,
+    "mtime": 1780302861.0953283,
     "ast_hash": "c35f12e915be2f55d8a8289a6f44fe47",
     "semantic_hash": ""
   },
@@ -190,18 +190,18 @@
     "semantic_hash": ""
   },
   "/Users/kevin/projects/src/kk-elk-helper/backend/internal/repository/database/database.go": {
-    "mtime": 1769256674.1033046,
-    "ast_hash": "59e8a2710eb39f7b1d2d04a19d54e9f2",
+    "mtime": 1780304688.3867698,
+    "ast_hash": "c5050535cc1af0f9184775dc1e06293f",
     "semantic_hash": ""
   },
   "/Users/kevin/projects/src/kk-elk-helper/backend/internal/config/config.go": {
-    "mtime": 1780302735.9330628,
+    "mtime": 1780302861.142129,
     "ast_hash": "1a343b8d850d833a753c45b40082ac04",
     "semantic_hash": ""
   },
   "/Users/kevin/projects/src/kk-elk-helper/backend/internal/models/user.go": {
-    "mtime": 1780302624.6267395,
-    "ast_hash": "5a0e46e65b294612e92b4e7320495e5f",
+    "mtime": 1780302861.1933424,
+    "ast_hash": "cc4d78433d7f31f57bdd4342391a3278",
     "semantic_hash": ""
   },
   "/Users/kevin/projects/src/kk-elk-helper/backend/internal/models/system_config.go": {
@@ -235,8 +235,8 @@
     "semantic_hash": ""
   },
   "/Users/kevin/projects/src/kk-elk-helper/backend/internal/api/middleware/auth.go": {
-    "mtime": 1769244133.914021,
-    "ast_hash": "57b3ffecc55807fabed9fe8840a1418b",
+    "mtime": 1780304690.5770442,
+    "ast_hash": "0ebc3023c09fb69beea23a77b4e0bd42",
     "semantic_hash": ""
   },
   "/Users/kevin/projects/src/kk-elk-helper/backend/internal/api/middleware/rate_limit.go": {
@@ -245,13 +245,13 @@
     "semantic_hash": ""
   },
   "/Users/kevin/projects/src/kk-elk-helper/backend/internal/api/routes/routes.go": {
-    "mtime": 1780302743.8208828,
-    "ast_hash": "3715f74574be053d54255e34c5e02576",
+    "mtime": 1780304759.8005433,
+    "ast_hash": "6bc183a6033594792cdddbe8f6a8de16",
     "semantic_hash": ""
   },
   "/Users/kevin/projects/src/kk-elk-helper/backend/internal/api/handlers/auth_handler.go": {
-    "mtime": 1780302706.5377314,
-    "ast_hash": "95bbff446339cade7afb5e0e8bf5c495",
+    "mtime": 1780302861.1702802,
+    "ast_hash": "23e120ef6dde1da811b45297d816dbbd",
     "semantic_hash": ""
   },
   "/Users/kevin/projects/src/kk-elk-helper/backend/internal/api/handlers/status_handler.go": {
@@ -290,8 +290,8 @@
     "semantic_hash": ""
   },
   "/Users/kevin/projects/src/kk-elk-helper/backend/internal/service/auth/auth.go": {
-    "mtime": 1780302705.1465664,
-    "ast_hash": "71e125fb2548fc9a0b62a160a6d723a3",
+    "mtime": 1780304757.9761755,
+    "ast_hash": "44c4fb39627e000c8b32ea4416448c82",
     "semantic_hash": ""
   },
   "/Users/kevin/projects/src/kk-elk-helper/backend/internal/service/larkconfig/lark_config.go": {
@@ -360,8 +360,8 @@
     "semantic_hash": ""
   },
   "/Users/kevin/projects/src/kk-elk-helper/README.md": {
-    "mtime": 1769261346.2794008,
-    "ast_hash": "6b457adadfba413810f3782f88606f44",
+    "mtime": 1780302861.0869584,
+    "ast_hash": "91c2e72409b7c9326899a3e21bcc3ae8",
     "semantic_hash": ""
   },
   "/Users/kevin/projects/src/kk-elk-helper/docker-compose-prod.yml": {
@@ -375,7 +375,7 @@
     "semantic_hash": ""
   },
   "/Users/kevin/projects/src/kk-elk-helper/docker-compose.yml": {
-    "mtime": 1780302812.462329,
+    "mtime": 1780302861.0869956,
     "ast_hash": "4a8081a84520d8d88d162c6fdbae995c",
     "semantic_hash": ""
   },
@@ -600,48 +600,53 @@
     "semantic_hash": ""
   },
   "/Users/kevin/projects/src/kk-elk-helper/frontend/src/pages/SsoConfigPage.tsx": {
-    "mtime": 1780302792.1676962,
-    "ast_hash": "e8908ba04ec11f1bf54369d823560904",
+    "mtime": 1780304700.0080218,
+    "ast_hash": "2a714c42b2391a5e0262591b974aeabd",
     "semantic_hash": ""
   },
   "/Users/kevin/projects/src/kk-elk-helper/frontend/src/pages/SsoCallbackPage.tsx": {
-    "mtime": 1780302776.0904665,
+    "mtime": 1780302861.1003408,
     "ast_hash": "0b71f5e1cd40cbecc119f70e1bcd7a32",
     "semantic_hash": ""
   },
   "/Users/kevin/projects/src/kk-elk-helper/backend/internal/migrations/000003_add_sso.down.sql": {
-    "mtime": 1780302618.1932673,
+    "mtime": 1780302861.1160662,
     "ast_hash": "0484fc4286b014332583928030b805fb",
     "semantic_hash": ""
   },
   "/Users/kevin/projects/src/kk-elk-helper/backend/internal/migrations/000003_add_sso.up.sql": {
-    "mtime": 1780302616.3874934,
+    "mtime": 1780302861.1195524,
     "ast_hash": "52e027ad7fa62cb33349223a92950724",
     "semantic_hash": ""
   },
   "/Users/kevin/projects/src/kk-elk-helper/backend/internal/models/sso_provider.go": {
-    "mtime": 1780302620.8786747,
+    "mtime": 1780302861.170276,
     "ast_hash": "bee4fcc8b06a050385d7d589a7ffde9a",
     "semantic_hash": ""
   },
   "/Users/kevin/projects/src/kk-elk-helper/backend/internal/api/handlers/sso_admin_handler.go": {
-    "mtime": 1780302731.0078542,
+    "mtime": 1780302861.1425197,
     "ast_hash": "80365376d36484afa1280a118d667e17",
     "semantic_hash": ""
   },
   "/Users/kevin/projects/src/kk-elk-helper/backend/internal/api/handlers/sso_handler.go": {
-    "mtime": 1780302719.6907308,
+    "mtime": 1780302861.142507,
     "ast_hash": "68a1859df36ba78e8ee625fd888eb0fc",
     "semantic_hash": ""
   },
   "/Users/kevin/projects/src/kk-elk-helper/backend/internal/service/auth/sso_user.go": {
-    "mtime": 1780302700.532357,
+    "mtime": 1780302861.170251,
     "ast_hash": "e9702de67737276bca91b025aaf92728",
     "semantic_hash": ""
   },
   "/Users/kevin/projects/src/kk-elk-helper/backend/internal/service/sso/service.go": {
-    "mtime": 1780302696.5693257,
+    "mtime": 1780302861.1702752,
     "ast_hash": "bf59902efec6d23d61c6e6037c3f4dca",
+    "semantic_hash": ""
+  },
+  "/Users/kevin/projects/src/kk-elk-helper/docs/dev/sso.md": {
+    "mtime": 1780302861.0861406,
+    "ast_hash": "43d5ee1c9d2bb49b0b5411bb847635f0",
     "semantic_hash": ""
   }
 }

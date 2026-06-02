@@ -317,44 +317,62 @@ func (s *Service) generateToken(user *models.User) (string, error) {
 	return token.SignedString(s.jwtSecret)
 }
 
-// InitDefaultAdmin creates a default admin user if no users exist
+// InitDefaultAdmin ensures the configured bootstrap admin account exists.
 func (s *Service) InitDefaultAdmin() error {
-	var count int64
-	s.db.Model(&models.User{}).Count(&count)
+	adminUsername := getEnv("ADMIN_USERNAME", "admin")
+	if adminUsername == "" {
+		adminUsername = "admin"
+	}
 
-	if count == 0 {
-		// Get admin credentials from environment variables, use defaults if not set
-		adminUsername := getEnv("ADMIN_USERNAME", "admin")
-		if adminUsername == "" {
-			adminUsername = "admin"
+	var existing models.User
+	err := s.db.Where("username = ?", adminUsername).First(&existing).Error
+	if err == nil {
+		// Repair legacy rows missing auth_source or disabled bootstrap admin.
+		updates := map[string]interface{}{}
+		if existing.AuthSource == "" {
+			updates["auth_source"] = models.AuthSourceLocal
 		}
+		if existing.Role != models.RoleAdmin {
+			updates["role"] = models.RoleAdmin
+		}
+		if !existing.Enabled {
+			updates["enabled"] = true
+		}
+		if len(updates) > 0 {
+			if err := s.db.Model(&existing).Updates(updates).Error; err != nil {
+				return fmt.Errorf("failed to repair bootstrap admin: %w", err)
+			}
+		}
+		return nil
+	}
+	if !errors.Is(err, gorm.ErrRecordNotFound) {
+		return fmt.Errorf("failed to query bootstrap admin: %w", err)
+	}
 
-		adminPassword := getEnv("ADMIN_PASSWORD", "admin123")
-		if adminPassword == "" {
-			adminPassword = "admin123"
-		}
+	adminPassword := getEnv("ADMIN_PASSWORD", "admin123")
+	if adminPassword == "" {
+		adminPassword = "admin123"
+	}
 
-		adminEmail := getEnv("ADMIN_EMAIL", "admin@example.com")
-		if adminEmail == "" {
-			adminEmail = "admin@example.com"
-		}
+	adminEmail := getEnv("ADMIN_EMAIL", "admin@example.com")
+	if adminEmail == "" {
+		adminEmail = "admin@example.com"
+	}
 
-		// Create default admin user
-		adminUser := &models.User{
-			Username:   adminUsername,
-			Email:      adminEmail,
-			Role:       models.RoleAdmin,
-			Enabled:    true,
-			AuthSource: models.AuthSourceLocal,
-		}
+	adminUser := &models.User{
+		Username:   adminUsername,
+		Email:      adminEmail,
+		Role:       models.RoleAdmin,
+		Enabled:    true,
+		AuthSource: models.AuthSourceLocal,
+	}
 
-		if err := adminUser.HashPassword(adminPassword); err != nil {
-			return fmt.Errorf("failed to hash admin password: %w", err)
-		}
+	if err := adminUser.HashPassword(adminPassword); err != nil {
+		return fmt.Errorf("failed to hash admin password: %w", err)
+	}
 
-		if err := s.db.Create(adminUser).Error; err != nil {
-			return fmt.Errorf("failed to create default admin: %w", err)
-		}
+	if err := s.db.Create(adminUser).Error; err != nil {
+		return fmt.Errorf("failed to create default admin: %w", err)
 	}
 
 	return nil

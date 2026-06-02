@@ -67,17 +67,18 @@ func AuthMiddleware(authService *auth.Service) gin.HandlerFunc {
 	}
 }
 
-// RequireAdmin checks if the user is an admin
+// RequireAdmin checks if the user is an admin (uses DB role from AuthMiddleware).
 func RequireAdmin() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		role, exists := c.Get("role")
+		raw, exists := c.Get("user")
 		if !exists {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
 			c.Abort()
 			return
 		}
 
-		if role != string(models.RoleAdmin) {
+		user, ok := raw.(*models.User)
+		if !ok || user.Role != models.RoleAdmin {
 			c.JSON(http.StatusForbidden, gin.H{"error": "admin access required"})
 			c.Abort()
 			return
@@ -86,4 +87,3 @@ func RequireAdmin() gin.HandlerFunc {
 		c.Next()
 	}
 }
-

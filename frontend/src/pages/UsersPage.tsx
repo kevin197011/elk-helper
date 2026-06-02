@@ -32,7 +32,13 @@ export default function UsersPage() {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
-  const { data, isLoading } = useQuery({
+  const {
+    data,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
     queryKey: ['users'],
     queryFn: () => usersApi.getAll().then(res => res.data.data),
   });
@@ -148,10 +154,20 @@ export default function UsersPage() {
           </Button>
         }
       />
+      {isError && (
+        <div style={{ marginBottom: 16 }}>
+          <Text type="danger">
+            {(error as any)?.response?.data?.error || '加载用户列表失败'}
+          </Text>
+          <Button type="link" onClick={() => refetch()}>
+            重试
+          </Button>
+        </div>
+      )}
       <Table
         rowKey="id"
         columns={columns}
-        dataSource={data}
+        dataSource={data ?? []}
         loading={isLoading}
         pagination={false}
       />
